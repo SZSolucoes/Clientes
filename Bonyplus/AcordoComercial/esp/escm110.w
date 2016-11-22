@@ -28,7 +28,8 @@ DEFINE TEMP-TABLE tt-es-acordo-comerc NO-UNDO LIKE es-acordo-comerc
     FIELD sit-receb AS LOGICAL
     FIELD sit-financ AS CHAR
     FIELD cod-aprovador LIKE es-acordo-pendencia.cod-aprovador
-    FIELD sit-acordo-app AS CHAR.
+    FIELD sit-acordo-app AS CHAR
+    FIELD ind-situacao LIKE es-acordo-pendencia.ind-situacao.
 
 /* Parameters Definitions ---                                           */
 DEFINE VARIABLE p-cod-estab-ini       LIKE estabelec.cod-estabel                  NO-UNDO. 
@@ -81,8 +82,8 @@ DEFINE NEW GLOBAL SHARED VAR c-seg-usuario as char format "x(12)" no-undo.
 &Scoped-define FIELDS-IN-QUERY-brTable1 tt-es-acordo-comerc.cod-estabel tt-es-acordo-comerc.cod-emitente fn-nome-abrev () @ c-nome-abrev fn-nome-area () @ c-nome-area tt-es-acordo-comerc.cod-repres tt-es-acordo-comerc.nr-acordo-comerc tt-es-acordo-comerc.sit-acordo-app fn-sit-acordo-aceite () @ c-sit-acordo-aceite tt-es-acordo-comerc.usuar-lib-aceite tt-es-acordo-comerc.dt-lib-aceite tt-es-acordo-comerc.hr-lib-aceite fn-sit-acordo-contabil () @ c-sit-acordo-contabil tt-es-acordo-comerc.usuar-lib-contabil tt-es-acordo-comerc.dt-lib-contabil tt-es-acordo-comerc.hr-lib-contabil tt-es-acordo-comerc.dt-criacao tt-es-acordo-comerc.vl-invest tt-es-acordo-comerc.impresso tt-es-acordo-comerc.dt-aprov tt-es-acordo-comerc.sit-receb tt-es-acordo-comerc.sit-financ tt-es-acordo-comerc.cod-aprovador   
 &Scoped-define ENABLED-FIELDS-IN-QUERY-brTable1   
 &Scoped-define SELF-NAME brTable1
-&Scoped-define QUERY-STRING-brTable1 FOR EACH tt-es-acordo-comerc NO-LOCK      BY tt-es-acordo-comerc.cod-emitente        INDEXED-REPOSITION
-&Scoped-define OPEN-QUERY-brTable1 OPEN QUERY {&SELF-NAME} FOR EACH tt-es-acordo-comerc NO-LOCK      BY tt-es-acordo-comerc.cod-emitente        INDEXED-REPOSITION.
+&Scoped-define QUERY-STRING-brTable1 FOR EACH tt-es-acordo-comerc NO-LOCK                             WHERE (tt-es-acordo-comerc.ind-situacao = p-ind-situacao - 1 OR                                     p-ind-situacao = 4)                              BY tt-es-acordo-comerc.cod-emitente        INDEXED-REPOSITION
+&Scoped-define OPEN-QUERY-brTable1 OPEN QUERY {&SELF-NAME} FOR EACH tt-es-acordo-comerc NO-LOCK                             WHERE (tt-es-acordo-comerc.ind-situacao = p-ind-situacao - 1 OR                                     p-ind-situacao = 4)                              BY tt-es-acordo-comerc.cod-emitente        INDEXED-REPOSITION.
 &Scoped-define TABLES-IN-QUERY-brTable1 tt-es-acordo-comerc
 &Scoped-define FIRST-TABLE-IN-QUERY-brTable1 tt-es-acordo-comerc
 
@@ -211,7 +212,7 @@ DEFINE BROWSE brTable1
       tt-es-acordo-comerc.usuar-lib-aceite WIDTH 12
       tt-es-acordo-comerc.dt-lib-aceite   WIDTH 10
       tt-es-acordo-comerc.hr-lib-aceite   WIDTH 10
-      fn-sit-acordo-contabil () @ c-sit-acordo-contabil COLUMN-LABEL "Liber.Contabil" FORMAT "x(18)" WIDTH 18
+      fn-sit-acordo-contabil () @ c-sit-acordo-contabil COLUMN-LABEL "Liber.Contabil" FORMAT "x(19)" WIDTH 18
       tt-es-acordo-comerc.usuar-lib-contabil WIDTH 12
       tt-es-acordo-comerc.dt-lib-contabil   WIDTH 10
       tt-es-acordo-comerc.hr-lib-contabil   WIDTH 10
@@ -316,7 +317,9 @@ THEN w-livre:HIDDEN = yes.
 /* Query rebuild information for BROWSE brTable1
      _START_FREEFORM
 OPEN QUERY {&SELF-NAME} FOR EACH tt-es-acordo-comerc NO-LOCK
-     BY tt-es-acordo-comerc.cod-emitente
+                            WHERE (tt-es-acordo-comerc.ind-situacao = p-ind-situacao - 1 OR
+                                    p-ind-situacao = 4)
+                             BY tt-es-acordo-comerc.cod-emitente
        INDEXED-REPOSITION.
      _END_FREEFORM
      _Options          = "NO-LOCK INDEXED-REPOSITION"
@@ -590,7 +593,21 @@ END.
 &Scoped-define SELF-NAME bt-libera-contabil
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-libera-contabil w-livre
 ON CHOOSE OF bt-libera-contabil IN FRAME f-cad /* Libera Cont bil */
-DO:
+DO: 
+    /* Verifica se o Acordo j  deu entrada no RE1001 */
+    FIND FIRST es-tit_ap NO-LOCK
+        WHERE es-tit_ap.cdn_fornecedor     = tt-es-acordo-comerc.cod-emitente
+          AND es-tit_ap.nr-acordo-comerc   = tt-es-acordo-comerc.nr-acordo-comerc NO-ERROR.
+
+    IF AVAIL es-tit_ap THEN DO:
+
+        RUN utp/ut-msgs.p ("show",
+                           17006 ,
+                           "PermissÆo Negada ~~ " + "Acordo Comercial j  entrou no recebimento o Documento " + " " + STRING(es-tit_ap.cod_tit_ap)
+                            + " " + "S‚rie" + " " + STRING(es-tit_ap.cod_ser_docto) + " " + "Fornecedor" + " " + STRING(es-tit_ap.cdn_fornecedor) ).
+        RETURN NO-APPLY.
+    END.
+
     IF tt-es-acordo-comerc.sit-acordo-contabil = 1
         AND tt-es-acordo-comerc.sit-acordo-aceite = 2 THEN DO:
         
@@ -871,7 +888,9 @@ PROCEDURE carregaBrowseAcordo :
           AND es-acordo-comerc.dt-criacao         >= p-dt-criacao-ini  
           AND es-acordo-comerc.dt-criacao         <= p-dt-criacao-fim
           AND (es-acordo-comerc.sit-acordo-aceite  = p-sit-acordo-aceite OR
-               p-sit-acordo-aceite = 3) NO-LOCK:
+               p-sit-acordo-aceite = 3)
+          AND (es-acordo-comerc.sit-acordo-contabil  = p-sit-acordo-contabil OR
+               p-sit-acordo-contabil = 3) NO-LOCK:
         
         CREATE tt-es-acordo-comerc.
         BUFFER-COPY es-acordo-comerc TO tt-es-acordo-comerc.
@@ -881,7 +900,8 @@ PROCEDURE carregaBrowseAcordo :
               AND es-acordo-pendencia.ind-situacao = 2 NO-ERROR.
 
         IF AVAIL es-acordo-pendencia THEN
-             ASSIGN tt-es-acordo-comerc.sit-acordo-app = "Reprovado Acordo".
+             ASSIGN tt-es-acordo-comerc.sit-acordo-app = "Reprovado Acordo"
+                    tt-es-acordo-comerc.ind-situacao   = 2.
 
         ELSE DO:
             FIND FIRST es-acordo-pendencia NO-LOCK
@@ -889,7 +909,8 @@ PROCEDURE carregaBrowseAcordo :
                   AND es-acordo-pendencia.ind-situacao = 0 NO-ERROR.
 
             IF AVAIL es-acordo-pendencia THEN
-                 ASSIGN tt-es-acordo-comerc.sit-acordo-app = "Pendente Acordo".
+                 ASSIGN tt-es-acordo-comerc.sit-acordo-app = "Pendente Acordo"
+                        tt-es-acordo-comerc.ind-situacao   = 0.
 
             ELSE DO:
                 FIND FIRST es-acordo-pendencia NO-LOCK
@@ -897,7 +918,8 @@ PROCEDURE carregaBrowseAcordo :
                       AND es-acordo-pendencia.ind-situacao = 1 NO-ERROR.
 
                 IF AVAIL es-acordo-pendencia THEN
-                     ASSIGN tt-es-acordo-comerc.sit-acordo-app = "Aprovado Acordo".
+                     ASSIGN tt-es-acordo-comerc.sit-acordo-app = "Aprovado Acordo"
+                            tt-es-acordo-comerc.ind-situacao   = 1.
                 
                 ELSE
                     ASSIGN tt-es-acordo-comerc.sit-acordo-app = "".
@@ -907,6 +929,17 @@ PROCEDURE carregaBrowseAcordo :
         END.
     
     END.
+    
+    /*FOR EACH tt-es-acordo-comerc
+        WHERE (tt-es-acordo-comerc.ind-situacao = p-ind-situacao OR
+            p-ind-situacao = 4)
+        BY tt-es-acordo-comerc.cod-emitente:
+
+        MESSAGE "Acordo:" tt-es-acordo-comerc.nr-acordo-comerc SKIP
+                "Sit App:" tt-es-acordo-comerc.sit-acordo-app SKIP
+                "Sele‡Æo:" p-ind-situacao
+            VIEW-AS ALERT-BOX INFO BUTTONS OK.
+    END.*/
    
     {&open-query-brTable1}
 
