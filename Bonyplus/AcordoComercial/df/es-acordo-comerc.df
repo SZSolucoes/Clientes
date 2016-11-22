@@ -1,0 +1,375 @@
+ADD TABLE "es-acordo-comerc"
+  AREA "Schema Area"
+  LABEL "Acordo Comercial"
+  DUMP-NAME "es-acordo-comerc"
+
+ADD FIELD "nr-acordo-comerc" OF "es-acordo-comerc" AS character 
+  FORMAT "x(12)"
+  INITIAL ""
+  LABEL "Acordo Comercial"
+  POSITION 2
+  MAX-WIDTH 24
+  COLUMN-LABEL "Acordo"
+  HELP "N£mero do Acordo Comercial"
+  ORDER 10
+
+ADD FIELD "dt-pagto" OF "es-acordo-comerc" AS date 
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Data Pagamento"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Dt Pagto"
+  HELP "Data de Pagamento do Acordo"
+  ORDER 20
+
+ADD FIELD "cod-emitente" OF "es-acordo-comerc" AS integer 
+  FORMAT ">>>>>>>>9"
+  INITIAL "0"
+  LABEL "Cliente"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Cliente"
+  ORDER 30
+
+ADD FIELD "cod-canal-venda" OF "es-acordo-comerc" AS integer 
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Canal de Venda"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Canal"
+  ORDER 40
+
+ADD FIELD "cod-acao" OF "es-acordo-comerc" AS integer 
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "A‡Æo"
+  POSITION 6
+  MAX-WIDTH 4
+  COLUMN-LABEL "A‡Æo"
+  ORDER 50
+
+ADD FIELD "objetivo" OF "es-acordo-comerc" AS character 
+  FORMAT "x(100)"
+  INITIAL ""
+  LABEL "Objetivo"
+  POSITION 7
+  MAX-WIDTH 200
+  COLUMN-LABEL "Objetivo"
+  HELP "Detalhes da a‡Æo, objetivo"
+  ORDER 60
+
+ADD FIELD "vl-invest" OF "es-acordo-comerc" AS decimal 
+  FORMAT ">>>>>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Valor Investimento"
+  POSITION 8
+  MAX-WIDTH 17
+  COLUMN-LABEL "Vl Invest"
+  DECIMALS 2
+  ORDER 70
+
+ADD FIELD "vl-compra" OF "es-acordo-comerc" AS decimal 
+  FORMAT ">>>>>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Valor Investimento"
+  POSITION 9
+  MAX-WIDTH 17
+  COLUMN-LABEL "Vl Invest"
+  DECIMALS 2
+  ORDER 80
+
+ADD FIELD "cod-cond-pag" OF "es-acordo-comerc" AS integer 
+  FORMAT ">>>9"
+  INITIAL "0"
+  LABEL "Condi‡Æo Pagamento"
+  POSITION 10
+  MAX-WIDTH 4
+  COLUMN-LABEL "Cond Pagto"
+  ORDER 90
+
+ADD FIELD "dt-ini-period" OF "es-acordo-comerc" AS date 
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Per¡odo Inicial"
+  POSITION 11
+  MAX-WIDTH 4
+  COLUMN-LABEL "Per¡odo Ini"
+  ORDER 100
+
+ADD FIELD "dt-fim-period" OF "es-acordo-comerc" AS date 
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Per¡odo Final"
+  POSITION 12
+  MAX-WIDTH 4
+  COLUMN-LABEL "Per¡odo Fim"
+  ORDER 110
+
+ADD FIELD "num-parc" OF "es-acordo-comerc" AS integer 
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "N£mero Parcelas"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "Num Parc"
+  HELP "N£mero de Parcelas"
+  ORDER 120
+
+ADD FIELD "vl-acordo" OF "es-acordo-comerc" AS decimal 
+  FORMAT ">>>>>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Valor Acordo"
+  POSITION 14
+  MAX-WIDTH 17
+  COLUMN-LABEL "Vl Acordo"
+  DECIMALS 2
+  ORDER 130
+
+ADD FIELD "razao-social" OF "es-acordo-comerc" AS character 
+  FORMAT "x(100)"
+  INITIAL ""
+  LABEL "RazÆo Social"
+  POSITION 15
+  MAX-WIDTH 200
+  COLUMN-LABEL "Rz Social"
+  ORDER 140
+
+ADD FIELD "cod-banco" OF "es-acordo-comerc" AS integer 
+  FORMAT ">>9"
+  INITIAL "0"
+  LABEL "Banco"
+  POSITION 16
+  MAX-WIDTH 4
+  COLUMN-LABEL "Banco"
+  ORDER 150
+
+ADD FIELD "agencia" OF "es-acordo-comerc" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  LABEL "Agˆncia"
+  POSITION 17
+  MAX-WIDTH 16
+  COLUMN-LABEL "Agˆncia"
+  ORDER 160
+
+ADD FIELD "conta-corrente" OF "es-acordo-comerc" AS character 
+  FORMAT "x(20)"
+  INITIAL ""
+  LABEL "Conta Corrente"
+  POSITION 18
+  MAX-WIDTH 40
+  COLUMN-LABEL "Cta Corren"
+  ORDER 170
+
+ADD FIELD "nr-lojas" OF "es-acordo-comerc" AS integer 
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "A‡Æo"
+  POSITION 19
+  MAX-WIDTH 4
+  COLUMN-LABEL "A‡Æo"
+  ORDER 180
+
+ADD FIELD "cod-area" OF "es-acordo-comerc" AS integer 
+  DESCRIPTION "Area Comercial"
+  FORMAT ">>>>>9"
+  INITIAL "0"
+  LABEL "Area"
+  POSITION 20
+  MAX-WIDTH 4
+  COLUMN-LABEL "Area"
+  ORDER 190
+  MANDATORY
+
+ADD FIELD "ano-acordo" OF "es-acordo-comerc" AS character 
+  FORMAT "x(4)"
+  INITIAL ""
+  LABEL "Ano Acordo"
+  POSITION 21
+  MAX-WIDTH 8
+  COLUMN-LABEL "Ano"
+  ORDER 200
+
+ADD FIELD "seq-acordo" OF "es-acordo-comerc" AS integer 
+  FORMAT ">>>>>>9"
+  INITIAL "0"
+  LABEL "Sequˆncia Acordo"
+  POSITION 22
+  MAX-WIDTH 4
+  COLUMN-LABEL "Seq"
+  ORDER 210
+
+ADD FIELD "cod-repres" OF "es-acordo-comerc" AS integer 
+  FORMAT ">>>>9"
+  INITIAL "0"
+  LABEL "Repres"
+  POSITION 23
+  MAX-WIDTH 4
+  COLUMN-LABEL "Rep"
+  HELP "C¢digo do Representante"
+  ORDER 220
+  MANDATORY
+
+ADD FIELD "cod-usuario" OF "es-acordo-comerc" AS character 
+  FORMAT "x(12)"
+  INITIAL ""
+  LABEL "Usu rio"
+  POSITION 24
+  MAX-WIDTH 24
+  COLUMN-LABEL "Usuar"
+  HELP "C¢digo do Usu rio de Cria‡Æo"
+  ORDER 230
+
+ADD FIELD "dt-criacao" OF "es-acordo-comerc" AS date 
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Data Cria‡Æo"
+  POSITION 25
+  MAX-WIDTH 4
+  COLUMN-LABEL "Dt Cria‡Æo"
+  HELP "Data Cria‡Æo"
+  ORDER 240
+
+ADD FIELD "hr-criacao" OF "es-acordo-comerc" AS character 
+  FORMAT "x(8)"
+  INITIAL ""
+  LABEL "Hora Cria‡Æo"
+  POSITION 26
+  MAX-WIDTH 16
+  COLUMN-LABEL "Hr Cria‡Æo"
+  HELP "Hora Cria‡Æo"
+  ORDER 250
+
+ADD FIELD "nr-pedido" OF "es-acordo-comerc" AS integer 
+  FORMAT ">>>>>>>>9"
+  INITIAL "0"
+  LABEL "Pedido"
+  POSITION 27
+  MAX-WIDTH 4
+  ORDER 260
+
+ADD FIELD "impresso" OF "es-acordo-comerc" AS logical 
+  DESCRIPTION "Situa‡Æo do Acordo Comercial impresso ou NÆo."
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Impresso"
+  POSITION 28
+  MAX-WIDTH 1
+  COLUMN-LABEL "Impresso"
+  ORDER 270
+
+ADD FIELD "sit-acordo-aceite" OF "es-acordo-comerc" AS integer 
+  DESCRIPTION "1 - Pendente Aceite
+2 - Autorizado Aceite
+Situa‡äes atualizadas no monitor escm110.
+"
+  FORMAT "9"
+  INITIAL "1"
+  LABEL "Liber. Aceite"
+  POSITION 29
+  MAX-WIDTH 4
+  COLUMN-LABEL "Liber. Aceite"
+  ORDER 280
+
+ADD FIELD "sit-acordo-contabil" OF "es-acordo-comerc" AS integer 
+  DESCRIPTION "1 - Pendente Cont bil
+2 - Autorizado Cont bil
+Situa‡äes atualizadas no monitor escm110.
+"
+  FORMAT "9"
+  INITIAL "1"
+  LABEL "Liber.Contabil"
+  POSITION 30
+  MAX-WIDTH 4
+  COLUMN-LABEL "Liber.Contabil"
+  ORDER 290
+
+ADD FIELD "usuar-lib-aceite" OF "es-acordo-comerc" AS character 
+  DESCRIPTION "Usu rio que liberou o aceite"
+  FORMAT "x(12)"
+  INITIAL ""
+  LABEL "Usuario Aceite"
+  POSITION 31
+  MAX-WIDTH 24
+  COLUMN-LABEL "Usuario Aceite"
+  ORDER 300
+
+ADD FIELD "hr-lib-aceite" OF "es-acordo-comerc" AS character 
+  DESCRIPTION "Hora libera‡Æo aceite"
+  FORMAT "x(8)"
+  INITIAL ""
+  LABEL "Hora Aceite"
+  POSITION 32
+  MAX-WIDTH 16
+  COLUMN-LABEL "Hora Aceite"
+  ORDER 320
+
+ADD FIELD "dt-lib-aceite" OF "es-acordo-comerc" AS date 
+  DESCRIPTION "Data libera‡Æo do aceite no monitor"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Data Aceite"
+  POSITION 33
+  MAX-WIDTH 4
+  COLUMN-LABEL "Data Aceite"
+  ORDER 310
+
+ADD FIELD "usuar-lib-contabil" OF "es-acordo-comerc" AS character 
+  DESCRIPTION "Usu rio que liberou o contabil no monitor."
+  FORMAT "x(12)"
+  INITIAL ""
+  LABEL "Usuario Contabil"
+  POSITION 34
+  MAX-WIDTH 24
+  COLUMN-LABEL "Usuario Contabil"
+  ORDER 330
+
+ADD FIELD "dt-lib-contabil" OF "es-acordo-comerc" AS date 
+  DESCRIPTION "Data libera‡Æo contabil no monitor"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Data Lib.Contabil"
+  POSITION 35
+  MAX-WIDTH 4
+  COLUMN-LABEL "Data Lib.Contabil"
+  ORDER 340
+
+ADD FIELD "hr-lib-contabil" OF "es-acordo-comerc" AS character 
+  DESCRIPTION "Hora libera‡Æo Contabil"
+  FORMAT "x(8)"
+  INITIAL ""
+  LABEL "Hora lib.Contabil"
+  POSITION 36
+  MAX-WIDTH 16
+  COLUMN-LABEL "Hora lib.Contabil"
+  ORDER 350
+
+ADD FIELD "cod-estabel" OF "es-acordo-comerc" AS character 
+  FORMAT "x(3)"
+  INITIAL ""
+  LABEL "Estabelecimento"
+  POSITION 37
+  MAX-WIDTH 10
+  COLUMN-LABEL "Estabelec"
+  HELP "C¢digo do estabelecimento."
+  ORDER 360
+  MANDATORY
+
+ADD INDEX "ch-seq" ON "es-acordo-comerc" 
+  AREA "Schema Area"
+  PRIMARY
+  INDEX-FIELD "ano-acordo" ASCENDING 
+  INDEX-FIELD "seq-acordo" ASCENDING 
+
+ADD INDEX "ch-uni" ON "es-acordo-comerc" 
+  AREA "Schema Area"
+  UNIQUE
+  INDEX-FIELD "nr-acordo-comerc" ASCENDING 
+
+.
+PSC
+cpstream=ibm850
+.
+0000008178
