@@ -69,6 +69,16 @@ IF p-ind-event = "inicio-atualizacao" THEN DO:
 
                     END.
 
+                    IF es-acordo-comerc.sit-acordo-contabil <> 2 THEN DO: /* Autorizado Cont bil */
+
+                        ASSIGN i-cont = i-cont + 10.
+                        CREATE tt-erro2.
+                        ASSIGN tt-erro2.i-sequen = i-cont
+                               tt-erro2.cd-erro  = 17006
+                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comer.nr-acordo-comerc) + "" + " deve estar Autorizado Cont bil No Monitor ESCM110!".
+                    
+                    END.
+
                     FIND FIRST es-acordo-pendencia NO-LOCK
                         WHERE es-acordo-pendencia.nr-acordo-comerc = es-acordo-comerc.nr-acordo-comerc 
                           AND es-acordo-pendencia.ind-situacao <> 1 NO-ERROR. /* NÆo aprovado*/

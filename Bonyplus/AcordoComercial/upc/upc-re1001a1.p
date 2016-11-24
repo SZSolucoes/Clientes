@@ -183,6 +183,14 @@ AND p-ind-object = "CONTAINER"
                     APPLY  "ENTRY" TO wh-re1001a1-fill-acordo.
                     UNDO,RETURN ERROR.
                 END.
+
+                IF es-acordo-comerc.sit-acordo-contabil <> 2 THEN DO: /* Autorizado Cont†bil */
+                    RUN utp/ut-msgs.p (INPUT "show":U,
+                                       INPUT 17006,
+                                       INPUT "Acordo Comercial n∆o Autorizado! ~~ O Acordo Comercial deve estar Autorizado Cont†bil No Monitor ESCM110!").
+                    APPLY  "ENTRY" TO wh-re1001a1-fill-acordo.
+                    UNDO,RETURN ERROR.
+                END.
             
                 FIND FIRST es-acordo-pendencia NO-LOCK
                     WHERE es-acordo-pendencia.nr-acordo-comerc = es-acordo-comerc.nr-acordo-comerc 
