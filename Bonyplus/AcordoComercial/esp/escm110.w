@@ -25,7 +25,7 @@ CREATE WIDGET-POOL.
 /* ***************************  Definitions  ************************** */
 DEFINE TEMP-TABLE tt-es-acordo-comerc NO-UNDO LIKE es-acordo-comerc
     FIELD dt-aprov LIKE es-acordo-pendencia.dt-aprov
-    FIELD sit-receb AS LOGICAL
+    FIELD sit-receb AS LOGICAL FORMAT "Sim/NÆo"
     FIELD sit-financ AS CHAR
     FIELD cod-aprovador LIKE es-acordo-pendencia.cod-aprovador
     FIELD sit-acordo-app AS CHAR
@@ -93,8 +93,8 @@ DEFINE NEW GLOBAL SHARED VAR c-seg-usuario as char format "x(12)" no-undo.
     ~{&OPEN-QUERY-brTable1}
 
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-OBJECTS btAtualiza rt-button brTable1 ~
-bt-aceita-acordo bt-libera-contabil btSelecao 
+&Scoped-Define ENABLED-OBJECTS btAtualiza rt-button bt-inf-duplicata ~
+brTable1 bt-aceita-acordo bt-libera-contabil btSelecao 
 
 /* Custom List Definitions                                              */
 /* List-1,List-2,List-3,List-4,List-5,List-6                            */
@@ -170,6 +170,13 @@ DEFINE BUTTON bt-aceita-acordo
      LABEL "Aceite Acordo" 
      SIZE 17 BY 1.13.
 
+DEFINE BUTTON bt-inf-duplicata 
+     IMAGE-UP FILE "image/toolbar/im-aval.bmp":U
+     IMAGE-DOWN FILE "image/toolbar/ii-aval.bmp":U
+     IMAGE-INSENSITIVE FILE "image/toolbar/ii-aval.bmp":U
+     LABEL "Button 1" 
+     SIZE 6 BY 1.13 TOOLTIP "Informa‡Æo das Duplicatas".
+
 DEFINE BUTTON bt-libera-contabil 
      LABEL "Libera Cont bil" 
      SIZE 17 BY 1.13.
@@ -234,6 +241,7 @@ DEFINE BROWSE brTable1
 
 DEFINE FRAME f-cad
      btAtualiza AT ROW 1.17 COL 7 WIDGET-ID 8
+     bt-inf-duplicata AT ROW 1.17 COL 162.57 WIDGET-ID 14
      brTable1 AT ROW 2.58 COL 2 WIDGET-ID 200
      bt-aceita-acordo AT ROW 26.13 COL 2.14 WIDGET-ID 10
      bt-libera-contabil AT ROW 26.13 COL 19.29 WIDGET-ID 12
@@ -303,7 +311,7 @@ ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU m-livre:HANDLE.
   VISIBLE,,RUN-PERSISTENT                                               */
 /* SETTINGS FOR FRAME f-cad
    FRAME-NAME L-To-R                                                    */
-/* BROWSE-TAB brTable1 rt-button f-cad */
+/* BROWSE-TAB brTable1 bt-inf-duplicata f-cad */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(w-livre)
 THEN w-livre:HIDDEN = yes.
 
@@ -590,6 +598,37 @@ END.
 &ANALYZE-RESUME
 
 
+&Scoped-define SELF-NAME bt-inf-duplicata
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-inf-duplicata w-livre
+ON CHOOSE OF bt-inf-duplicata IN FRAME f-cad /* Button 1 */
+DO:
+    IF AVAIL tt-es-acordo-comerc THEN DO:
+
+        FIND FIRST ems2custom.ext-docum-est NO-LOCK
+            WHERE ext-docum-est.nr-acordo-comerc = tt-es-acordo-comerc.nr-acordo-comerc NO-ERROR.
+
+        IF AVAIL ext-docum-est THEN DO:
+            
+            {&WINDOW-NAME}:SENSITIVE = FALSE.
+            
+            RUN esp/escm110b.w (INPUT tt-es-acordo-comerc.cod-estab,
+                                INPUT ext-docum-est.cod-emitente,
+                                INPUT "DP", 
+                                INPUT ext-docum-est.serie-docto,
+                                INPUT ext-docum-est.nro-docto).
+            
+            {&WINDOW-NAME}:SENSITIVE = TRUE.
+        END.
+            
+        RUN carregaBrowseAcordo.
+
+    END.
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
 &Scoped-define SELF-NAME bt-libera-contabil
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-libera-contabil w-livre
 ON CHOOSE OF bt-libera-contabil IN FRAME f-cad /* Libera Cont bil */
@@ -833,6 +872,8 @@ PROCEDURE adm-create-objects :
        RUN add-link IN adm-broker-hdl ( h_p-exihel , 'State':U , THIS-PROCEDURE ).
 
        /* Adjust the tab order of the smart objects. */
+       RUN adjust-tab-order IN adm-broker-hdl ( h_p-exihel ,
+             bt-inf-duplicata:HANDLE IN FRAME f-cad , 'AFTER':U ).
     END. /* Page 0 */
 
   END CASE.
@@ -895,6 +936,17 @@ PROCEDURE carregaBrowseAcordo :
         CREATE tt-es-acordo-comerc.
         BUFFER-COPY es-acordo-comerc TO tt-es-acordo-comerc.
 
+        /* Verifica se o Acordo j  deu entrada no RE1001 */
+        FIND FIRST es-tit_ap NO-LOCK
+            WHERE es-tit_ap.cdn_fornecedor     = es-acordo-comerc.cod-emitente
+              AND es-tit_ap.nr-acordo-comerc   = es-acordo-comerc.nr-acordo-comerc NO-ERROR.
+        
+        IF AVAIL es-tit_ap THEN DO:
+
+            ASSIGN tt-es-acordo-comerc.sit-receb = YES.
+
+        END.
+
         FIND FIRST es-acordo-pendencia NO-LOCK
             WHERE es-acordo-pendencia.nr-acordo-comerc = tt-es-acordo-comerc.nr-acordo-comerc
               AND es-acordo-pendencia.ind-situacao = 2 NO-ERROR.
@@ -929,17 +981,7 @@ PROCEDURE carregaBrowseAcordo :
         END.
     
     END.
-    
-    /*FOR EACH tt-es-acordo-comerc
-        WHERE (tt-es-acordo-comerc.ind-situacao = p-ind-situacao OR
-            p-ind-situacao = 4)
-        BY tt-es-acordo-comerc.cod-emitente:
-
-        MESSAGE "Acordo:" tt-es-acordo-comerc.nr-acordo-comerc SKIP
-                "Sit App:" tt-es-acordo-comerc.sit-acordo-app SKIP
-                "Sele‡Æo:" p-ind-situacao
-            VIEW-AS ALERT-BOX INFO BUTTONS OK.
-    END.*/
+   
    
     {&open-query-brTable1}
 
@@ -981,8 +1023,8 @@ PROCEDURE enable_UI :
                These statements here are based on the "Other 
                Settings" section of the widget Property Sheets.
 ------------------------------------------------------------------------------*/
-  ENABLE btAtualiza rt-button brTable1 bt-aceita-acordo bt-libera-contabil 
-         btSelecao 
+  ENABLE btAtualiza rt-button bt-inf-duplicata brTable1 bt-aceita-acordo 
+         bt-libera-contabil btSelecao 
       WITH FRAME f-cad IN WINDOW w-livre.
   {&OPEN-BROWSERS-IN-QUERY-f-cad}
   VIEW w-livre.

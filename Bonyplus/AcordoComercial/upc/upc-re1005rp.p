@@ -25,7 +25,7 @@ DEFINE INPUT        PARAMETER p-ind-event AS CHAR NO-UNDO.
 DEFINE INPUT-OUTPUT PARAMETER TABLE FOR tt-epc.
 
 IF p-ind-event = "inicio-atualizacao" THEN DO:
-
+     
     ASSIGN i-cont = 0.
    
     FIND FIRST tt-epc
@@ -36,7 +36,7 @@ IF p-ind-event = "inicio-atualizacao" THEN DO:
         FOR FIRST docum-est NO-LOCK
             WHERE ROWID(docum-est) = TO-ROWID(tt-epc.val-parameter):
 
-            FIND ext-docum-est NO-LOCK
+            FIND ems2custom.ext-docum-est NO-LOCK
                 WHERE ext-docum-est.serie-docto      = docum-est.serie-docto 
                   AND ext-docum-est.nro-docto        = docum-est.nro-docto   
                   AND ext-docum-est.cod-emitente     = docum-est.cod-emitente
@@ -46,17 +46,17 @@ IF p-ind-event = "inicio-atualizacao" THEN DO:
             IF AVAIL ext-docum-est THEN DO:
 
                 FIND es-acordo-comerc NO-LOCK
-                    WHERE es-acordo-comer.nr-acordo-comerc = ext-docum-est.nr-acordo-comerc NO-ERROR.
+                    WHERE es-acordo-comerc.nr-acordo-comerc = ext-docum-est.nr-acordo-comerc NO-ERROR.
 
                 IF AVAIL es-acordo-comerc THEN DO:
-                    
-                    IF es-acordo-comer.cod-emitente <> docum-est.cod-emitente THEN DO:
+
+                    IF es-acordo-comerc.cod-emitente <> docum-est.cod-emitente THEN DO:
 
                         ASSIGN i-cont = i-cont + 10.
                         CREATE tt-erro2.
                         ASSIGN tt-erro2.i-sequen = i-cont
                                tt-erro2.cd-erro  = 17006
-                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comer.nr-acordo-comerc) + "  "  + " NÆo pertence ao Emitente " + string(docum-est.cod-emitente) + " ! " . 
+                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comerc.nr-acordo-comerc) + "  "  + " NÆo pertence ao Emitente " + string(docum-est.cod-emitente) + " ! " . 
                     END.
 
                     IF es-acordo-comerc.impresso = NO THEN DO:
@@ -65,7 +65,7 @@ IF p-ind-event = "inicio-atualizacao" THEN DO:
                         CREATE tt-erro2.
                         ASSIGN tt-erro2.i-sequen = i-cont
                                tt-erro2.cd-erro  = 17006
-                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comer.nr-acordo-comerc) + "" + " deve estar impresso para efetuar o recebimento!".
+                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comerc.nr-acordo-comerc) + "" + " deve estar impresso para efetuar o recebimento!".
 
                     END.
 
@@ -75,21 +75,21 @@ IF p-ind-event = "inicio-atualizacao" THEN DO:
                         CREATE tt-erro2.
                         ASSIGN tt-erro2.i-sequen = i-cont
                                tt-erro2.cd-erro  = 17006
-                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comer.nr-acordo-comerc) + "" + " deve estar Autorizado Cont bil No Monitor ESCM110!".
+                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comerc.nr-acordo-comerc) + "" + " deve estar Autorizado Cont bil No Monitor ESCM110!".
                     
                     END.
 
                     FIND FIRST es-acordo-pendencia NO-LOCK
                         WHERE es-acordo-pendencia.nr-acordo-comerc = es-acordo-comerc.nr-acordo-comerc 
                           AND es-acordo-pendencia.ind-situacao <> 1 NO-ERROR. /* NÆo aprovado*/
-                   
+
                     IF AVAIL es-acordo-pendencia THEN DO:
 
                         ASSIGN i-cont = i-cont + 10.
                         CREATE tt-erro2.
                         ASSIGN tt-erro2.i-sequen = i-cont
                                tt-erro2.cd-erro  = 17006
-                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comer.nr-acordo-comerc) + "" + " NÆo est  aprovado, Favor verificar a situa‡Æo".
+                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comerc.nr-acordo-comerc) + "" + " NÆo est  aprovado, Favor verificar a situa‡Æo".
 
                         
                     END.
@@ -101,7 +101,7 @@ IF p-ind-event = "inicio-atualizacao" THEN DO:
                         CREATE tt-erro2.
                         ASSIGN tt-erro2.i-sequen = i-cont
                                tt-erro2.cd-erro  = 17006
-                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comer.nr-acordo-comerc) + "" + "Inexistente!".
+                               tt-erro2.mensagem = "Acordo Comercial: " + string(es-acordo-comerc.nr-acordo-comerc) + "" + "Inexistente!".
 
                 END.
 
@@ -133,27 +133,25 @@ IF p-ind-event = "apos-finalizar" THEN DO:
         WHERE tt-epc.cod-event     = "apos-finalizar"
         AND   tt-epc.cod-parameter = "docum-est ROWID" NO-LOCK:
 
-        FIND FIRST docum-est
-            WHERE ROWID(docum-est) = TO-ROWID(tt-epc.val-parameter) NO-LOCK NO-ERROR.
+        FOR FIRST docum-est NO-LOCK
+            WHERE ROWID(docum-est) = TO-ROWID(tt-epc.val-parameter):
 
-        IF AVAIL docum-est THEN DO:
-                        
             FIND ems2custom.ext-docum-est NO-LOCK
                 WHERE ext-docum-est.serie-docto  = docum-est.serie-docto 
                   AND ext-docum-est.nro-docto    = docum-est.nro-docto   
                   AND ext-docum-est.cod-emitente = docum-est.cod-emitente
                   AND ext-docum-est.nat-operacao = docum-est.nat-operacao NO-ERROR.
-
+            
             IF AVAIL ext-docum-est
                 AND ext-docum-est.nr-acordo-comerc <> "" THEN DO:
-
+            
                 FOR EACH tit_ap NO-LOCK
                     WHERE tit_ap.cod_estab        = docum-est.cod-estab
                       AND tit_ap.cdn_fornecedor   = docum-est.cod-emitente
                       AND tit_ap.cod_espec_docto  = "DP"
                       AND tit_ap.cod_ser_docto    = docum-est.serie-docto
                       AND tit_ap.cod_tit_ap       = docum-est.nro-docto:
-
+            
                     FIND es-tit_ap EXCLUSIVE-LOCK
                         WHERE  es-tit_ap.cod_estab       = tit_ap.cod_estab       
                            AND es-tit_ap.cdn_fornecedor  = tit_ap.cdn_fornecedor  
@@ -161,7 +159,7 @@ IF p-ind-event = "apos-finalizar" THEN DO:
                            AND es-tit_ap.cod_ser_docto   = tit_ap.cod_ser_docto   
                            AND es-tit_ap.cod_tit_ap      = tit_ap.cod_tit_ap 
                            AND es-tit_ap.cod_parcela     = tit_ap.cod_parcela NO-ERROR.
-
+            
                     IF NOT AVAIL es-tit_ap THEN DO:
                         CREATE es-tit_ap.
                         ASSIGN es-tit_ap.cod_estab         = tit_ap.cod_estab      
@@ -170,15 +168,13 @@ IF p-ind-event = "apos-finalizar" THEN DO:
                                es-tit_ap.cod_ser_docto     = tit_ap.cod_ser_docto  
                                es-tit_ap.cod_tit_ap        = tit_ap.cod_tit_ap     
                                es-tit_ap.cod_parcela       = tit_ap.cod_parcela .
-
+            
                     END.
-
+            
                     ASSIGN es-tit_ap.nr-acordo-comerc  = ext-docum-est.nr-acordo-comerc.
-
+            
                 END.
-
             END.
-
         END.
     END.
 END.
