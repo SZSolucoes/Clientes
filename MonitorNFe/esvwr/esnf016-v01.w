@@ -1,7 +1,7 @@
 &ANALYZE-SUSPEND _VERSION-NUMBER UIB_v8r12 GUI ADM1
 &ANALYZE-RESUME
 /* Connected Databases 
-          ems2custom       PROGRESS
+          mgdis            PROGRESS
 */
 &Scoped-define WINDOW-NAME CURRENT-WINDOW
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _DEFINITIONS V-table-Win 
@@ -13,7 +13,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i ESCM106A-V01 2.12.00.001}
+{include/i-prgvrs.i esnf016-v01 2.06.00.001}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
@@ -32,10 +32,7 @@ CREATE WIDGET-POOL.
 
 /* Local Variable Definitions ---                                       */
 def var v-row-parent as rowid no-undo.
-DEFINE BUFFER b-es-acordo-area-ficha FOR es-acordo-area-ficha.
-DEFINE NEW GLOBAL SHARED VARIABLE c-seg-usuario AS CHARACTER                  NO-UNDO.
-
-DEFINE VARIABLE c-ano AS CHARACTER   NO-UNDO.
+DEFINE VARIABLE i-seq AS INTEGER     NO-UNDO.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -54,27 +51,21 @@ DEFINE VARIABLE c-ano AS CHARACTER   NO-UNDO.
 &Scoped-define FRAME-NAME f-main
 
 /* External Tables                                                      */
-&Scoped-define EXTERNAL-TABLES es-acordo-area-ficha
-&Scoped-define FIRST-EXTERNAL-TABLE es-acordo-area-ficha
+&Scoped-define EXTERNAL-TABLES cfop-natur
+&Scoped-define FIRST-EXTERNAL-TABLE cfop-natur
 
 
 /* Need to scope the external tables to this procedure                  */
-DEFINE QUERY external_tables FOR es-acordo-area-ficha.
+DEFINE QUERY external_tables FOR cfop-natur.
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-FIELDS es-acordo-area-ficha.tp-docto ~
-es-acordo-area-ficha.ano-ficha es-acordo-area-ficha.dt-emiss ~
-es-acordo-area-ficha.dt-validade-ini es-acordo-area-ficha.dt-validade-fim ~
-es-acordo-area-ficha.vl-verba 
-&Scoped-define ENABLED-TABLES es-acordo-area-ficha
-&Scoped-define FIRST-ENABLED-TABLE es-acordo-area-ficha
-&Scoped-Define ENABLED-OBJECTS rt-key rt-mold c-desc-tp-docto 
-&Scoped-Define DISPLAYED-FIELDS es-acordo-area-ficha.num-ficha ~
-es-acordo-area-ficha.tp-docto es-acordo-area-ficha.ano-ficha ~
-es-acordo-area-ficha.dt-emiss es-acordo-area-ficha.dt-validade-ini ~
-es-acordo-area-ficha.dt-validade-fim es-acordo-area-ficha.vl-verba 
-&Scoped-define DISPLAYED-TABLES es-acordo-area-ficha
-&Scoped-define FIRST-DISPLAYED-TABLE es-acordo-area-ficha
-&Scoped-Define DISPLAYED-OBJECTS c-desc-tp-docto 
+&Scoped-Define ENABLED-FIELDS cfop-natur.cod-cfop 
+&Scoped-define ENABLED-TABLES cfop-natur
+&Scoped-define FIRST-ENABLED-TABLE cfop-natur
+&Scoped-Define ENABLED-OBJECTS rt-key 
+&Scoped-Define DISPLAYED-FIELDS cfop-natur.cod-cfop 
+&Scoped-define DISPLAYED-TABLES cfop-natur
+&Scoped-define FIRST-DISPLAYED-TABLE cfop-natur
+&Scoped-Define DISPLAYED-OBJECTS c-des-cfop 
 
 /* Custom List Definitions                                              */
 /* ADM-CREATE-FIELDS,ADM-ASSIGN-FIELDS,ADM-MODIFY-FIELDS,List-4,List-5,List-6 */
@@ -90,17 +81,17 @@ es-acordo-area-ficha.dt-validade-fim es-acordo-area-ficha.vl-verba
 THIS-PROCEDURE
 </KEY-OBJECT>
 <FOREIGN-KEYS>
-cod-area||y|ems2custom.es-acordo-area-ficha.cod-area
 </FOREIGN-KEYS> 
 <EXECUTING-CODE>
 **************************
 * Set attributes related to FOREIGN KEYS
 */
 RUN set-attribute-list (
-    'Keys-Accepted = ,
-     Keys-Supplied = "cod-area"':U).
+    'Keys-Accepted = "",
+     Keys-Supplied = ""':U).
 /**************************
-</EXECUTING-CODE> */
+</EXECUTING-CODE> */   
+
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
@@ -109,46 +100,24 @@ RUN set-attribute-list (
 
 
 /* Definitions of the field level widgets                               */
-DEFINE VARIABLE c-desc-tp-docto AS CHARACTER FORMAT "X(40)":U 
+DEFINE VARIABLE c-des-cfop AS CHARACTER FORMAT "x(60)" 
      VIEW-AS FILL-IN 
-     SIZE 49.72 BY .88 NO-UNDO.
+     SIZE 60.14 BY .88.
 
 DEFINE RECTANGLE rt-key
      EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 88.57 BY 2.5.
-
-DEFINE RECTANGLE rt-mold
-     EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 88.57 BY 5.5.
+     SIZE 90 BY 1.25.
 
 
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME f-main
-     es-acordo-area-ficha.num-ficha AT ROW 1.25 COL 19 COLON-ALIGNED WIDGET-ID 10
-          VIEW-AS FILL-IN 
-          SIZE 10 BY .88
-     es-acordo-area-ficha.tp-docto AT ROW 2.29 COL 19 COLON-ALIGNED WIDGET-ID 16
+     cfop-natur.cod-cfop AT ROW 1.17 COL 13 COLON-ALIGNED WIDGET-ID 8
+          LABEL "CFOP Sa¡da":L10
           VIEW-AS FILL-IN 
           SIZE 14 BY .88
-     c-desc-tp-docto AT ROW 2.29 COL 33.29 COLON-ALIGNED NO-LABEL WIDGET-ID 18
-     es-acordo-area-ficha.ano-ficha AT ROW 4.08 COL 19 COLON-ALIGNED WIDGET-ID 2
-          VIEW-AS FILL-IN 
-          SIZE 6 BY .88
-     es-acordo-area-ficha.dt-emiss AT ROW 5.08 COL 19 COLON-ALIGNED WIDGET-ID 4
-          VIEW-AS FILL-IN 
-          SIZE 12 BY .88
-     es-acordo-area-ficha.dt-validade-ini AT ROW 6.08 COL 19 COLON-ALIGNED WIDGET-ID 8
-          VIEW-AS FILL-IN 
-          SIZE 12 BY .88
-     es-acordo-area-ficha.dt-validade-fim AT ROW 7.08 COL 19 COLON-ALIGNED WIDGET-ID 6
-          VIEW-AS FILL-IN 
-          SIZE 12 BY .88
-     es-acordo-area-ficha.vl-verba AT ROW 8.08 COL 19 COLON-ALIGNED WIDGET-ID 14
-          VIEW-AS FILL-IN 
-          SIZE 25 BY .88
+     c-des-cfop AT ROW 1.17 COL 27.86 COLON-ALIGNED NO-LABEL WIDGET-ID 4
      rt-key AT ROW 1 COL 1
-     rt-mold AT ROW 3.83 COL 1
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1 SCROLLABLE  WIDGET-ID 100.
@@ -159,7 +128,7 @@ DEFINE FRAME f-main
 &ANALYZE-SUSPEND _PROCEDURE-SETTINGS
 /* Settings for THIS-PROCEDURE
    Type: SmartViewer
-   External Tables: ems2custom.es-acordo-area-ficha
+   External Tables: mgdis.cfop-natur
    Allow: Basic,DB-Fields
    Frames: 1
    Add Fields to: EXTERNAL-TABLES
@@ -181,8 +150,8 @@ END.
 &ANALYZE-SUSPEND _CREATE-WINDOW
 /* DESIGN Window definition (used by the UIB) 
   CREATE WINDOW V-table-Win ASSIGN
-         HEIGHT             = 9.67
-         WIDTH              = 88.57.
+         HEIGHT             = 1.29
+         WIDTH              = 90.14.
 /* END WINDOW DEFINITION */
                                                                         */
 &ANALYZE-RESUME
@@ -212,8 +181,13 @@ ASSIGN
        FRAME f-main:SCROLLABLE       = FALSE
        FRAME f-main:HIDDEN           = TRUE.
 
-/* SETTINGS FOR FILL-IN es-acordo-area-ficha.num-ficha IN FRAME f-main
+/* SETTINGS FOR FILL-IN c-des-cfop IN FRAME f-main
    NO-ENABLE                                                            */
+ASSIGN 
+       c-des-cfop:READ-ONLY IN FRAME f-main        = TRUE.
+
+/* SETTINGS FOR FILL-IN cfop-natur.cod-cfop IN FRAME f-main
+   EXP-LABEL                                                            */
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
 
@@ -230,22 +204,6 @@ ASSIGN
  
 
 
-
-/* ************************  Control Triggers  ************************ */
-
-&Scoped-define SELF-NAME es-acordo-area-ficha.dt-emiss
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL es-acordo-area-ficha.dt-emiss V-table-Win
-ON ENTRY OF es-acordo-area-ficha.dt-emiss IN FRAME f-main /* Implanta‡Æo */
-DO:
-    ASSIGN es-acordo-area-ficha.dt-emiss:SCREEN-VALUE IN FRAME {&FRAME-NAME} = string(TODAY,"99/99/9999"). 
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&UNDEFINE SELF-NAME
-
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK V-table-Win 
 
 
@@ -253,9 +211,7 @@ END.
 
   &IF DEFINED(UIB_IS_RUNNING) <> 0 &THEN          
     RUN dispatch IN THIS-PROCEDURE ('initialize':U).        
-  &ENDIF 
-  
-    
+  &ENDIF         
   
   /************************ INTERNAL PROCEDURES ********************/
 
@@ -264,21 +220,6 @@ END.
 
 
 /* **********************  Internal Procedures  *********************** */
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE adm-find-using-key V-table-Win  adm/support/_key-fnd.p
-PROCEDURE adm-find-using-key :
-/*------------------------------------------------------------------------------
-  Purpose:     Finds the current record using the contents of
-               the 'Key-Name' and 'Key-Value' attributes.
-  Parameters:  <none>
-------------------------------------------------------------------------------*/
-
-  /* No Foreign keys are accepted by this SmartObject. */
-
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE adm-row-available V-table-Win  _ADM-ROW-AVAILABLE
 PROCEDURE adm-row-available :
@@ -294,13 +235,13 @@ PROCEDURE adm-row-available :
   {src/adm/template/row-head.i}
 
   /* Create a list of all the tables that we need to get.            */
-  {src/adm/template/row-list.i "es-acordo-area-ficha"}
+  {src/adm/template/row-list.i "cfop-natur"}
 
   /* Get the record ROWID's from the RECORD-SOURCE.                  */
   {src/adm/template/row-get.i}
 
   /* FIND each record specified by the RECORD-SOURCE.                */
-  {src/adm/template/row-find.i "es-acordo-area-ficha"}
+  {src/adm/template/row-find.i "cfop-natur"}
 
   /* Process the newly available records (i.e. display fields,
      open queries, and/or pass records on to any RECORD-TARGETS).    */
@@ -329,33 +270,6 @@ END PROCEDURE.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-add-record V-table-Win 
-PROCEDURE local-add-record :
-/*------------------------------------------------------------------------------
-  Purpose:     
-  Parameters:  <none>
-  Notes:       
-------------------------------------------------------------------------------*/
-
-/* Dispatch standard ADM method.                             */
-  RUN dispatch IN THIS-PROCEDURE ( INPUT 'add-record':U ) .
-
-    FIND LAST b-es-acordo-area-ficha NO-LOCK NO-ERROR.
-
-    IF AVAIL b-es-acordo-area-ficha THEN
-        ASSIGN es-acordo-area-ficha.num-ficha:SCREEN-VALUE IN FRAME {&FRAME-NAME} = string(b-es-acordo-area-ficha.num-ficha + 1).
-    ELSE
-        ASSIGN es-acordo-area-ficha.num-ficha:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "1".
-
-    ASSIGN c-ano = STRING(TODAY,"99/99/9999")
-           es-acordo-area-ficha.ano-ficha:SCREEN-VALUE IN FRAME {&FRAME-NAME} = SUBSTRING(c-ano,7,10)
-           es-acordo-area-ficha.dt-emiss:SCREEN-VALUE IN FRAME {&FRAME-NAME}  = STRING(TODAY).
- 
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-assign-record V-table-Win 
 PROCEDURE local-assign-record :
 /*------------------------------------------------------------------------------
@@ -364,79 +278,11 @@ PROCEDURE local-assign-record :
 ------------------------------------------------------------------------------*/
 
     /* Code placed here will execute PRIOR to standard behavior. */
-/*     {include/i-valid.i} */
-     if  not frame {&frame-name}:validate() then
-      return 'ADM-ERROR':U.
+    {include/i-valid.i}
+    
     /*:T Ponha na pi-validate todas as valida‡äes */
     /*:T NÆo gravar nada no registro antes do dispatch do assign-record e 
        nem na PI-validate. */
-
-     IF es-acordo-area-ficha.tp-docto:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "0" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Tipo de Documento ~~ Tipo de Documento deve ser Diferente de Branco!").
-         APPLY 'entry' TO es-acordo-area-ficha.tp-docto IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-     END.
-
-     FIND es-tipo-docto NO-LOCK
-         WHERE es-tipo-docto.tp-docto = INT(es-acordo-area-ficha.tp-docto:SCREEN-VALUE IN FRAME {&FRAME-NAME}) NO-ERROR.
-
-     IF NOT AVAIL es-tipo-docto THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Tipo de Documento ~~ Tipo de Documento Inexistente!").
-         APPLY 'entry' TO es-acordo-area-ficha.tp-docto IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-
-     IF es-acordo-area-ficha.dt-emiss:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Data Implanta‡Æo ~~ Data de Implanta‡Æo deve ser Diferente de Branco!").
-         APPLY 'entry' TO es-acordo-area-ficha.dt-emiss IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-
-     IF es-acordo-area-ficha.dt-validade-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Inicio Validade ~~ Data de Validade Inicial deve ser Diferente de Branco!").
-         APPLY 'entry' TO es-acordo-area-ficha.dt-validade-ini IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-
-     IF es-acordo-area-ficha.dt-validade-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Final Validade ~~ Data de Validade Final deve ser Diferente de Branco!").
-         APPLY 'entry' TO es-acordo-area-ficha.dt-validade-fim IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-
-     IF es-acordo-area-ficha.dt-validade-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} >
-         es-acordo-area-ficha.dt-validade-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} THEN DO:
-
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Validade Inicial x Validade Final ~~ Data Inicial Deve Ser Menor que Data Final!").
-         APPLY 'entry' TO es-acordo-area-ficha.dt-validade-ini IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-     
-     IF es-acordo-area-ficha.vl-verba:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "0,00" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Valor da Verba ~~ O Valor da Verbs deve ser Diferente de Zero!").
-         APPLY 'entry' TO es-acordo-area-ficha.vl-verba IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
     
     /* Dispatch standard ADM method.                             */
     RUN dispatch IN THIS-PROCEDURE ( INPUT 'assign-record':U ) .
@@ -445,31 +291,6 @@ PROCEDURE local-assign-record :
     
     /*:T Todos os assignïs nÆo feitos pelo assign-record devem ser feitos aqui */  
     /* Code placed here will execute AFTER standard behavior.    */
-
-    ASSIGN es-acordo-area-ficha.usuario = c-seg-usuario
-           es-acordo-area-ficha.situacao = 1.
-
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-create-record V-table-Win 
-PROCEDURE local-create-record :
-/*------------------------------------------------------------------------------
-  Purpose:     
-  Parameters:  <none>
-  Notes:       
-------------------------------------------------------------------------------*/
-/* Dispatch standard ADM method.                             */
-    RUN dispatch IN THIS-PROCEDURE ( INPUT 'create-record':U ) .
-    
-    FIND es-acordo-area
-        WHERE ROWID(es-acordo-area) = v-row-parent NO-LOCK NO-ERROR.
-    IF AVAILABLE es-acordo-area  THEN DO:
-        ASSIGN es-acordo-area-ficha.cod-area = es-acordo-area.cod-area
-               es-acordo-area-ficha.num-ficha = INT(es-acordo-area-ficha.num-ficha:SCREEN-VALUE IN FRAME {&FRAME-NAME}).
-    END.
 
 END PROCEDURE.
 
@@ -493,6 +314,45 @@ PROCEDURE local-disable-fields :
     disable {&ADM-MODIFY-FIELDS} with frame {&frame-name}.
     &endif
     
+END PROCEDURE.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-display-fields V-table-Win 
+PROCEDURE local-display-fields :
+/*------------------------------------------------------------------------------
+  Purpose:     
+  Parameters:  <none>
+  Notes:       
+------------------------------------------------------------------------------*/
+
+    /* Dispatch standard ADM method.                             */
+    RUN dispatch IN THIS-PROCEDURE ( INPUT 'display-fields':U ) .
+    
+    IF AVAIL cfop-natur THEN DO:
+        ASSIGN c-des-cfop:SCREEN-VALUE IN FRAME {&FRAME-NAME} = cfop-natur.des-cfop.
+        FIND FIRST es-natur-cfop
+            WHERE es-natur-cfop.cod-cfop = cfop-natur.cod-cfop EXCLUSIVE-LOCK NO-ERROR.
+        IF NOT AVAIL es-natur-cfop THEN DO:
+            ASSIGN i-seq = 10.
+            IF SUBSTRING(cfop-natur.cod-cfop,1,1) = "5" THEN
+                FIND FIRST natur-oper
+                    WHERE natur-oper.cod-cfop = "1" + SUBSTRING(cfop-natur.cod-cfop,2,8) NO-LOCK NO-ERROR.
+            IF SUBSTRING(cfop-natur.cod-cfop,1,1) = "6" THEN
+                FIND FIRST natur-oper
+                    WHERE natur-oper.cod-cfop = "2" + SUBSTRING(cfop-natur.cod-cfop,2,8) NO-LOCK NO-ERROR.
+            IF SUBSTRING(cfop-natur.cod-cfop,1,1) = "7" THEN
+                FIND FIRST natur-oper
+                    WHERE natur-oper.cod-cfop = "3" + SUBSTRING(cfop-natur.cod-cfop,2,8) NO-LOCK NO-ERROR.
+            IF AVAIL natur-oper THEN DO:
+                CREATE es-natur-cfop.
+                ASSIGN es-natur-cfop.cod-cfop     = cfop-natur.cod-cfop
+                       es-natur-cfop.seq          = i-seq
+                       es-natur-cfop.nat-operacao = natur-oper.nat-operacao.
+            END.
+        END.
+    END.
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
@@ -562,28 +422,6 @@ END PROCEDURE.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE send-key V-table-Win  adm/support/_key-snd.p
-PROCEDURE send-key :
-/*------------------------------------------------------------------------------
-  Purpose:     Sends a requested KEY value back to the calling
-               SmartObject.
-  Parameters:  <see adm/template/sndkytop.i>
-------------------------------------------------------------------------------*/
-
-  /* Define variables needed by this internal procedure.             */
-  {src/adm/template/sndkytop.i}
-
-  /* Return the key value associated with each key case.             */
-  {src/adm/template/sndkycas.i "cod-area" "es-acordo-area-ficha" "cod-area"}
-
-  /* Close the CASE statement and end the procedure.                 */
-  {src/adm/template/sndkyend.i}
-
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE send-records V-table-Win  _ADM-SEND-RECORDS
 PROCEDURE send-records :
 /*------------------------------------------------------------------------------
@@ -596,7 +434,7 @@ PROCEDURE send-records :
   {src/adm/template/snd-head.i}
 
   /* For each requested table, put it's ROWID in the output list.      */
-  {src/adm/template/snd-list.i "es-acordo-area-ficha"}
+  {src/adm/template/snd-list.i "cfop-natur"}
 
   /* Deal with any unexpected table requests before closing.           */
   {src/adm/template/snd-end.i}

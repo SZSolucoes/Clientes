@@ -1,0 +1,165 @@
+ADD TABLE "es-acordo-area-ficha"
+  AREA "Schema Area"
+  LABEL "es-acordo-area-ficha"
+  DUMP-NAME "es-acordo-area-ficha"
+
+ADD FIELD "cod-area" OF "es-acordo-area-ficha" AS integer 
+  DESCRIPTION "Area Comercial"
+  FORMAT ">>>>>9"
+  INITIAL "0"
+  LABEL "Area"
+  POSITION 2
+  MAX-WIDTH 4
+  COLUMN-LABEL "Area"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "num-ficha" OF "es-acordo-area-ficha" AS integer 
+  FORMAT ">>>,>>9"
+  INITIAL "0"
+  LABEL "N£mero Ficha"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "N£mero Ficha"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "tp-docto" OF "es-acordo-area-ficha" AS integer 
+  DESCRIPTION "Tipo de documento"
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Tipo Docto"
+  POSITION 14
+  MAX-WIDTH 4
+  COLUMN-LABEL "Tipo Docto"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "ano-ficha" OF "es-acordo-area-ficha" AS integer 
+  FORMAT "9999"
+  INITIAL "0"
+  LABEL "Ano da Ficha"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Ano da Ficha"
+  ORDER 40
+
+ADD FIELD "dt-emiss" OF "es-acordo-area-ficha" AS date 
+  DESCRIPTION "Data Implanta‡Æo da Ficha"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Implanta‡Æo"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Implanta‡Æo"
+  ORDER 50
+
+ADD FIELD "dt-validade-ini" OF "es-acordo-area-ficha" AS date 
+  DESCRIPTION "Per¡odo Incial de Validade da Ficha"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Inicio Validade"
+  POSITION 6
+  MAX-WIDTH 4
+  COLUMN-LABEL "Inicio Validade"
+  ORDER 60
+
+ADD FIELD "dt-validade-fim" OF "es-acordo-area-ficha" AS date 
+  DESCRIPTION "Per¡odo Final da Validade da Ficha"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Fim Validade"
+  POSITION 7
+  MAX-WIDTH 4
+  COLUMN-LABEL "Fim Validade"
+  ORDER 70
+
+ADD FIELD "vl-verba" OF "es-acordo-area-ficha" AS decimal 
+  DESCRIPTION "Valor da Verba da Ficha"
+  FORMAT ">>>,>>>,>>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Valor Verba"
+  POSITION 8
+  MAX-WIDTH 17
+  COLUMN-LABEL "Valor Verba"
+  DECIMALS 2
+  ORDER 80
+
+ADD FIELD "vl-utilizado" OF "es-acordo-area-ficha" AS decimal 
+  DESCRIPTION "Valor Utilizado em Cadastro de Acordo Comercial (Esse vai ser carregado de forma autom tica quando for criada a ficha na Web)"
+  FORMAT ">>>,>>>,>>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Valor Utilizado"
+  POSITION 9
+  MAX-WIDTH 17
+  COLUMN-LABEL "Valor Utilizado"
+  DECIMALS 2
+  ORDER 90
+
+ADD FIELD "vl-recebido" OF "es-acordo-area-ficha" AS decimal 
+  DESCRIPTION "Esse vai ser carregado de forma autom tica quando for recebida o acordo comercial dessa ficha no recebimento."
+  FORMAT ">>>,>>>,>>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Valor Recebido"
+  POSITION 10
+  MAX-WIDTH 17
+  COLUMN-LABEL "Valor Recebido"
+  DECIMALS 2
+  ORDER 100
+
+ADD FIELD "vl-pago" OF "es-acordo-area-ficha" AS decimal 
+  DESCRIPTION "Valor Pago (Esse vai ser carregado de forma autom tica quando for realizado o pagamento do acordo comercial dessa ficha no contas a pagar)"
+  FORMAT ">>>,>>>,>>>,>>>,>>>,>>9.99"
+  INITIAL "0"
+  LABEL "Valor Pago"
+  POSITION 11
+  MAX-WIDTH 17
+  COLUMN-LABEL "Valor Pago"
+  DECIMALS 2
+  ORDER 110
+
+ADD FIELD "usuario" OF "es-acordo-area-ficha" AS character 
+  FORMAT "x(12)"
+  INITIAL ""
+  LABEL "Usu rio"
+  POSITION 12
+  MAX-WIDTH 24
+  COLUMN-LABEL "Usu rio"
+  ORDER 120
+
+ADD FIELD "situacao" OF "es-acordo-area-ficha" AS integer 
+  DESCRIPTION "1 - Ficha sem Acordo
+2 - Ficha com Acordo
+3 - Ficha Finalizada"
+  FORMAT "9"
+  INITIAL "0"
+  LABEL "Situa‡Æo"
+  POSITION 13
+  MAX-WIDTH 4
+  COLUMN-LABEL "Situa‡Æo"
+  ORDER 130
+
+ADD FIELD "tp-docto" OF "es-acordo-area-ficha" AS integer 
+  DESCRIPTION "Tipo de documento"
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Tipo Docto"
+  POSITION 14
+  MAX-WIDTH 4
+  COLUMN-LABEL "Tipo Docto"
+  ORDER 140
+  MANDATORY
+
+ADD INDEX "ch-area-ficha" ON "es-acordo-area-ficha" 
+  AREA "Schema Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "cod-area" ASCENDING 
+  INDEX-FIELD "num-ficha" ASCENDING 
+  INDEX-FIELD "tp-docto" ASCENDING 
+
+.
+PSC
+cpstream=ibm850
+.
+0000003767

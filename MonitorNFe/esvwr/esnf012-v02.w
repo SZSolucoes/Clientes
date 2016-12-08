@@ -1,11 +1,11 @@
 &ANALYZE-SUSPEND _VERSION-NUMBER UIB_v8r12 GUI ADM1
 &ANALYZE-RESUME
 /* Connected Databases 
-          ems2custom       PROGRESS
+          movnfe           PROGRESS
 */
 &Scoped-define WINDOW-NAME CURRENT-WINDOW
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _DEFINITIONS V-table-Win 
-/*:T *******************************************************************************
+/********************************************************************************
 ** Copyright DATASUL S.A. (1997)
 ** Todos os Direitos Reservados.
 **
@@ -13,7 +13,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i ESCM106A-V01 2.12.00.001}
+{include/i-prgvrs.i V99XX999 9.99.99.999}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
@@ -32,10 +32,9 @@ CREATE WIDGET-POOL.
 
 /* Local Variable Definitions ---                                       */
 def var v-row-parent as rowid no-undo.
-DEFINE BUFFER b-es-acordo-area-ficha FOR es-acordo-area-ficha.
-DEFINE NEW GLOBAL SHARED VARIABLE c-seg-usuario AS CHARACTER                  NO-UNDO.
 
-DEFINE VARIABLE c-ano AS CHARACTER   NO-UNDO.
+define new global shared variable wh-esnf012-ch-acesso as character format "x(254)" no-undo.
+define new global shared variable r-rowid as rowid no-undo.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -54,27 +53,27 @@ DEFINE VARIABLE c-ano AS CHARACTER   NO-UNDO.
 &Scoped-define FRAME-NAME f-main
 
 /* External Tables                                                      */
-&Scoped-define EXTERNAL-TABLES es-acordo-area-ficha
-&Scoped-define FIRST-EXTERNAL-TABLE es-acordo-area-ficha
+&Scoped-define EXTERNAL-TABLES nfe003
+&Scoped-define FIRST-EXTERNAL-TABLE nfe003
 
 
 /* Need to scope the external tables to this procedure                  */
-DEFINE QUERY external_tables FOR es-acordo-area-ficha.
+DEFINE QUERY external_tables FOR nfe003.
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-FIELDS es-acordo-area-ficha.tp-docto ~
-es-acordo-area-ficha.ano-ficha es-acordo-area-ficha.dt-emiss ~
-es-acordo-area-ficha.dt-validade-ini es-acordo-area-ficha.dt-validade-fim ~
-es-acordo-area-ficha.vl-verba 
-&Scoped-define ENABLED-TABLES es-acordo-area-ficha
-&Scoped-define FIRST-ENABLED-TABLE es-acordo-area-ficha
-&Scoped-Define ENABLED-OBJECTS rt-key rt-mold c-desc-tp-docto 
-&Scoped-Define DISPLAYED-FIELDS es-acordo-area-ficha.num-ficha ~
-es-acordo-area-ficha.tp-docto es-acordo-area-ficha.ano-ficha ~
-es-acordo-area-ficha.dt-emiss es-acordo-area-ficha.dt-validade-ini ~
-es-acordo-area-ficha.dt-validade-fim es-acordo-area-ficha.vl-verba 
-&Scoped-define DISPLAYED-TABLES es-acordo-area-ficha
-&Scoped-define FIRST-DISPLAYED-TABLE es-acordo-area-ficha
-&Scoped-Define DISPLAYED-OBJECTS c-desc-tp-docto 
+&Scoped-Define ENABLED-FIELDS nfe003.cod-emitente nfe003.serie-docto ~
+nfe003.nro-docto nfe003.cod-estabel nfe003.dt-emissao nfe003.dt-transacao ~
+nfe003.nat-oper-comp 
+&Scoped-define ENABLED-TABLES nfe003
+&Scoped-define FIRST-ENABLED-TABLE nfe003
+&Scoped-Define ENABLED-OBJECTS RECT-16 RECT-17 
+&Scoped-Define DISPLAYED-FIELDS nfe003.cod-emitente nfe003.serie-docto ~
+nfe003.nro-docto nfe003.cod-estabel nfe003.dt-emissao nfe003.dt-transacao ~
+nfe003.nat-oper-comp 
+&Scoped-define DISPLAYED-TABLES nfe003
+&Scoped-define FIRST-DISPLAYED-TABLE nfe003
+&Scoped-Define DISPLAYED-OBJECTS c-cnpj c-nome-abrev c-serie c-nro-docto ~
+c-cod-estabel c-nome-est c-dt-emissao c-dt-transacao c-nat-oper-comp ~
+c-desc-nat-oper-comp 
 
 /* Custom List Definitions                                              */
 /* ADM-CREATE-FIELDS,ADM-ASSIGN-FIELDS,ADM-MODIFY-FIELDS,List-4,List-5,List-6 */
@@ -90,7 +89,8 @@ es-acordo-area-ficha.dt-validade-fim es-acordo-area-ficha.vl-verba
 THIS-PROCEDURE
 </KEY-OBJECT>
 <FOREIGN-KEYS>
-cod-area||y|ems2custom.es-acordo-area-ficha.cod-area
+cod-emitente||y|movnfe.nfe003.cod-emitente
+ch-acesso-comp-nfe||y|movnfe.nfe003.ch-acesso-comp-nfe
 </FOREIGN-KEYS> 
 <EXECUTING-CODE>
 **************************
@@ -98,7 +98,7 @@ cod-area||y|ems2custom.es-acordo-area-ficha.cod-area
 */
 RUN set-attribute-list (
     'Keys-Accepted = ,
-     Keys-Supplied = "cod-area"':U).
+     Keys-Supplied = "cod-emitente,ch-acesso-comp-nfe"':U).
 /**************************
 </EXECUTING-CODE> */
 /* _UIB-CODE-BLOCK-END */
@@ -109,46 +109,106 @@ RUN set-attribute-list (
 
 
 /* Definitions of the field level widgets                               */
-DEFINE VARIABLE c-desc-tp-docto AS CHARACTER FORMAT "X(40)":U 
+DEFINE VARIABLE c-cnpj AS CHARACTER FORMAT "X(256)":U 
+     LABEL "CNPJ" 
      VIEW-AS FILL-IN 
-     SIZE 49.72 BY .88 NO-UNDO.
+     SIZE 14 BY .88 NO-UNDO.
 
-DEFINE RECTANGLE rt-key
-     EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 88.57 BY 2.5.
+DEFINE VARIABLE c-cod-estabel AS CHARACTER FORMAT "X(256)":U 
+     LABEL "Estab" 
+     VIEW-AS FILL-IN 
+     SIZE 7.43 BY .88 NO-UNDO.
 
-DEFINE RECTANGLE rt-mold
+DEFINE VARIABLE c-desc-nat-oper-comp AS CHARACTER FORMAT "X(256)":U 
+     VIEW-AS FILL-IN 
+     SIZE 16.72 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-dt-emissao AS DATE FORMAT "99/99/9999":U 
+     LABEL "Emiss∆o" 
+     VIEW-AS FILL-IN 
+     SIZE 14 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-dt-transacao AS DATE FORMAT "99/99/9999":U 
+     LABEL "Dt Trans" 
+     VIEW-AS FILL-IN 
+     SIZE 14 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-nat-oper-comp AS CHARACTER FORMAT "X(256)":U 
+     LABEL "Nat Comp" 
+     VIEW-AS FILL-IN 
+     SIZE 12 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-nome-abrev AS CHARACTER FORMAT "X(256)":U 
+     VIEW-AS FILL-IN 
+     SIZE 15.29 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-nome-est AS CHARACTER FORMAT "X(256)":U 
+     VIEW-AS FILL-IN 
+     SIZE 19.57 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-nro-docto AS CHARACTER FORMAT "X(256)":U 
+     LABEL "Documento" 
+     VIEW-AS FILL-IN 
+     SIZE 18.29 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-serie AS CHARACTER FORMAT "X(256)":U 
+     LABEL "SÇrie" 
+     VIEW-AS FILL-IN 
+     SIZE 9.29 BY .88 NO-UNDO.
+
+DEFINE RECTANGLE RECT-16
      EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 88.57 BY 5.5.
+     SIZE 42 BY 8.
+
+DEFINE RECTANGLE RECT-17
+     EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
+     SIZE 42 BY 8.
 
 
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME f-main
-     es-acordo-area-ficha.num-ficha AT ROW 1.25 COL 19 COLON-ALIGNED WIDGET-ID 10
+     c-cnpj AT ROW 2.25 COL 10.72 COLON-ALIGNED WIDGET-ID 50
+     nfe003.cod-emitente AT ROW 2.29 COL 55.86 COLON-ALIGNED WIDGET-ID 2
           VIEW-AS FILL-IN 
-          SIZE 10 BY .88
-     es-acordo-area-ficha.tp-docto AT ROW 2.29 COL 19 COLON-ALIGNED WIDGET-ID 16
+          SIZE 11.43 BY .88
+     c-nome-abrev AT ROW 2.29 COL 67.72 COLON-ALIGNED NO-LABEL WIDGET-ID 24
+     c-serie AT ROW 3.25 COL 10.72 COLON-ALIGNED WIDGET-ID 34
+     nfe003.serie-docto AT ROW 3.29 COL 55.86 COLON-ALIGNED WIDGET-ID 14
           VIEW-AS FILL-IN 
-          SIZE 14 BY .88
-     c-desc-tp-docto AT ROW 2.29 COL 33.29 COLON-ALIGNED NO-LABEL WIDGET-ID 18
-     es-acordo-area-ficha.ano-ficha AT ROW 4.08 COL 19 COLON-ALIGNED WIDGET-ID 2
+          SIZE 9.14 BY .88
+     c-nro-docto AT ROW 4.25 COL 10.72 COLON-ALIGNED WIDGET-ID 36
+     nfe003.nro-docto AT ROW 4.29 COL 55.86 COLON-ALIGNED WIDGET-ID 12
           VIEW-AS FILL-IN 
-          SIZE 6 BY .88
-     es-acordo-area-ficha.dt-emiss AT ROW 5.08 COL 19 COLON-ALIGNED WIDGET-ID 4
+          SIZE 17.14 BY .88
+     c-cod-estabel AT ROW 5.25 COL 10.86 COLON-ALIGNED WIDGET-ID 38
+     nfe003.cod-estabel AT ROW 5.29 COL 55.86 COLON-ALIGNED WIDGET-ID 4
+          LABEL "Estab"
           VIEW-AS FILL-IN 
-          SIZE 12 BY .88
-     es-acordo-area-ficha.dt-validade-ini AT ROW 6.08 COL 19 COLON-ALIGNED WIDGET-ID 8
+          SIZE 7.14 BY .88
+     c-nome-est AT ROW 5.29 COL 63.43 COLON-ALIGNED NO-LABEL WIDGET-ID 26
+     c-dt-emissao AT ROW 6.25 COL 10.86 COLON-ALIGNED WIDGET-ID 42
+     nfe003.dt-emissao AT ROW 6.29 COL 55.86 COLON-ALIGNED WIDGET-ID 6
+          LABEL "Emiss∆o"
           VIEW-AS FILL-IN 
-          SIZE 12 BY .88
-     es-acordo-area-ficha.dt-validade-fim AT ROW 7.08 COL 19 COLON-ALIGNED WIDGET-ID 6
+          SIZE 12.57 BY .88
+     c-dt-transacao AT ROW 7.25 COL 10.86 COLON-ALIGNED WIDGET-ID 44
+     nfe003.dt-transacao AT ROW 7.29 COL 55.86 COLON-ALIGNED WIDGET-ID 8
+          LABEL "Dt Trans"
           VIEW-AS FILL-IN 
-          SIZE 12 BY .88
-     es-acordo-area-ficha.vl-verba AT ROW 8.08 COL 19 COLON-ALIGNED WIDGET-ID 14
+          SIZE 12.57 BY .88
+     c-nat-oper-comp AT ROW 8.25 COL 10.86 COLON-ALIGNED WIDGET-ID 46
+     nfe003.nat-oper-comp AT ROW 8.29 COL 55.86 COLON-ALIGNED WIDGET-ID 10
+          LABEL "Nat Comp"
           VIEW-AS FILL-IN 
-          SIZE 25 BY .88
-     rt-key AT ROW 1 COL 1
-     rt-mold AT ROW 3.83 COL 1
+          SIZE 10.14 BY .88
+     c-desc-nat-oper-comp AT ROW 8.29 COL 66.29 COLON-ALIGNED NO-LABEL WIDGET-ID 28
+     "Dados Traduzidos" VIEW-AS TEXT
+          SIZE 13 BY .67 AT ROW 1.25 COL 46.57 WIDGET-ID 18
+     "Dados Originais" VIEW-AS TEXT
+          SIZE 12.14 BY .67 AT ROW 1.25 COL 2.86 WIDGET-ID 22
+     RECT-16 AT ROW 1.54 COL 44.57 WIDGET-ID 16
+     RECT-17 AT ROW 1.54 COL 1 WIDGET-ID 20
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1 SCROLLABLE  WIDGET-ID 100.
@@ -159,11 +219,11 @@ DEFINE FRAME f-main
 &ANALYZE-SUSPEND _PROCEDURE-SETTINGS
 /* Settings for THIS-PROCEDURE
    Type: SmartViewer
-   External Tables: ems2custom.es-acordo-area-ficha
+   External Tables: movnfe.nfe003
    Allow: Basic,DB-Fields
    Frames: 1
    Add Fields to: EXTERNAL-TABLES
-   Other Settings: PERSISTENT-ONLY
+   Other Settings: PERSISTENT-ONLY COMPILE
  */
 
 /* This procedure should always be RUN PERSISTENT.  Report the error,  */
@@ -181,8 +241,8 @@ END.
 &ANALYZE-SUSPEND _CREATE-WINDOW
 /* DESIGN Window definition (used by the UIB) 
   CREATE WINDOW V-table-Win ASSIGN
-         HEIGHT             = 9.67
-         WIDTH              = 88.57.
+         HEIGHT             = 8.79
+         WIDTH              = 85.57.
 /* END WINDOW DEFINITION */
                                                                         */
 &ANALYZE-RESUME
@@ -193,7 +253,6 @@ END.
 {src/adm/method/viewer.i}
 {include/c-viewer.i}
 {utp/ut-glob.i}
-{include/i_dbtype.i}
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -212,8 +271,34 @@ ASSIGN
        FRAME f-main:SCROLLABLE       = FALSE
        FRAME f-main:HIDDEN           = TRUE.
 
-/* SETTINGS FOR FILL-IN es-acordo-area-ficha.num-ficha IN FRAME f-main
+/* SETTINGS FOR FILL-IN c-cnpj IN FRAME f-main
    NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-cod-estabel IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-desc-nat-oper-comp IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-dt-emissao IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-dt-transacao IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-nat-oper-comp IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-nome-abrev IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-nome-est IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-nro-docto IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-serie IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN nfe003.cod-estabel IN FRAME f-main
+   EXP-LABEL                                                            */
+/* SETTINGS FOR FILL-IN nfe003.dt-emissao IN FRAME f-main
+   EXP-LABEL                                                            */
+/* SETTINGS FOR FILL-IN nfe003.dt-transacao IN FRAME f-main
+   EXP-LABEL                                                            */
+/* SETTINGS FOR FILL-IN nfe003.nat-oper-comp IN FRAME f-main
+   EXP-LABEL                                                            */
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
 
@@ -230,22 +315,6 @@ ASSIGN
  
 
 
-
-/* ************************  Control Triggers  ************************ */
-
-&Scoped-define SELF-NAME es-acordo-area-ficha.dt-emiss
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL es-acordo-area-ficha.dt-emiss V-table-Win
-ON ENTRY OF es-acordo-area-ficha.dt-emiss IN FRAME f-main /* Implantaá∆o */
-DO:
-    ASSIGN es-acordo-area-ficha.dt-emiss:SCREEN-VALUE IN FRAME {&FRAME-NAME} = string(TODAY,"99/99/9999"). 
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&UNDEFINE SELF-NAME
-
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK V-table-Win 
 
 
@@ -253,9 +322,7 @@ END.
 
   &IF DEFINED(UIB_IS_RUNNING) <> 0 &THEN          
     RUN dispatch IN THIS-PROCEDURE ('initialize':U).        
-  &ENDIF 
-  
-    
+  &ENDIF         
   
   /************************ INTERNAL PROCEDURES ********************/
 
@@ -294,13 +361,13 @@ PROCEDURE adm-row-available :
   {src/adm/template/row-head.i}
 
   /* Create a list of all the tables that we need to get.            */
-  {src/adm/template/row-list.i "es-acordo-area-ficha"}
+  {src/adm/template/row-list.i "nfe003"}
 
   /* Get the record ROWID's from the RECORD-SOURCE.                  */
   {src/adm/template/row-get.i}
 
   /* FIND each record specified by the RECORD-SOURCE.                */
-  {src/adm/template/row-find.i "es-acordo-area-ficha"}
+  {src/adm/template/row-find.i "nfe003"}
 
   /* Process the newly available records (i.e. display fields,
      open queries, and/or pass records on to any RECORD-TARGETS).    */
@@ -329,33 +396,6 @@ END PROCEDURE.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-add-record V-table-Win 
-PROCEDURE local-add-record :
-/*------------------------------------------------------------------------------
-  Purpose:     
-  Parameters:  <none>
-  Notes:       
-------------------------------------------------------------------------------*/
-
-/* Dispatch standard ADM method.                             */
-  RUN dispatch IN THIS-PROCEDURE ( INPUT 'add-record':U ) .
-
-    FIND LAST b-es-acordo-area-ficha NO-LOCK NO-ERROR.
-
-    IF AVAIL b-es-acordo-area-ficha THEN
-        ASSIGN es-acordo-area-ficha.num-ficha:SCREEN-VALUE IN FRAME {&FRAME-NAME} = string(b-es-acordo-area-ficha.num-ficha + 1).
-    ELSE
-        ASSIGN es-acordo-area-ficha.num-ficha:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "1".
-
-    ASSIGN c-ano = STRING(TODAY,"99/99/9999")
-           es-acordo-area-ficha.ano-ficha:SCREEN-VALUE IN FRAME {&FRAME-NAME} = SUBSTRING(c-ano,7,10)
-           es-acordo-area-ficha.dt-emiss:SCREEN-VALUE IN FRAME {&FRAME-NAME}  = STRING(TODAY).
- 
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-assign-record V-table-Win 
 PROCEDURE local-assign-record :
 /*------------------------------------------------------------------------------
@@ -364,112 +404,19 @@ PROCEDURE local-assign-record :
 ------------------------------------------------------------------------------*/
 
     /* Code placed here will execute PRIOR to standard behavior. */
-/*     {include/i-valid.i} */
-     if  not frame {&frame-name}:validate() then
-      return 'ADM-ERROR':U.
-    /*:T Ponha na pi-validate todas as validaá‰es */
-    /*:T N∆o gravar nada no registro antes do dispatch do assign-record e 
+    {include/i-valid.i}
+    
+    /* Ponha na pi-validate todas as validaá‰es */
+    /* N∆o gravar nada no registro antes do dispatch do assign-record e 
        nem na PI-validate. */
-
-     IF es-acordo-area-ficha.tp-docto:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "0" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Tipo de Documento ~~ Tipo de Documento deve ser Diferente de Branco!").
-         APPLY 'entry' TO es-acordo-area-ficha.tp-docto IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-     END.
-
-     FIND es-tipo-docto NO-LOCK
-         WHERE es-tipo-docto.tp-docto = INT(es-acordo-area-ficha.tp-docto:SCREEN-VALUE IN FRAME {&FRAME-NAME}) NO-ERROR.
-
-     IF NOT AVAIL es-tipo-docto THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Tipo de Documento ~~ Tipo de Documento Inexistente!").
-         APPLY 'entry' TO es-acordo-area-ficha.tp-docto IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-
-     IF es-acordo-area-ficha.dt-emiss:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Data Implantaá∆o ~~ Data de Implantaá∆o deve ser Diferente de Branco!").
-         APPLY 'entry' TO es-acordo-area-ficha.dt-emiss IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-
-     IF es-acordo-area-ficha.dt-validade-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Inicio Validade ~~ Data de Validade Inicial deve ser Diferente de Branco!").
-         APPLY 'entry' TO es-acordo-area-ficha.dt-validade-ini IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-
-     IF es-acordo-area-ficha.dt-validade-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Final Validade ~~ Data de Validade Final deve ser Diferente de Branco!").
-         APPLY 'entry' TO es-acordo-area-ficha.dt-validade-fim IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-
-     IF es-acordo-area-ficha.dt-validade-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} >
-         es-acordo-area-ficha.dt-validade-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} THEN DO:
-
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Validade Inicial x Validade Final ~~ Data Inicial Deve Ser Menor que Data Final!").
-         APPLY 'entry' TO es-acordo-area-ficha.dt-validade-ini IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
-     
-     IF es-acordo-area-ficha.vl-verba:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "0,00" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Valor da Verba ~~ O Valor da Verbs deve ser Diferente de Zero!").
-         APPLY 'entry' TO es-acordo-area-ficha.vl-verba IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-
-     END.
     
     /* Dispatch standard ADM method.                             */
     RUN dispatch IN THIS-PROCEDURE ( INPUT 'assign-record':U ) .
     if RETURN-VALUE = 'ADM-ERROR':U then 
         return 'ADM-ERROR':U.
     
-    /*:T Todos os assignÔs n∆o feitos pelo assign-record devem ser feitos aqui */  
+    /* Todos os assignÔs n∆o feitos pelo assign-record devem ser feitos aqui */  
     /* Code placed here will execute AFTER standard behavior.    */
-
-    ASSIGN es-acordo-area-ficha.usuario = c-seg-usuario
-           es-acordo-area-ficha.situacao = 1.
-
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-create-record V-table-Win 
-PROCEDURE local-create-record :
-/*------------------------------------------------------------------------------
-  Purpose:     
-  Parameters:  <none>
-  Notes:       
-------------------------------------------------------------------------------*/
-/* Dispatch standard ADM method.                             */
-    RUN dispatch IN THIS-PROCEDURE ( INPUT 'create-record':U ) .
-    
-    FIND es-acordo-area
-        WHERE ROWID(es-acordo-area) = v-row-parent NO-LOCK NO-ERROR.
-    IF AVAILABLE es-acordo-area  THEN DO:
-        ASSIGN es-acordo-area-ficha.cod-area = es-acordo-area.cod-area
-               es-acordo-area-ficha.num-ficha = INT(es-acordo-area-ficha.num-ficha:SCREEN-VALUE IN FRAME {&FRAME-NAME}).
-    END.
 
 END PROCEDURE.
 
@@ -493,6 +440,56 @@ PROCEDURE local-disable-fields :
     disable {&ADM-MODIFY-FIELDS} with frame {&frame-name}.
     &endif
     
+END PROCEDURE.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-display-fields V-table-Win 
+PROCEDURE local-display-fields :
+/*------------------------------------------------------------------------------
+  Purpose:     
+  Parameters:  <none>
+  Notes:       
+------------------------------------------------------------------------------*/
+
+RUN dispatch IN THIS-PROCEDURE ( INPUT 'display-fields':U ) .
+
+find emitente
+    where emitente.cod-emitente = int(nfe003.cod-emitente:screen-value in frame {&frame-name}) no-lock no-error.
+if avail emitente then
+    assign c-nome-abrev:screen-value in frame {&frame-name} = string(emitente.nome-abrev).
+
+find estabelec
+    where estabelec.cod-estabel = nfe003.cod-estabel:screen-value in frame {&frame-name} no-lock no-error.
+if avail estabelec then
+    assign c-nome-est:screen-value in frame {&frame-name} = string(estabelec.nome).
+
+find natur-oper
+    where natur-oper.nat-operacao = nfe003.nat-oper-comp:screen-value in frame {&frame-name} no-lock no-error.
+if avail natur-oper then
+    assign c-desc-nat-oper-comp:screen-value in frame {&frame-name} = string(natur-oper.denominacao).
+
+find nfe003
+    where rowid(nfe003) = r-rowid.
+
+if avail nfe003 then
+    assign wh-esnf012-ch-acesso = nfe003.ch-acesso-comp-nfe.
+
+find nfe003
+    where nfe003.ch-acesso-comp-nfe = wh-esnf012-ch-acesso 
+      and nfe003.idi-orig-trad      = 1 no-lock no-error.
+
+if avail nfe003 then
+
+    assign c-cnpj:screen-value in frame {&frame-name}      = string(nfe003.cnpj)
+           c-serie:screen-value in frame {&frame-name}         = string(nfe003.serie-docto)
+           c-nro-docto:screen-value in frame {&frame-name}     = string(nfe003.nro-docto)
+           c-cod-estabel:screen-value in frame {&frame-name}   = string(nfe003.cod-estabel)
+           c-dt-emissao:screen-value in frame {&frame-name}    = string(nfe003.dt-emissao)
+           c-dt-transacao:screen-value in frame {&frame-name}  = string(nfe003.dt-transacao)
+           c-nat-oper-comp:screen-value in frame {&frame-name} = string(nfe003.nat-oper-comp).
+
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
@@ -539,23 +536,23 @@ END PROCEDURE.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE Pi-validate V-table-Win 
 PROCEDURE Pi-validate :
-/*:T------------------------------------------------------------------------------
+/*------------------------------------------------------------------------------
   Purpose:Validar a viewer     
   Parameters:  <none>
   Notes: N∆o fazer assign aqui. Nesta procedure
   devem ser colocadas apenas validaá‰es, pois neste ponto do programa o registro 
   ainda n∆o foi criado.       
 ------------------------------------------------------------------------------*/
-    {include/i-vldfrm.i} /*:T Validaá∆o de dicion†rio */
+    {include/i-vldfrm.i} /* Validaá∆o de dicion†rio */
     
-/*:T    Segue um exemplo de validaá∆o de programa */
-/*       find tabela where tabela.campo1 = c-variavel and               */
-/*                         tabela.campo2 > i-variavel no-lock no-error. */
-      
-      /*:T Este include deve ser colocado sempre antes do ut-msgs.p */
-/*       {include/i-vldprg.i}                                             */
-/*       run utp/ut-msgs.p (input "show":U, input 7, input return-value). */
-/*       return 'ADM-ERROR':U.                                            */
+/*/*    Segue um exemplo de validaá∆o de programa */
+ *     find tabela where tabela.campo1 = c-variavel and
+ *                       tabela.campo2 > i-variavel no-lock no-error.
+ *     
+ *     /* Este include deve ser colocado sempre antes do ut-msgs.p */
+ *     {include/i-vldprg.i}
+ *     run utp/ut-msgs.p (input "show":U, input 7, input return-value).
+ *     return 'ADM-ERROR':U.*/
 
 END PROCEDURE.
 
@@ -574,7 +571,8 @@ PROCEDURE send-key :
   {src/adm/template/sndkytop.i}
 
   /* Return the key value associated with each key case.             */
-  {src/adm/template/sndkycas.i "cod-area" "es-acordo-area-ficha" "cod-area"}
+  {src/adm/template/sndkycas.i "cod-emitente" "nfe003" "cod-emitente"}
+  {src/adm/template/sndkycas.i "ch-acesso-comp-nfe" "nfe003" "ch-acesso-comp-nfe"}
 
   /* Close the CASE statement and end the procedure.                 */
   {src/adm/template/sndkyend.i}
@@ -596,7 +594,7 @@ PROCEDURE send-records :
   {src/adm/template/snd-head.i}
 
   /* For each requested table, put it's ROWID in the output list.      */
-  {src/adm/template/snd-list.i "es-acordo-area-ficha"}
+  {src/adm/template/snd-list.i "nfe003"}
 
   /* Deal with any unexpected table requests before closing.           */
   {src/adm/template/snd-end.i}
