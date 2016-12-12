@@ -57,6 +57,9 @@ def var v-row-parent as rowid no-undo.
 /* Need to scope the external tables to this procedure                  */
 DEFINE QUERY external_tables FOR es-lote-gnre.
 /* Standard List Definitions                                            */
+&Scoped-Define ENABLED-FIELDS es-lote-gnre.num-recibo 
+&Scoped-define ENABLED-TABLES es-lote-gnre
+&Scoped-define FIRST-ENABLED-TABLE es-lote-gnre
 &Scoped-Define ENABLED-OBJECTS rt-key rt-mold 
 &Scoped-Define DISPLAYED-FIELDS es-lote-gnre.cod-lote ~
 es-lote-gnre.num-recibo es-lote-gnre.cod-usuario es-lote-gnre.dt-lote ~
@@ -122,7 +125,7 @@ DEFINE FRAME f-main
      c-des-situacao AT ROW 1.17 COL 59 COLON-ALIGNED HELP
           "Situa‡Æo do Lote" WIDGET-ID 10
      es-lote-gnre.num-recibo AT ROW 2.58 COL 17 COLON-ALIGNED WIDGET-ID 12
-          LABEL "Recibo" FORMAT ">>>>>>>>>9"
+          LABEL "Protocolo" FORMAT ">>>>>>>>>9"
           VIEW-AS FILL-IN 
           SIZE 16 BY .88
      es-lote-gnre.cod-usuario AT ROW 2.58 COL 59 COLON-ALIGNED WIDGET-ID 4
@@ -221,7 +224,7 @@ ASSIGN
 /* SETTINGS FOR FILL-IN es-lote-gnre.dt-vencto IN FRAME f-main
    NO-ENABLE                                                            */
 /* SETTINGS FOR FILL-IN es-lote-gnre.num-recibo IN FRAME f-main
-   NO-ENABLE EXP-LABEL EXP-FORMAT                                       */
+   EXP-LABEL EXP-FORMAT                                                 */
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
 
@@ -395,6 +398,9 @@ PROCEDURE local-display-fields :
 
     /* Dispatch standard ADM method.                             */
     RUN dispatch IN THIS-PROCEDURE ( INPUT 'display-fields':U ) .
+
+    assign es-lote-gnre.num-recibo:sensitive in frame {&frame-name} = yes
+           es-lote-gnre.num-recibo:read-only in frame {&frame-name} = yes.
 
     if avail es-lote-gnre then do:
 
