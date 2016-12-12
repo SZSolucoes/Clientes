@@ -31,6 +31,7 @@ CREATE WIDGET-POOL.
 /* Local Variable Definitions ---                                       */
 def new global shared var  c-seg-usuario       as char format "x(16)" NO-UNDO.
 DEFINE VARIABLE c-desc-sit-ficha AS CHARACTER   NO-UNDO.
+DEFINE VARIABLE c-desc-docto AS CHARACTER   NO-UNDO.
 
 def buffer b-es-acordo-area-ficha for es-acordo-area-ficha.
 
@@ -84,7 +85,7 @@ DEFINE QUERY external_tables FOR es-acordo-area.
 &Scoped-define KEY-PHRASE TRUE
 
 /* Definitions for BROWSE br-table                                      */
-&Scoped-define FIELDS-IN-QUERY-br-table es-acordo-area-ficha.num-ficha es-acordo-area-ficha.ano-ficha es-acordo-area-ficha.dt-emiss es-acordo-area-ficha.dt-validade-ini es-acordo-area-ficha.dt-validade-fim es-acordo-area-ficha.vl-verba es-acordo-area-ficha.vl-pago es-acordo-area-ficha.vl-recebido es-acordo-area-ficha.vl-utilizado fn-sit-ficha() @ c-desc-sit-ficha es-acordo-area-ficha.usuario   
+&Scoped-define FIELDS-IN-QUERY-br-table es-acordo-area-ficha.num-ficha es-acordo-area-ficha.ano-ficha fn-sit-tp-docto() @ c-desc-docto es-acordo-area-ficha.dt-emiss es-acordo-area-ficha.dt-validade-ini es-acordo-area-ficha.dt-validade-fim es-acordo-area-ficha.vl-verba es-acordo-area-ficha.vl-pago es-acordo-area-ficha.vl-recebido es-acordo-area-ficha.vl-utilizado fn-sit-ficha() @ c-desc-sit-ficha es-acordo-area-ficha.usuario   
 &Scoped-define ENABLED-FIELDS-IN-QUERY-br-table   
 &Scoped-define SELF-NAME br-table
 &Scoped-define QUERY-STRING-br-table FOR EACH es-acordo-area-ficha OF es-acordo-area NO-LOCK     ~{&SORTBY-PHRASE}
@@ -166,6 +167,13 @@ FUNCTION fn-sit-ficha RETURNS CHARACTER
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD fn-sit-tp-docto B-table-Win 
+FUNCTION fn-sit-tp-docto RETURNS CHARACTER
+  ( /* parameter-definitions */ )  FORWARD.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
 
 /* ***********************  Control Definitions  ********************** */
 
@@ -214,6 +222,7 @@ DEFINE BROWSE br-table
   QUERY br-table NO-LOCK DISPLAY
       es-acordo-area-ficha.num-ficha FORMAT ">>>,>>9":U
       es-acordo-area-ficha.ano-ficha FORMAT "9999":U
+      fn-sit-tp-docto() @ c-desc-docto COLUMN-LABEL "Tipo Documento" FORMAT "x(25)" WIDTH 25
       es-acordo-area-ficha.dt-emiss FORMAT "99/99/9999":U
       es-acordo-area-ficha.dt-validade-ini FORMAT "99/99/9999":U WIDTH 12
       es-acordo-area-ficha.dt-validade-fim FORMAT "99/99/9999":U WIDTH 12
@@ -429,6 +438,10 @@ END.
 ON CHOOSE OF bt-eliminar IN FRAME F-Main /* Eliminar */
 DO:
    RUN pi-eliminar.
+
+   IF AVAIL es-acordo-area-ficha THEN  DO:
+       APPLY 'U1' TO br-table IN FRAME {&FRAME-NAME}.
+   END.
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -699,6 +712,30 @@ FUNCTION fn-sit-ficha RETURNS CHARACTER
     END CASE.
 
     RETURN c-desc-sit-ficha.   /* Function return value. */
+
+END FUNCTION.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION fn-sit-tp-docto B-table-Win 
+FUNCTION fn-sit-tp-docto RETURNS CHARACTER
+  ( /* parameter-definitions */ ) :
+/*------------------------------------------------------------------------------
+  Purpose:  
+    Notes:  
+------------------------------------------------------------------------------*/
+
+    FIND es-tipo-docto NO-LOCK
+        WHERE es-tipo-docto.tp-docto = es-acordo-area-ficha.tp-docto NO-ERROR.
+
+    IF AVAIL es-tipo-docto THEN
+        ASSIGN c-desc-docto = es-tipo-docto.desc-docto.
+
+    ELSE
+        ASSIGN c-desc-docto = "".
+    
+    RETURN c-desc-docto.   /* Function return value. */
 
 END FUNCTION.
 

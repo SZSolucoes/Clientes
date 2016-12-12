@@ -114,14 +114,14 @@ DEFINE RECTANGLE rt-button
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME f-cad
-     bt-ok AT ROW 8.88 COL 2.57 HELP
+     bt-ok AT ROW 10.08 COL 2.57 HELP
           "Salva e sai"
-     bt-save AT ROW 8.88 COL 13 HELP
+     bt-save AT ROW 10.08 COL 13 HELP
           "Salva e cria novo"
-     bt-cancela AT ROW 8.88 COL 23.57 HELP
+     bt-cancela AT ROW 10.08 COL 23.57 HELP
           "Cancela"
-     bt-ajuda AT ROW 8.88 COL 78.72
-     rt-button AT ROW 8.71 COL 1.57
+     bt-ajuda AT ROW 10.08 COL 78.72
+     rt-button AT ROW 9.92 COL 1.57
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1
@@ -146,7 +146,7 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW w-cadsim ASSIGN
          HIDDEN             = YES
          TITLE              = "Inclui/Modifica <Insira o complemento>"
-         HEIGHT             = 9.25
+         HEIGHT             = 10.42
          WIDTH              = 89.86
          MAX-HEIGHT         = 26.75
          MAX-WIDTH          = 146.29
@@ -328,7 +328,7 @@ PROCEDURE adm-create-objects :
              INPUT  'Layout = ':U ,
              OUTPUT h_escm106a-v01 ).
        RUN set-position IN h_escm106a-v01 ( 1.25 , 1.72 ) NO-ERROR.
-       /* Size in UIB:  ( 7.25 , 88.57 ) */
+       /* Size in UIB:  ( 8.50 , 88.57 ) */
 
        RUN init-object IN THIS-PROCEDURE (
              INPUT  'esp/escm106a-q01.w':U ,

@@ -61,23 +61,23 @@ DEFINE VARIABLE c-ano AS CHARACTER   NO-UNDO.
 /* Need to scope the external tables to this procedure                  */
 DEFINE QUERY external_tables FOR es-acordo-area-ficha.
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-FIELDS es-acordo-area-ficha.tp-docto ~
-es-acordo-area-ficha.ano-ficha es-acordo-area-ficha.dt-emiss ~
-es-acordo-area-ficha.dt-validade-ini es-acordo-area-ficha.dt-validade-fim ~
-es-acordo-area-ficha.vl-verba 
+&Scoped-Define ENABLED-FIELDS es-acordo-area-ficha.ano-ficha ~
+es-acordo-area-ficha.dt-emiss es-acordo-area-ficha.dt-validade-ini ~
+es-acordo-area-ficha.dt-validade-fim es-acordo-area-ficha.vl-verba 
 &Scoped-define ENABLED-TABLES es-acordo-area-ficha
 &Scoped-define FIRST-ENABLED-TABLE es-acordo-area-ficha
-&Scoped-Define ENABLED-OBJECTS rt-key rt-mold c-desc-tp-docto 
+&Scoped-Define ENABLED-OBJECTS rt-key rt-mold 
 &Scoped-Define DISPLAYED-FIELDS es-acordo-area-ficha.num-ficha ~
 es-acordo-area-ficha.tp-docto es-acordo-area-ficha.ano-ficha ~
 es-acordo-area-ficha.dt-emiss es-acordo-area-ficha.dt-validade-ini ~
 es-acordo-area-ficha.dt-validade-fim es-acordo-area-ficha.vl-verba 
 &Scoped-define DISPLAYED-TABLES es-acordo-area-ficha
 &Scoped-define FIRST-DISPLAYED-TABLE es-acordo-area-ficha
-&Scoped-Define DISPLAYED-OBJECTS c-desc-tp-docto 
+&Scoped-Define DISPLAYED-OBJECTS c-desc-docto 
 
 /* Custom List Definitions                                              */
 /* ADM-CREATE-FIELDS,ADM-ASSIGN-FIELDS,ADM-MODIFY-FIELDS,List-4,List-5,List-6 */
+&Scoped-define ADM-CREATE-FIELDS es-acordo-area-ficha.tp-docto 
 
 /* _UIB-PREPROCESSOR-BLOCK-END */
 &ANALYZE-RESUME
@@ -109,9 +109,9 @@ RUN set-attribute-list (
 
 
 /* Definitions of the field level widgets                               */
-DEFINE VARIABLE c-desc-tp-docto AS CHARACTER FORMAT "X(40)":U 
+DEFINE VARIABLE c-desc-docto AS CHARACTER FORMAT "X(100)":U 
      VIEW-AS FILL-IN 
-     SIZE 49.72 BY .88 NO-UNDO.
+     SIZE 54 BY .88 NO-UNDO.
 
 DEFINE RECTANGLE rt-key
      EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
@@ -119,7 +119,7 @@ DEFINE RECTANGLE rt-key
 
 DEFINE RECTANGLE rt-mold
      EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 88.57 BY 5.5.
+     SIZE 88.57 BY 5.75.
 
 
 /* ************************  Frame Definitions  *********************** */
@@ -128,27 +128,27 @@ DEFINE FRAME f-main
      es-acordo-area-ficha.num-ficha AT ROW 1.25 COL 19 COLON-ALIGNED WIDGET-ID 10
           VIEW-AS FILL-IN 
           SIZE 10 BY .88
-     es-acordo-area-ficha.tp-docto AT ROW 2.29 COL 19 COLON-ALIGNED WIDGET-ID 16
+     es-acordo-area-ficha.tp-docto AT ROW 2.25 COL 19 COLON-ALIGNED WIDGET-ID 16
           VIEW-AS FILL-IN 
-          SIZE 14 BY .88
-     c-desc-tp-docto AT ROW 2.29 COL 33.29 COLON-ALIGNED NO-LABEL WIDGET-ID 18
-     es-acordo-area-ficha.ano-ficha AT ROW 4.08 COL 19 COLON-ALIGNED WIDGET-ID 2
+          SIZE 10 BY .88
+     c-desc-docto AT ROW 2.25 COL 29.29 COLON-ALIGNED NO-LABEL WIDGET-ID 18
+     es-acordo-area-ficha.ano-ficha AT ROW 4.21 COL 19 COLON-ALIGNED WIDGET-ID 2
           VIEW-AS FILL-IN 
           SIZE 6 BY .88
-     es-acordo-area-ficha.dt-emiss AT ROW 5.08 COL 19 COLON-ALIGNED WIDGET-ID 4
+     es-acordo-area-ficha.dt-emiss AT ROW 5.21 COL 19 COLON-ALIGNED WIDGET-ID 4
           VIEW-AS FILL-IN 
           SIZE 12 BY .88
-     es-acordo-area-ficha.dt-validade-ini AT ROW 6.08 COL 19 COLON-ALIGNED WIDGET-ID 8
+     es-acordo-area-ficha.dt-validade-ini AT ROW 6.21 COL 19 COLON-ALIGNED WIDGET-ID 8
           VIEW-AS FILL-IN 
           SIZE 12 BY .88
-     es-acordo-area-ficha.dt-validade-fim AT ROW 7.08 COL 19 COLON-ALIGNED WIDGET-ID 6
+     es-acordo-area-ficha.dt-validade-fim AT ROW 7.21 COL 19 COLON-ALIGNED WIDGET-ID 6
           VIEW-AS FILL-IN 
           SIZE 12 BY .88
-     es-acordo-area-ficha.vl-verba AT ROW 8.08 COL 19 COLON-ALIGNED WIDGET-ID 14
+     es-acordo-area-ficha.vl-verba AT ROW 8.21 COL 19 COLON-ALIGNED WIDGET-ID 14
           VIEW-AS FILL-IN 
           SIZE 25 BY .88
      rt-key AT ROW 1 COL 1
-     rt-mold AT ROW 3.83 COL 1
+     rt-mold AT ROW 3.75 COL 1
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1 SCROLLABLE  WIDGET-ID 100.
@@ -181,7 +181,7 @@ END.
 &ANALYZE-SUSPEND _CREATE-WINDOW
 /* DESIGN Window definition (used by the UIB) 
   CREATE WINDOW V-table-Win ASSIGN
-         HEIGHT             = 9.67
+         HEIGHT             = 8.71
          WIDTH              = 88.57.
 /* END WINDOW DEFINITION */
                                                                         */
@@ -212,8 +212,12 @@ ASSIGN
        FRAME f-main:SCROLLABLE       = FALSE
        FRAME f-main:HIDDEN           = TRUE.
 
+/* SETTINGS FOR FILL-IN c-desc-docto IN FRAME f-main
+   NO-ENABLE                                                            */
 /* SETTINGS FOR FILL-IN es-acordo-area-ficha.num-ficha IN FRAME f-main
    NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN es-acordo-area-ficha.tp-docto IN FRAME f-main
+   NO-ENABLE 1                                                          */
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
 
@@ -244,12 +248,59 @@ END.
 &ANALYZE-RESUME
 
 
+&Scoped-define SELF-NAME es-acordo-area-ficha.tp-docto
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL es-acordo-area-ficha.tp-docto V-table-Win
+ON F5 OF es-acordo-area-ficha.tp-docto IN FRAME f-main /* Tipo Docto */
+DO:
+
+    {include/zoomvar.i &prog-zoom="esp/escm021-z01.w"
+                       &campo=es-acordo-area-ficha.tp-docto
+                       &campozoom=tp-docto
+                       &campo2=c-desc-docto
+                       &campozoom2=desc-docto}
+  
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL es-acordo-area-ficha.tp-docto V-table-Win
+ON LEAVE OF es-acordo-area-ficha.tp-docto IN FRAME f-main /* Tipo Docto */
+DO:
+    
+    FIND es-tipo-docto NO-LOCK
+        WHERE es-tipo-docto.tp-docto = INT(es-acordo-area-ficha.tp-docto:SCREEN-VALUE IN FRAME {&FRAME-NAME}) NO-ERROR.
+
+    IF AVAIL es-tipo-docto THEN
+        ASSIGN c-desc-docto:SCREEN-VALUE = es-tipo-docto.desc-docto.
+
+    ELSE
+        ASSIGN c-desc-docto:SCREEN-VALUE = "".
+
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL es-acordo-area-ficha.tp-docto V-table-Win
+ON MOUSE-SELECT-DBLCLICK OF es-acordo-area-ficha.tp-docto IN FRAME f-main /* Tipo Docto */
+DO:
+    APPLY 'F5' TO SELF.
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
 &UNDEFINE SELF-NAME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK V-table-Win 
 
 
 /* ***************************  Main Block  *************************** */
+es-acordo-area-ficha.tp-docto:load-mouse-pointer ("image/lupa.cur") IN FRAME f-main.
 
   &IF DEFINED(UIB_IS_RUNNING) <> 0 &THEN          
     RUN dispatch IN THIS-PROCEDURE ('initialize':U).        
@@ -371,14 +422,6 @@ PROCEDURE local-assign-record :
     /*:T NÆo gravar nada no registro antes do dispatch do assign-record e 
        nem na PI-validate. */
 
-     IF es-acordo-area-ficha.tp-docto:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "0" THEN DO:
-         RUN utp/ut-msgs.p ("show",
-                            17006,
-                            "Tipo de Documento ~~ Tipo de Documento deve ser Diferente de Branco!").
-         APPLY 'entry' TO es-acordo-area-ficha.tp-docto IN FRAME {&FRAME-NAME} .
-         RETURN 'adm-error'.
-     END.
-
      FIND es-tipo-docto NO-LOCK
          WHERE es-tipo-docto.tp-docto = INT(es-acordo-area-ficha.tp-docto:SCREEN-VALUE IN FRAME {&FRAME-NAME}) NO-ERROR.
 
@@ -493,6 +536,31 @@ PROCEDURE local-disable-fields :
     disable {&ADM-MODIFY-FIELDS} with frame {&frame-name}.
     &endif
     
+END PROCEDURE.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-display-fields V-table-Win 
+PROCEDURE local-display-fields :
+/*------------------------------------------------------------------------------
+  Purpose:     
+  Parameters:  <none>
+  Notes:       
+------------------------------------------------------------------------------*/
+
+/* Dispatch standard ADM method.                             */
+  RUN dispatch IN THIS-PROCEDURE ( INPUT 'display-fields':U ) .
+
+  FIND es-tipo-docto NO-LOCK
+      WHERE es-tipo-docto.tp-docto = INT(es-acordo-area-ficha.tp-docto:SCREEN-VALUE IN FRAME {&FRAME-NAME}) NO-ERROR.
+
+  IF AVAIL es-tipo-docto THEN
+      ASSIGN c-desc-docto:SCREEN-VALUE = es-tipo-docto.desc-docto.
+
+  ELSE 
+      ASSIGN c-desc-docto:SCREEN-VALUE = "".
+
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
