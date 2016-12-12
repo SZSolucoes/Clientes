@@ -1,0 +1,38 @@
+ADD TABLE "ext-emitente"
+  AREA "Schema Area"
+  LABEL "ExtensÆo Emitente"
+  DUMP-NAME "ext-emitente"
+
+ADD FIELD "cod-emitente" OF "ext-emitente" AS integer 
+  DESCRIPTION "Cod Emitente"
+  FORMAT ">>>>>>>>9"
+  INITIAL "0"
+  LABEL "Cod Emitente"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Cod Emitente"
+  HELP "Cod Emitente"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "tp-dt-vencto" OF "ext-emitente" AS integer 
+  DESCRIPTION "1 - Data EmissÆo / 2 - Data Transa‡Æo"
+  FORMAT ">9"
+  INITIAL "1"
+  LABEL "Data Vencimento"
+  POSITION 8
+  MAX-WIDTH 4
+  COLUMN-LABEL "Dt. Vencto"
+  ORDER 20
+
+ADD INDEX "ch_codigo" ON "ext-emitente" 
+  AREA "Schema Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "cod-emitente" ASCENDING 
+
+.
+PSC
+cpstream=ibm850
+.
+0000002133

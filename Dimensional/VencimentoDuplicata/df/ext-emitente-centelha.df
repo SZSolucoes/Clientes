@@ -1,0 +1,15 @@
+ADD FIELD "tp-dt-vencto" OF "ext-emitente" AS integer 
+  DESCRIPTION "1 - Data EmissÆo / 2 - Data Transa‡Æo"
+  FORMAT ">9"
+  INITIAL "1"
+  LABEL "Data Vencimento"
+  POSITION 8
+  MAX-WIDTH 4
+  COLUMN-LABEL "Dt. Vencto"
+  ORDER 70
+
+.
+PSC
+cpstream=ibm850
+.
+0000002133
