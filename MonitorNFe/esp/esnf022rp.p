@@ -143,6 +143,12 @@ FOR EACH tt-nfe003:
        
         FOR FIRST nfe003 EXCLUSIVE-LOCK
             WHERE ROWID(nfe003) = tt-nfe003.r-rowid.
+
+            IF  TT_LOG_ERRO.TTV_NUM_COD_ERRO = 53045 THEN DO: /* Tratamento para erro inesperado da Sefaz quando nota j  autorizada */
+                ASSIGN TT_LOG_ERRO.TTV_NUM_COD_ERRO = 52844.
+                ASSIGN TT_LOG_ERRO.ttv_DES_MSG_AJUDA = "(100) Autorizado o uso da NF-e"
+                       TT_LOG_ERRO.TTV_DES_MSG_ERRO  = "(100) Autorizado o uso da NF-e".
+            END.
             
             IF  TT_LOG_ERRO.TTV_DES_MSG_ERRO BEGINS "(100) Autorizado o uso da NF-e" then do: 
 
