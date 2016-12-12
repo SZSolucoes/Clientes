@@ -1,0 +1,110 @@
+ADD TABLE "crm-web-processados"
+  AREA "Schema Area"
+  DESCRIPTION "tabela log do processamento via webservice x crm"
+  DUMP-NAME "crm-web-processados"
+
+ADD FIELD "nome-tabela" OF "crm-web-processados" AS character 
+  DESCRIPTION "Nome da Tabela a ser integrada"
+  FORMAT "X(32)"
+  INITIAL ""
+  LABEL "Nome Tabela"
+  POSITION 2
+  MAX-WIDTH 64
+  COLUMN-LABEL "Nome Tabela"
+  HELP "Nome da Tabela a ser integrada"
+  ORDER 10
+
+ADD FIELD "num-transacao" OF "crm-web-processados" AS int64 
+  DESCRIPTION "SeqÅencial de Integraá‰es da tabela"
+  FORMAT ">>>,>>>,>>>,>>>,>>>,>>9"
+  INITIAL "0"
+  LABEL "Num. Trans."
+  POSITION 3
+  MAX-WIDTH 8
+  COLUMN-LABEL "Num. Trans."
+  HELP "SeqÅencial de Integraá‰es da tabela"
+  ORDER 20
+
+ADD FIELD "chave-tabela" OF "crm-web-processados" AS character 
+  DESCRIPTION "Chave da Tabela a ser processada, separada por posiá‰es delimitadas, por tabela"
+  FORMAT "X(300)"
+  INITIAL ""
+  LABEL "Chave Tabela"
+  POSITION 4
+  MAX-WIDTH 600
+  COLUMN-LABEL "Chave Tabela"
+  HELP "Chave da Tabela a ser processada, separada por posiá‰es"
+  ORDER 30
+
+ADD FIELD "dt-transacao" OF "crm-web-processados" AS date 
+  DESCRIPTION "Data da Transaá∆o"
+  FORMAT "99/99/9999"
+  INITIAL ?
+  LABEL "Dt. Trans"
+  POSITION 5
+  MAX-WIDTH 4
+  COLUMN-LABEL "Dt. Trans"
+  HELP "Data da Transaá∆o"
+  ORDER 40
+
+ADD FIELD "hr-transacao" OF "crm-web-processados" AS character 
+  DESCRIPTION "Hor†rio da Transaá∆o"
+  FORMAT "99:99:99"
+  INITIAL ""
+  LABEL "Hr. Trans."
+  POSITION 6
+  MAX-WIDTH 16
+  COLUMN-LABEL "Hr. Trans."
+  HELP "Hor†rio da Transaá∆o"
+  ORDER 50
+
+ADD FIELD "tipo-trans" OF "crm-web-processados" AS integer 
+  DESCRIPTION "Tipo de Transaá∆o: 1 - Inclus∆o, 2 - Alteraá∆o, 3 - Exclus∆o"
+  FORMAT "99"
+  INITIAL "0"
+  LABEL "Tipo Trans."
+  POSITION 7
+  MAX-WIDTH 4
+  VIEW-AS "VIEW-AS RADIO-SET
+  RADIO-BUTTONS Inclus∆o, 1, Alteraá∆o, 2, Exclus∆o, 3"
+  COLUMN-LABEL "Tipo Trans."
+  HELP "1 - Inclus∆o, 2 - Alteraá∆o, 3 - Exclus∆o"
+  ORDER 60
+
+ADD FIELD "log-erro" OF "crm-web-processados" AS logical 
+  FORMAT "yes/no"
+  INITIAL "no"
+  POSITION 8
+  MAX-WIDTH 1
+  ORDER 70
+
+ADD FIELD "retorno-webservice" OF "crm-web-processados" AS character 
+  FORMAT "x(1000)"
+  INITIAL ""
+  POSITION 9
+  MAX-WIDTH 2000
+  ORDER 80
+
+ADD INDEX "idx-pry" ON "crm-web-processados" 
+  AREA "Schema Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "nome-tabela" ASCENDING 
+  INDEX-FIELD "num-transacao" ASCENDING 
+
+ADD INDEX "idx-data" ON "crm-web-processados" 
+  AREA "Schema Area"
+  INDEX-FIELD "dt-transacao" ASCENDING 
+  INDEX-FIELD "nome-tabela" ASCENDING 
+
+ADD INDEX "idx-erro" ON "crm-web-processados" 
+  AREA "Schema Area"
+  INDEX-FIELD "dt-transacao" ASCENDING 
+  INDEX-FIELD "nome-tabela" ASCENDING 
+  INDEX-FIELD "log-erro" ASCENDING 
+
+.
+PSC
+cpstream=ibm850
+.
+0000002837
