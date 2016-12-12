@@ -545,7 +545,19 @@ DO:
             if d-dt-vencto <> ? and
                d-dt-pagto  <> ? then do:
 
-                do while true:                
+                do while true:
+
+                    if i-seq = 1 then do:
+                        if can-find(first es-lote-gnre where
+                                          es-lote-gnre.dt-lote = today) then do:
+    
+                            find last bf-es-lote-gnre no-lock where
+                                      bf-es-lote-gnre.dt-lote = today no-error.
+
+                            assign i-seq = int(subst(bf-es-lote-gnre.cod-lote,9,4)) + 1.
+    
+                        end.
+                    end.
     
                     assign c-lote-aux = string(day(today), '99')    +
                                         string(month(today), '99')  +
