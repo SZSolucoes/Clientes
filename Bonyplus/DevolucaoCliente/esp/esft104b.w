@@ -23,7 +23,7 @@ CREATE WIDGET-POOL.
 /* ***************************  Definitions  ************************** */
 
 /* Parameters Definitions ---                                           */
-def output param p-des-inf-compl as char no-undo.
+def input-output param p-des-inf-compl as char no-undo.
 
 /* Local Variable Definitions ---                                       */
 
@@ -104,6 +104,7 @@ DEFINE FRAME F-Main
 /* Settings for THIS-PROCEDURE
    Type: JanelaDetalhe
    Allow: Basic,Browse,DB-Fields,Smart,Window,Query
+   Container Links: 
    Add Fields to: Neither
  */
 &ANALYZE-RESUME _END-PROCEDURE-SETTINGS
@@ -370,8 +371,10 @@ PROCEDURE local-initialize :
   
   {utp/ut9000.i "ESFT104" "12.01.00.001"}
 
+  assign des-inf-comp = p-des-inf-compl.
+
   /* Dispatch standard ADM method.                             */
-  RUN dispatch IN THIS-PROCEDURE ( INPUT 'initialize':U ) .
+  run dispatch in this-procedure ( input 'initialize':U ) .
 
   /* Code placed here will execute AFTER standard behavior.    */
 

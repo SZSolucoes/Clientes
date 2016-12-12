@@ -161,9 +161,9 @@ def var de-saldo-item        as decimal                    no-undo.
     ~{&OPEN-QUERY-br-it-selec}
 
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-OBJECTS bt-calc rt-button RECT-1 br-it-selec ~
-bt-marca bt-todos bt-nenhum br-aloc-devol c-est-orig c-est-dest ~
-c-cod-depos-dest c-cfop-devol bt-carrega bt-refresh bt-inf-comp bt-selec 
+&Scoped-Define ENABLED-OBJECTS rt-button bt-calc RECT-1 br-it-selec ~
+bt-marca bt-todos bt-nenhum br-aloc-devol c-est-orig c-est-dest bt-carrega ~
+c-cod-depos-dest bt-refresh c-cfop-devol bt-selec bt-inf-comp 
 &Scoped-Define DISPLAYED-OBJECTS c-est-orig c-est-dest c-cod-depos-dest ~
 c-cfop-devol 
 
@@ -354,12 +354,12 @@ DEFINE FRAME f-cad
      br-aloc-devol AT ROW 16.25 COL 1.57 WIDGET-ID 300
      c-est-orig AT ROW 19.38 COL 134.14 COLON-ALIGNED WIDGET-ID 14
      c-est-dest AT ROW 20.38 COL 134.14 COLON-ALIGNED WIDGET-ID 16
-     c-cod-depos-dest AT ROW 21.38 COL 135.43 COLON-ALIGNED WIDGET-ID 24
-     c-cfop-devol AT ROW 22.38 COL 133.43 COLON-ALIGNED WIDGET-ID 20
      bt-carrega AT ROW 16.5 COL 130.57 WIDGET-ID 34
+     c-cod-depos-dest AT ROW 21.38 COL 135.43 COLON-ALIGNED WIDGET-ID 24
      bt-refresh AT ROW 1.17 COL 7.72 WIDGET-ID 30
-     bt-inf-comp AT ROW 24.5 COL 126.29 WIDGET-ID 38
+     c-cfop-devol AT ROW 22.38 COL 133.43 COLON-ALIGNED WIDGET-ID 20
      bt-selec AT ROW 1.17 COL 2.57 WIDGET-ID 28
+     bt-inf-comp AT ROW 24.5 COL 126.29 WIDGET-ID 38
      rt-button AT ROW 1 COL 1.29
      RECT-1 AT ROW 16.25 COL 121.57 WIDGET-ID 26
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
@@ -695,7 +695,7 @@ DO:
 
     assign current-window:sensitive = no.
 
-    run esp/esft105b.w (output c-des-inf-compl).
+    run esp/esft105b.w (input-output c-des-inf-compl).
 
     assign current-window:sensitive = yes.
   
@@ -1093,8 +1093,6 @@ PROCEDURE adm-create-objects :
        RUN add-link IN adm-broker-hdl ( h_p-exihel , 'State':U , THIS-PROCEDURE ).
 
        /* Adjust the tab order of the smart objects. */
-       RUN adjust-tab-order IN adm-broker-hdl ( h_p-exihel ,
-             br-it-selec:HANDLE IN FRAME f-cad , 'BEFORE':U ).
     END. /* Page 0 */
 
   END CASE.
@@ -1158,9 +1156,9 @@ PROCEDURE enable_UI :
 ------------------------------------------------------------------------------*/
   DISPLAY c-est-orig c-est-dest c-cod-depos-dest c-cfop-devol 
       WITH FRAME f-cad IN WINDOW w-livre.
-  ENABLE bt-calc rt-button RECT-1 br-it-selec bt-marca bt-todos bt-nenhum 
-         br-aloc-devol c-est-orig c-est-dest c-cod-depos-dest c-cfop-devol 
-         bt-carrega bt-refresh bt-inf-comp bt-selec 
+  ENABLE rt-button bt-calc RECT-1 br-it-selec bt-marca bt-todos bt-nenhum 
+         br-aloc-devol c-est-orig c-est-dest bt-carrega c-cod-depos-dest 
+         bt-refresh c-cfop-devol bt-selec bt-inf-comp 
       WITH FRAME f-cad IN WINDOW w-livre.
   {&OPEN-BROWSERS-IN-QUERY-f-cad}
   VIEW w-livre.

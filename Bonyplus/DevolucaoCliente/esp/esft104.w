@@ -155,9 +155,9 @@ def var hShowMsg             as handle  no-undo.
     ~{&OPEN-QUERY-br-it-transf}
 
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-OBJECTS rt-button RECT-1 bt-calc br-it-selec ~
+&Scoped-Define ENABLED-OBJECTS rt-button bt-calc RECT-1 br-it-selec ~
 bt-marca bt-todos bt-nenhum br-it-transf c-est-orig c-cfop-saida c-est-dest ~
-c-cfop-ent c-serie c-cod-depos bt-carrega bt-inf-comp bt-refresh bt-selec 
+c-cfop-ent c-serie bt-carrega c-cod-depos bt-refresh bt-inf-comp bt-selec 
 &Scoped-Define DISPLAYED-OBJECTS c-est-orig c-cfop-saida c-est-dest ~
 c-cfop-ent c-serie c-cod-depos 
 
@@ -361,10 +361,10 @@ DEFINE FRAME f-cad
      c-est-dest AT ROW 20.38 COL 134.14 COLON-ALIGNED WIDGET-ID 16
      c-cfop-ent AT ROW 21.38 COL 133.43 COLON-ALIGNED WIDGET-ID 20
      c-serie AT ROW 22.38 COL 133.43 COLON-ALIGNED WIDGET-ID 22
-     c-cod-depos AT ROW 23.38 COL 135.43 COLON-ALIGNED WIDGET-ID 24
      bt-carrega AT ROW 16.5 COL 130.57 WIDGET-ID 34
-     bt-inf-comp AT ROW 24.5 COL 126.29 WIDGET-ID 38
+     c-cod-depos AT ROW 23.38 COL 135.43 COLON-ALIGNED WIDGET-ID 24
      bt-refresh AT ROW 1.17 COL 7.72 WIDGET-ID 30
+     bt-inf-comp AT ROW 24.5 COL 126.29 WIDGET-ID 38
      bt-selec AT ROW 1.17 COL 2.57 WIDGET-ID 28
      rt-button AT ROW 1 COL 1.29
      RECT-1 AT ROW 16.25 COL 121.57 WIDGET-ID 26
@@ -432,7 +432,7 @@ ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU m-livre:HANDLE.
   VISIBLE,,RUN-PERSISTENT                                               */
 /* SETTINGS FOR FRAME f-cad
    FRAME-NAME L-To-R                                                    */
-/* BROWSE-TAB br-it-selec bt-calc f-cad */
+/* BROWSE-TAB br-it-selec RECT-1 f-cad */
 /* BROWSE-TAB br-it-transf d-peso-item f-cad */
 /* SETTINGS FOR FILL-IN d-peso-item IN FRAME f-cad
    NO-DISPLAY NO-ENABLE                                                 */
@@ -706,7 +706,7 @@ DO:
 
     assign current-window:sensitive = no.
 
-    run esp/esft104b.w (output c-des-inf-compl).
+    run esp/esft104b.w (input-output c-des-inf-compl).
 
     assign current-window:sensitive = yes.
   
@@ -1229,9 +1229,9 @@ PROCEDURE enable_UI :
 ------------------------------------------------------------------------------*/
   DISPLAY c-est-orig c-cfop-saida c-est-dest c-cfop-ent c-serie c-cod-depos 
       WITH FRAME f-cad IN WINDOW w-livre.
-  ENABLE rt-button RECT-1 bt-calc br-it-selec bt-marca bt-todos bt-nenhum 
+  ENABLE rt-button bt-calc RECT-1 br-it-selec bt-marca bt-todos bt-nenhum 
          br-it-transf c-est-orig c-cfop-saida c-est-dest c-cfop-ent c-serie 
-         c-cod-depos bt-carrega bt-inf-comp bt-refresh bt-selec 
+         bt-carrega c-cod-depos bt-refresh bt-inf-comp bt-selec 
       WITH FRAME f-cad IN WINDOW w-livre.
   {&OPEN-BROWSERS-IN-QUERY-f-cad}
   VIEW w-livre.
