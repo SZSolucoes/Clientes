@@ -941,11 +941,12 @@ PROCEDURE carregaBrowseAcordo :
             WHERE es-tit_ap.cdn_fornecedor     = es-acordo-comerc.cod-emitente
               AND es-tit_ap.nr-acordo-comerc   = es-acordo-comerc.nr-acordo-comerc NO-ERROR.
         
-        IF AVAIL es-tit_ap THEN DO:
+        IF AVAIL es-tit_ap THEN 
 
             ASSIGN tt-es-acordo-comerc.sit-receb = YES.
 
-        END.
+        ELSE
+            ASSIGN tt-es-acordo-comerc.sit-receb = NO.
 
         FIND FIRST es-acordo-pendencia NO-LOCK
             WHERE es-acordo-pendencia.nr-acordo-comerc = tt-es-acordo-comerc.nr-acordo-comerc
