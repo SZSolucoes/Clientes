@@ -49,7 +49,9 @@ DEFINE VARIABLE i-linha            AS INT  NO-UNDO.
 DEFINE VARIABLE c-desc-sit         AS CHARACTER NO-UNDO.
 DEFINE VARIABLE iLinha             AS INTEGER.
 DEFINE VARIABLE c-nome-abrev       AS CHAR NO-UNDO.
-DEFINE VARIABLE c-sit-acordo-app   AS CHARACTER   NO-UNDO.
+DEFINE VARIABLE c-sit-acordo-app   AS CHARACTER NO-UNDO.
+DEFINE VARIABLE i-val_sdo_tit_ap   AS INTEGER FORMAT ">>>,>>>,>>9.99" NO-UNDO.
+DEFINE VARIABLE i-val_pago_tit_ap  AS INTEGER FORMAT ">>>,>>>,>>9.99" NO-UNDO.
 
 /* Propriedade : HorizontalAlignment (Alinhamento Horizontal) ******************/
 &global-define xlHAlignCenter       -4108  /* 01 - Centralizado */
@@ -124,6 +126,30 @@ FOR EACH es-acordo-comerc  NO-LOCK
         WHERE es-tit_ap.cdn_fornecedor     = es-acordo-comerc.cod-emitente
           AND es-tit_ap.nr-acordo-comerc   = es-acordo-comerc.nr-acordo-comerc NO-ERROR.
 
+    ASSIGN i-val_sdo_tit_ap = 0
+           i-val_pago_tit_ap = 0.
+
+    FOR EACH es-tit_ap NO-LOCK
+        WHERE es-tit_ap.cdn_fornecedor     = es-acordo-comerc.cod-emitente
+          AND es-tit_ap.nr-acordo-comerc   = es-acordo-comerc.nr-acordo-comerc:
+
+        FIND tit_ap NO-LOCK
+            WHERE tit_ap.cod_estab       = es-tit_ap.cod_estab      
+              AND tit_ap.cdn_fornecedor  = es-tit_ap.cdn_fornecedor 
+              AND tit_ap.cod_espec_docto = es-tit_ap.cod_espec_docto
+              AND tit_ap.cod_ser_docto   = es-tit_ap.cod_ser_docto  
+              AND tit_ap.cod_tit_ap      = es-tit_ap.cod_tit_ap     
+              AND tit_ap.cod_parcela     = es-tit_ap.cod_parcela NO-ERROR. 
+
+        IF AVAIL tit_ap THEN DO:
+            /* Valor em Aberto*/
+            ASSIGN i-val_sdo_tit_ap = i-val_sdo_tit_ap + tit_ap.val_sdo_tit_ap.
+            /* Valor Pago */
+            ASSIGN i-val_pago_tit_ap = i-val_pago_tit_ap + (tit_ap.val_origin_tit_ap - tit_ap.val_sdo_tit_ap).
+
+        END.
+    END.
+
     RUN pi-verifica-situacao.
     
     IF tt-param.sit-acordo = 4 THEN  /* Todos */
@@ -194,8 +220,8 @@ PROCEDURE pi-imprime-excel:
            chexcelapplication:range("G" + STRING(iLinha)):VALUE = STRING(es-acordo-comerc.dt-ini-period,"99/99/9999")
            chexcelapplication:range("H" + STRING(iLinha)):VALUE = STRING(es-acordo-comerc.dt-fim-period,"99/99/9999")
            chexcelapplication:range("I" + STRING(iLinha)):VALUE = es-acordo-comerc.vl-acordo
-           chexcelapplication:range("J" + STRING(iLinha)):VALUE = ""
-           chexcelapplication:range("K" + STRING(iLinha)):VALUE = ""
+           chexcelapplication:range("J" + STRING(iLinha)):VALUE = i-val_pago_tit_ap
+           chexcelapplication:range("K" + STRING(iLinha)):VALUE = i-val_sdo_tit_ap
            chexcelapplication:range("L" + STRING(iLinha)):VALUE = c-sit-acordo-app
            chexcelapplication:range("M" + STRING(iLinha)):VALUE = STRING(es-acordo-pendencia.dt-aprov,"99/99/9999")
            chexcelapplication:range("N" + STRING(iLinha)):VALUE = IF AVAIL es-tit_ap THEN "Sim" ELSE "NÆo"
