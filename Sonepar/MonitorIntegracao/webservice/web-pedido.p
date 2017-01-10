@@ -1,7 +1,7 @@
 def input param p-xml-ped  as longchar no-undo.
 def output param p-xml-ret as longchar no-undo.
 
-{webservice/pedido.i}
+{webservice/web-pedido.i}
 
 /*BO*/
 def var bo-ped-venda     as handle  no-undo.

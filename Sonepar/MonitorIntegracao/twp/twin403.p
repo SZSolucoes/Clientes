@@ -81,16 +81,17 @@ FIND FIRST param-integra NO-LOCK NO-ERROR.
 IF NOT AVAIL param-integra 
 OR NOT param-integra.l-integra-estoque THEN RETURN "OK".
 
+/*
 RUN twp/twes001.p (INPUT "saldo-estoq",
                    INPUT STRING(b-saldo-estoq.cod-depos,"x(3)") + STRING(b-saldo-estoq.cod-estabel,"x(3)") + 
                          STRING(b-saldo-estoq.cod-localiz,"x(20)") + STRING(b-saldo-estoq.lote,"x(40)") + 
                          STRING(b-saldo-estoq.it-codigo,"x(16)") + STRING(b-saldo-estoq.cod-refer,"x(8)"),
-                   INPUT (b-old-saldo-estoq.cod-estabel = "")).
+                   INPUT (b-old-saldo-estoq.cod-estabel = "")).*/
 
 
 /*Integra‡Æo WebService*/
-run webservice/saldo-estoq.p (input rowid(b-saldo-estoq),
-                              input if avail b-old-saldo-estoq then 2 else 1).
+run webservice/web-saldo-estoq.p (input rowid(b-saldo-estoq),
+                                  input if avail b-old-saldo-estoq then 2 else 1).
 /*Integra‡Æo WebService*/
 
 

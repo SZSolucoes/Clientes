@@ -97,9 +97,9 @@ crm-web-processados.log-erro
     ~{&OPEN-QUERY-br-integra}
 
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-OBJECTS bt-atualiz bt-next rt-button br-integra ~
-RECT-1 cb-table IMAGE-1 IMAGE-2 cb-status dt-Inicial IMAGE-3 dt-final ~
-IMAGE-4 bt-prev hr-Inicial hr-final c-pesquisa 
+&Scoped-Define ENABLED-OBJECTS bt-atualiz bt-reenviar bt-retorno bt-next ~
+cb-table cb-status dt-Inicial dt-final bt-prev hr-Inicial hr-final ~
+c-pesquisa rt-button RECT-1 IMAGE-1 br-integra IMAGE-2 IMAGE-3 IMAGE-4 
 &Scoped-Define DISPLAYED-OBJECTS cb-table cb-status dt-Inicial dt-final ~
 hr-Inicial hr-final c-pesquisa 
 
@@ -153,10 +153,10 @@ DEFINE VARIABLE h_p-exihel AS HANDLE NO-UNDO.
 
 /* Definitions of the field level widgets                               */
 DEFINE BUTTON bt-atualiz 
-     IMAGE-UP FILE "image/toolbar/im-relo.bmp":U
-     IMAGE-DOWN FILE "image/toolbar/ii-relo.bmp":U
-     IMAGE-INSENSITIVE FILE "image/toolbar/ii-relo.bmp":U
-     LABEL "Button 1" 
+     IMAGE-UP FILE "image/toolbar/im-chck1.bmp":U
+     IMAGE-DOWN FILE "image/toolbar/ii-chck1.bmp":U
+     IMAGE-INSENSITIVE FILE "image/toolbar/ii-chck1.bmp":U NO-FOCUS FLAT-BUTTON
+     LABEL "bt atualiz" 
      SIZE 4 BY 1.13.
 
 DEFINE BUTTON bt-next AUTO-GO 
@@ -172,6 +172,14 @@ DEFINE BUTTON bt-prev AUTO-GO
      LABEL "Anterior" 
      SIZE 5 BY 1.25 TOOLTIP "Anterior"
      FONT 4.
+
+DEFINE BUTTON bt-reenviar 
+     LABEL "Reenviar" 
+     SIZE 15 BY 1.13.
+
+DEFINE BUTTON bt-retorno 
+     LABEL "Retorno" 
+     SIZE 15 BY 1.13.
 
 DEFINE VARIABLE cb-status AS INTEGER FORMAT "9":U INITIAL 0 
      LABEL "Status" 
@@ -269,17 +277,18 @@ DEFINE BROWSE br-integra
             WIDTH 3.14
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
-    WITH NO-ROW-MARKERS SEPARATORS SIZE 153 BY 22.25
+    WITH NO-ROW-MARKERS SEPARATORS SIZE 153 BY 20.75
          TITLE "Fila Integraá∆o" FIT-LAST-COLUMN.
 
 
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME f-cad
-     bt-atualiz AT ROW 1.17 COL 77 WIDGET-ID 2
+     bt-atualiz AT ROW 3.63 COL 96.14 WIDGET-ID 68
+     bt-reenviar AT ROW 26.08 COL 124 WIDGET-ID 72
+     bt-retorno AT ROW 26.08 COL 139.72 WIDGET-ID 70
      bt-next AT ROW 3.67 COL 141.14 HELP
           "Pr¢ximo" WIDGET-ID 66
-     br-integra AT ROW 5.25 COL 1.57 WIDGET-ID 200
      cb-table AT ROW 2.75 COL 9 COLON-ALIGNED WIDGET-ID 6
      cb-status AT ROW 3.83 COL 9 COLON-ALIGNED WIDGET-ID 8
      dt-Inicial AT ROW 2.83 COL 60.43 COLON-ALIGNED WIDGET-ID 22
@@ -289,6 +298,7 @@ DEFINE FRAME f-cad
      hr-Inicial AT ROW 3.83 COL 60.43 COLON-ALIGNED WIDGET-ID 26
      hr-final AT ROW 3.83 COL 81.43 COLON-ALIGNED NO-LABEL WIDGET-ID 24
      c-pesquisa AT ROW 2.75 COL 125.14 COLON-ALIGNED WIDGET-ID 60
+     br-integra AT ROW 5.25 COL 1.57 WIDGET-ID 200
      rt-button AT ROW 1 COL 1
      RECT-1 AT ROW 2.58 COL 1 WIDGET-ID 4
      IMAGE-1 AT ROW 2.83 COL 75.43 WIDGET-ID 32
@@ -298,7 +308,7 @@ DEFINE FRAME f-cad
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1
-         SIZE 154.29 BY 26.75 WIDGET-ID 100.
+         SIZE 154.29 BY 26.33 WIDGET-ID 100.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -319,7 +329,7 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW w-livre ASSIGN
          HIDDEN             = YES
          TITLE              = "Template Livre <Insira complemento>"
-         HEIGHT             = 26.75
+         HEIGHT             = 26.38
          WIDTH              = 154.29
          MAX-HEIGHT         = 26.75
          MAX-WIDTH          = 154.29
@@ -359,7 +369,7 @@ ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU m-livre:HANDLE.
   VISIBLE,,RUN-PERSISTENT                                               */
 /* SETTINGS FOR FRAME f-cad
    FRAME-NAME Custom                                                    */
-/* BROWSE-TAB br-integra rt-button f-cad */
+/* BROWSE-TAB br-integra IMAGE-1 f-cad */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(w-livre)
 THEN w-livre:HIDDEN = yes.
 
@@ -439,9 +449,31 @@ END.
 &ANALYZE-RESUME
 
 
+&Scoped-define BROWSE-NAME br-integra
+&Scoped-define SELF-NAME br-integra
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br-integra w-livre
+ON MOUSE-SELECT-DBLCLICK OF br-integra IN FRAME f-cad /* Fila Integraá∆o */
+DO:
+
+    if avail crm-web-processados then do:
+
+        current-window:sensitive = no.
+
+        run esp/escrm010a.w (input crm-web-processados.retorno-webservice).
+
+        current-window:sensitive = yes.
+
+    end.
+  
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
 &Scoped-define SELF-NAME bt-atualiz
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-atualiz w-livre
-ON CHOOSE OF bt-atualiz IN FRAME f-cad /* Button 1 */
+ON CHOOSE OF bt-atualiz IN FRAME f-cad /* bt atualiz */
 DO:
   
     {&open-query-br-integra}
@@ -468,6 +500,61 @@ END.
 ON CHOOSE OF bt-prev IN FRAME f-cad /* Anterior */
 DO:
   run pi-find(1).
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&Scoped-define SELF-NAME bt-reenviar
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-reenviar w-livre
+ON CHOOSE OF bt-reenviar IN FRAME f-cad /* Reenviar */
+DO:
+
+    if avail crm-web-processados then do:
+
+        if crm-web-processados.nome-tabela = 'ped-venda' then do:
+            run utp/ut-msgs.p (input 'show',
+                               input 17006,
+                               input 'Pedido de Venda n∆o pode ser reenviado!').
+
+            return no-apply.
+        end.
+        else do:
+
+            if not crm-web-processados.log-erro then do:
+                run utp/ut-msgs.p (input 'show',
+                                   input 17006,
+                                   input 'Registro j† foi processado com sucesso!').
+                return no-apply.
+            end.
+            else
+                run esp/escrmapi001.p (rowid(crm-web-processados)).
+        end.
+
+    end.
+  
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&Scoped-define SELF-NAME bt-retorno
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-retorno w-livre
+ON CHOOSE OF bt-retorno IN FRAME f-cad /* Retorno */
+DO:
+
+    if avail crm-web-processados then do:
+
+        current-window:sensitive = no.
+
+        run esp/escrm010a.w (input crm-web-processados.retorno-webservice).
+
+        current-window:sensitive = yes.
+
+    end.
+  
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -541,7 +628,6 @@ END.
 &ANALYZE-RESUME
 
 
-&Scoped-define BROWSE-NAME br-integra
 &UNDEFINE SELF-NAME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK w-livre 
@@ -652,9 +738,9 @@ PROCEDURE enable_UI :
 ------------------------------------------------------------------------------*/
   DISPLAY cb-table cb-status dt-Inicial dt-final hr-Inicial hr-final c-pesquisa 
       WITH FRAME f-cad IN WINDOW w-livre.
-  ENABLE bt-atualiz bt-next rt-button br-integra RECT-1 cb-table IMAGE-1 
-         IMAGE-2 cb-status dt-Inicial IMAGE-3 dt-final IMAGE-4 bt-prev 
-         hr-Inicial hr-final c-pesquisa 
+  ENABLE bt-atualiz bt-reenviar bt-retorno bt-next cb-table cb-status 
+         dt-Inicial dt-final bt-prev hr-Inicial hr-final c-pesquisa rt-button 
+         RECT-1 IMAGE-1 br-integra IMAGE-2 IMAGE-3 IMAGE-4 
       WITH FRAME f-cad IN WINDOW w-livre.
   {&OPEN-BROWSERS-IN-QUERY-f-cad}
   VIEW w-livre.

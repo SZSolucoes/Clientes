@@ -1,6 +1,6 @@
 /*************************************************
-** Programa   :webservice/saldo-estoq.p         **
-** Data       :Dezembro/2017                    **
+** Programa   :webservice/web-saldo-estoq.p     **
+** Data       :Dezembro/2016                    **
 ** Autor      :Joao Pacheco - SZ                **
 ** Descricao  :Integra‡Æo WSxCRM - Saldo-Estoq  **
 **                                              **
