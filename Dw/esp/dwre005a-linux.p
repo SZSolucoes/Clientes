@@ -9,7 +9,7 @@
  
 /*************************** PAR¶METROS *************************************/
 {cdp/cd0666.i}
-    
+
 DEF INPUT PARAM c-item-ini     AS CHAR.
 DEF INPUT PARAM c-item-fim     AS CHAR.
 DEF INPUT PARAM i-qt-etiqueta  AS INT.
@@ -17,9 +17,9 @@ DEF INPUT PARAM c-usuar-logado AS CHAR.
 DEF OUTPUT PARAM TABLE FOR tt-erro.
 
 /*************************** VARIµVEIS *************************************/
-DEFINE VARIABLE c-dispositivo AS CHARACTER                NO-UNDO.
-DEFINE VARIABLE c-arquivo     AS CHARACTER                NO-UNDO.
-DEFINE VARIABLE h-acomp       AS HANDLE                   NO-UNDO.
+DEFINE VARIABLE c-dispositivo AS CHARACTER   NO-UNDO.
+DEFINE VARIABLE c-arquivo     AS CHARACTER   NO-UNDO.
+DEFINE VARIABLE h-acomp       AS HANDLE      NO-UNDO.
 DEFINE VARIABLE c-observacao  AS CHARACTER                NO-UNDO.
 DEFINE VARIABLE i-cont        AS INTEGER                  NO-UNDO.
 DEFINE VARIABLE c-desc-1      AS CHARACTER FORMAT "x(30)" NO-UNDO.
@@ -37,7 +37,7 @@ FIND imprsor_usuar NO-LOCK
      AND imprsor_usuar.log_imprsor_princ NO-ERROR.
 
 IF AVAIL imprsor_usuar THEN
-    ASSIGN c-dispositivo = imprsor_usuar.nom_disposit_so.
+    ASSIGN c-dispositivo = imprsor_usuar.nom_impressora.
 ELSE DO:
     create tt-erro.
     assign tt-erro.cd-erro = 17006
@@ -53,11 +53,6 @@ ASSIGN c-arquivo = SESSION:TEMP-DIRECTORY +
                    STRING(DAY(  TODAY),"99"  )  + ".tmp".
 
 OS-DELETE VALUE(c-arquivo) NO-ERROR.
-
-/* RUN utp/ut-acomp.p PERSISTENT SET h-acomp. */
-{utp/ut-liter.i Etiqueta_EAN *}
-/*RUN pi-inicializar IN h-acomp (INPUT "Iniciando...").
-RUN pi-inicializar IN h-acomp (INPUT RETURN-VALUE).*/
 
 DEFINE VARIABLE i AS INTEGER     NO-UNDO.
 
@@ -110,6 +105,7 @@ FOR EACH wm-item
         
     END.
 END.
+
 PROCEDURE pi-print-editor:
 
     DEF INPUT PARAM c-editor AS CHAR NO-UNDO.
@@ -164,11 +160,8 @@ PROCEDURE pi-print-editor:
 END PROCEDURE. /* pi-print-editor */
 
 OUTPUT STREAM s-etiq CLOSE.
-
-/*ASSIGN c-dispositivo = '"\\10.2.1.100\Zebra"'.*/
-
-OS-COMMAND SILENT TYPE VALUE( c-arquivo ) > VALUE(c-dispositivo).
-
-OS-DELETE VALUE(c-arquivo) NO-ERROR.  
+                                  
+OS-COMMAND SILENT VALUE("lp -d " + c-dispositivo + " " + c-arquivo).
+OS-DELETE VALUE(c-arquivo) NO-ERROR.
 
 

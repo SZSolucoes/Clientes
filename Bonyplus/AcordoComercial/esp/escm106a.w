@@ -114,18 +114,18 @@ DEFINE RECTANGLE rt-button
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME f-cad
-     bt-ok AT ROW 10.08 COL 2.57 HELP
+     bt-ok AT ROW 10.79 COL 2.57 HELP
           "Salva e sai"
-     bt-save AT ROW 10.08 COL 13 HELP
+     bt-save AT ROW 10.79 COL 13 HELP
           "Salva e cria novo"
-     bt-cancela AT ROW 10.08 COL 23.57 HELP
+     bt-cancela AT ROW 10.79 COL 23.57 HELP
           "Cancela"
-     bt-ajuda AT ROW 10.08 COL 78.72
-     rt-button AT ROW 9.92 COL 1.57
+     bt-ajuda AT ROW 10.79 COL 78.72
+     rt-button AT ROW 10.63 COL 1.57
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1
-         SIZE 92 BY 17 WIDGET-ID 100.
+         SIZE 90.86 BY 11.33 WIDGET-ID 100.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -146,12 +146,12 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW w-cadsim ASSIGN
          HIDDEN             = YES
          TITLE              = "Inclui/Modifica <Insira o complemento>"
-         HEIGHT             = 10.42
-         WIDTH              = 89.86
-         MAX-HEIGHT         = 26.75
-         MAX-WIDTH          = 146.29
-         VIRTUAL-HEIGHT     = 26.75
-         VIRTUAL-WIDTH      = 146.29
+         HEIGHT             = 11.13
+         WIDTH              = 90
+         MAX-HEIGHT         = 28.13
+         MAX-WIDTH          = 171.14
+         VIRTUAL-HEIGHT     = 28.13
+         VIRTUAL-WIDTH      = 171.14
          RESIZE             = yes
          SCROLL-BARS        = no
          STATUS-AREA        = yes
@@ -327,8 +327,8 @@ PROCEDURE adm-create-objects :
              INPUT  FRAME f-cad:HANDLE ,
              INPUT  'Layout = ':U ,
              OUTPUT h_escm106a-v01 ).
-       RUN set-position IN h_escm106a-v01 ( 1.25 , 1.72 ) NO-ERROR.
-       /* Size in UIB:  ( 8.50 , 88.57 ) */
+       RUN set-position IN h_escm106a-v01 ( 1.25 , 2.00 ) NO-ERROR.
+       /* Size in UIB:  ( 9.25 , 88.57 ) */
 
        RUN init-object IN THIS-PROCEDURE (
              INPUT  'esp/escm106a-q01.w':U ,

@@ -1,0 +1,75 @@
+ADD TABLE "es-acordo-faixa-aprov"
+  AREA "Schema Area"
+  LABEL "Aprovador Faixa"
+  DUMP-NAME "es-acordo-faixa-aprov"
+
+ADD FIELD "cod-area" OF "es-acordo-faixa-aprov" AS integer 
+  FORMAT ">>>>>9"
+  INITIAL "0"
+  LABEL "µrea"
+  POSITION 2
+  MAX-WIDTH 4
+  COLUMN-LABEL "µrea"
+  HELP "C¢digo da µrea"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "tp-docto" OF "es-acordo-faixa-aprov" AS integer 
+  DESCRIPTION "Tipo do Documento"
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Documento"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Documento"
+  HELP "Tipo do Documento"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "num-faixa" OF "es-acordo-faixa-aprov" AS integer 
+  DESCRIPTION "N£mero da Faixa"
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Faixa"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Faixa"
+  HELP "N£mero da Faixa"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "cod-usuario" OF "es-acordo-faixa-aprov" AS character 
+  FORMAT "x(12)"
+  INITIAL ""
+  LABEL "Usu rio"
+  POSITION 5
+  MAX-WIDTH 24
+  COLUMN-LABEL "Usu rio"
+  HELP "Usu rio"
+  ORDER 40
+  MANDATORY
+
+ADD FIELD "lg-aprov" OF "es-acordo-faixa-aprov" AS logical 
+  FORMAT "yes/no"
+  INITIAL "no"
+  LABEL "Aprovador"
+  POSITION 6
+  MAX-WIDTH 1
+  COLUMN-LABEL "Aprovador"
+  HELP "Usu rio Aprovador"
+  ORDER 50
+
+ADD INDEX "id" ON "es-acordo-faixa-aprov" 
+  AREA "Schema Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "cod-area" ASCENDING 
+  INDEX-FIELD "tp-docto" ASCENDING 
+  INDEX-FIELD "num-faixa" ASCENDING 
+  INDEX-FIELD "cod-usuario" ASCENDING 
+
+.
+PSC
+cpstream=ibm850
+.
+0000001523

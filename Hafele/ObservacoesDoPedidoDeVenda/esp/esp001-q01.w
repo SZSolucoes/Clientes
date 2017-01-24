@@ -1,7 +1,7 @@
 &ANALYZE-SUSPEND _VERSION-NUMBER UIB_v8r12 GUI ADM1
 &ANALYZE-RESUME
 /* Connected Databases 
-          ems2custom       PROGRESS
+          mgesp            PROGRESS
 */
 &Scoped-define WINDOW-NAME CURRENT-WINDOW
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _DEFINITIONS q-tables 
@@ -13,7 +13,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i ESCM106 2.12.00.001}
+{include/i-prgvrs.i Q99XX999 9.99.99.999}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
@@ -46,13 +46,13 @@ CREATE WIDGET-POOL.
 &Scoped-define QUERY-NAME Query-Main
 
 /* Internal Tables (found by Frame, Query & Browse Queries)             */
-&Scoped-define INTERNAL-TABLES es-acordo-area-docto
+&Scoped-define INTERNAL-TABLES ext-emitente
 
 /* Definitions for QUERY Query-Main                                     */
-&Scoped-define QUERY-STRING-Query-Main FOR EACH es-acordo-area-docto NO-LOCK
-&Scoped-define OPEN-QUERY-Query-Main OPEN QUERY Query-Main FOR EACH es-acordo-area-docto NO-LOCK.
-&Scoped-define TABLES-IN-QUERY-Query-Main es-acordo-area-docto
-&Scoped-define FIRST-TABLE-IN-QUERY-Query-Main es-acordo-area-docto
+&Scoped-define QUERY-STRING-Query-Main FOR EACH ext-emitente NO-LOCK INDEXED-REPOSITION
+&Scoped-define OPEN-QUERY-Query-Main OPEN QUERY Query-Main FOR EACH ext-emitente NO-LOCK INDEXED-REPOSITION.
+&Scoped-define TABLES-IN-QUERY-Query-Main ext-emitente
+&Scoped-define FIRST-TABLE-IN-QUERY-Query-Main ext-emitente
 
 
 /* Custom List Definitions                                              */
@@ -69,7 +69,7 @@ CREATE WIDGET-POOL.
 &QUERY-NAME
 </KEY-OBJECT>
 <FOREIGN-KEYS>
-cod-area||y|ems2custom.es-acordo-area.cod-area
+cod-emitente||y|mgesp.ext-emitente.cod-emitente
 </FOREIGN-KEYS> 
 <EXECUTING-CODE>
 **************************
@@ -77,7 +77,7 @@ cod-area||y|ems2custom.es-acordo-area.cod-area
 */
 RUN set-attribute-list (
     'Keys-Accepted = ,
-     Keys-Supplied = "cod-area"':U).
+     Keys-Supplied = "cod-emitente"':U).
 
 /* Tell the ADM to use the OPEN-QUERY-CASES. */
 &Scoped-define OPEN-QUERY-CASES RUN dispatch ('open-query-cases':U).
@@ -118,7 +118,7 @@ RUN set-attribute-list IN THIS-PROCEDURE ('
 /* Query definitions                                                    */
 &ANALYZE-SUSPEND
 DEFINE QUERY Query-Main FOR 
-      es-acordo-area-docto SCROLLING.
+      ext-emitente SCROLLING.
 &ANALYZE-RESUME
 
 /* ************************  Frame Definitions  *********************** */
@@ -155,6 +155,13 @@ END.
 /* END WINDOW DEFINITION */
                                                                         */
 &ANALYZE-RESUME
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _XFTR "SmartQueryCues" q-tables _INLINE
+/* Actions: adecomm/_so-cue.w ? adecomm/_so-cued.p ? adecomm/_so-cuew.p */
+/*:T SmartQuery,uib,50000
+Destroy on next read */
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _INCLUDED-LIB q-tables 
 /* ************************* Included-Libraries *********************** */
@@ -182,8 +189,8 @@ END.
 
 &ANALYZE-SUSPEND _QUERY-BLOCK QUERY Query-Main
 /* Query rebuild information for QUERY Query-Main
-     _TblList          = "ems2custom.es-acordo-area-docto"
-     _Options          = "NO-LOCK"
+     _TblList          = "mgesp.ext-emitente"
+     _Options          = "NO-LOCK INDEXED-REPOSITION"
      _Design-Parent    is WINDOW q-tables @ ( 1.17 , 9.86 )
 */  /* QUERY Query-Main */
 &ANALYZE-RESUME
@@ -279,7 +286,7 @@ PROCEDURE send-key :
   {src/adm/template/sndkytop.i}
 
   /* Return the key value associated with each key case.             */
-  {src/adm/template/sndkycas.i "cod-area" "es-acordo-area" "cod-area"}
+  {src/adm/template/sndkycas.i "cod-emitente" "ext-emitente" "cod-emitente"}
 
   /* Close the CASE statement and end the procedure.                 */
   {src/adm/template/sndkyend.i}
@@ -301,7 +308,7 @@ PROCEDURE send-records :
   {src/adm/template/snd-head.i}
 
   /* For each requested table, put it's ROWID in the output list.      */
-  {src/adm/template/snd-list.i "es-acordo-area-docto"}
+  {src/adm/template/snd-list.i "ext-emitente"}
 
   /* Deal with any unexpected table requests before closing.           */
   {src/adm/template/snd-end.i}

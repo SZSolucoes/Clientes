@@ -1,0 +1,90 @@
+ADD TABLE "es-acordo-faixa"
+  AREA "Schema Area"
+  LABEL "Faixa Aprova‡Æo Acordo"
+  DUMP-NAME "es-acordo-faixa"
+
+ADD FIELD "cod-area" OF "es-acordo-faixa" AS integer 
+  FORMAT ">>>>>9"
+  INITIAL "0"
+  LABEL "µrea"
+  POSITION 2
+  MAX-WIDTH 4
+  COLUMN-LABEL "µrea"
+  HELP "C¢digo da µrea"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "tp-docto" OF "es-acordo-faixa" AS integer 
+  DESCRIPTION "Tipo do Documento"
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Documento"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Documento"
+  HELP "Tipo do Documento"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "num-faixa" OF "es-acordo-faixa" AS integer 
+  DESCRIPTION "N£mero da Faixa"
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Faixa"
+  POSITION 4
+  MAX-WIDTH 4
+  COLUMN-LABEL "Faixa"
+  HELP "N£mero da Faixa"
+  ORDER 30
+  MANDATORY
+
+ADD FIELD "desc-faixa" OF "es-acordo-faixa" AS character 
+  DESCRIPTION "Descri‡Æo da Faixa"
+  FORMAT "x(35)"
+  INITIAL ""
+  LABEL "Descri‡Æo"
+  POSITION 5
+  MAX-WIDTH 70
+  COLUMN-LABEL "Descri‡Æo"
+  HELP "Descri‡Æo da Faixa"
+  ORDER 40
+
+ADD FIELD "limite-inicial" OF "es-acordo-faixa" AS decimal 
+  DESCRIPTION "Porcentagem do Limite Inicial"
+  FORMAT ">>9.99"
+  INITIAL "0"
+  LABEL "% Inicial"
+  POSITION 6
+  MAX-WIDTH 17
+  COLUMN-LABEL "% Inicial"
+  HELP "Porcentagem do Limite Inicial"
+  DECIMALS 2
+  ORDER 50
+  MANDATORY
+
+ADD FIELD "limite-final" OF "es-acordo-faixa" AS decimal 
+  DESCRIPTION "Porcentagem do Limite Final"
+  FORMAT ">>9.99"
+  INITIAL "0"
+  LABEL "% Final"
+  POSITION 7
+  MAX-WIDTH 17
+  COLUMN-LABEL "% Final"
+  HELP "Porcentagem do Limite Final"
+  DECIMALS 2
+  ORDER 60
+  MANDATORY
+
+ADD INDEX "id" ON "es-acordo-faixa" 
+  AREA "Schema Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "cod-area" ASCENDING 
+  INDEX-FIELD "tp-docto" ASCENDING 
+  INDEX-FIELD "num-faixa" ASCENDING 
+
+.
+PSC
+cpstream=ibm850
+.
+0000001863

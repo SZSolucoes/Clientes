@@ -288,7 +288,7 @@ DO:
             if not valid-handle(h-con-lote) then
                 run adapters/esaxsft002.p persistent set h-con-lote.
         
-            assign l-xml-lote = ''.
+            assign l-xml-lote = ?.
         
             find first es-nota-fiscal-gnre no-lock where
                        es-nota-fiscal-gnre.cod-lote = es-lote-gnre.cod-lote no-error.
@@ -303,17 +303,17 @@ DO:
             if l-xml-lote <> '' then do:
         
                 fnConectar(c-cod-estabel-aux).
-        
+
                 if h-server:connected() then
                     run service/consultaLote.p on h-server (input es-lote-gnre.num-recibo, /*l-xml-lote,*/
                                                             input c-cod-estabel-aux,
                                                             output l-xml-lote-ret).
-        
+
                 fnDesconectar().
-        
+
                 if l-xml-lote-ret <> '' then
                     run pi-le-retorno in h-con-lote (input es-lote-gnre.cod-lote,
-                                                     input l-xml-lote-ret).                
+                                                     input l-xml-lote-ret). 
 
                 find current es-lote-gnre no-lock no-error.
                 if es-lote-gnre.idi-situacao = 3 then do:

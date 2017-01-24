@@ -1,7 +1,7 @@
-&ANALYZE-SUSPEND _VERSION-NUMBER UIB_v8r12 GUI
+&ANALYZE-SUSPEND _VERSION-NUMBER UIB_v8r12 GUI ADM1
 &ANALYZE-RESUME
 /* Connected Databases 
-          ems2custom       PROGRESS
+          mgesp            PROGRESS
 */
 &Scoped-define WINDOW-NAME CURRENT-WINDOW
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _DEFINITIONS B-table-Win 
@@ -13,7 +13,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i ESCM106-B01 2.12.00.001}
+{include/i-prgvrs.i B99XX999 9.99.99.999}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
@@ -27,32 +27,10 @@ CREATE WIDGET-POOL.
 &Scop adm-attribute-dlg support/browserd.w
 
 /* Parameters Definitions ---                                           */
- 
+DEFINE VARIABLE c-desc-emitente AS CHARACTER   NO-UNDO.
+
 /* Local Variable Definitions ---                                       */
-def new global shared var  c-seg-usuario       as char format "x(16)" NO-UNDO.
-DEFINE VARIABLE c-desc-sit-ficha AS CHARACTER   NO-UNDO.
-DEFINE VARIABLE c-desc-docto AS CHARACTER   NO-UNDO.
-
-def buffer b-es-acordo-area-ficha for es-acordo-area-ficha.
-
-/* variÿveis de uso local */
-def var v-row-table   as rowid   no-undo.
-def var de-vficha1    as decimal no-undo. 
-def var de-vficha2    as decimal no-undo. 
-def var de-vficha3    as decimal no-undo.
-def var i-cont        as integer.
-def var de-vl-verba2  as decimal no-undo.
-/* fim das variaveis utilizadas no estilo */
-
-/*:T Variaveis usadas internamente pelo estilo, favor nao elimina-las     */
-
-/*:T v ri veis de uso globla */
-def  var v-row-parent    as rowid no-undo.
-
-/*:T vari veis de uso local */
-/* def var v-row-table  as rowid no-undo. */
-
-/*:T fim das variaveis utilizadas no estilo */
+define variable c-lista-valor as character init '':U no-undo.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -62,7 +40,7 @@ def  var v-row-parent    as rowid no-undo.
 
 /* ********************  Preprocessor Definitions  ******************** */
 
-&Scoped-define PROCEDURE-TYPE BrowserCadastro2
+&Scoped-define PROCEDURE-TYPE SmartBrowser
 &Scoped-define DB-AWARE no
 
 &Scoped-define ADM-SUPPORTED-LINKS Record-Source,Record-Target,TableIO-Target
@@ -71,35 +49,28 @@ def  var v-row-parent    as rowid no-undo.
 &Scoped-define FRAME-NAME F-Main
 &Scoped-define BROWSE-NAME br-table
 
-/* External Tables                                                      */
-&Scoped-define EXTERNAL-TABLES es-acordo-area-docto
-&Scoped-define FIRST-EXTERNAL-TABLE es-acordo-area-docto
-
-
-/* Need to scope the external tables to this procedure                  */
-DEFINE QUERY external_tables FOR es-acordo-area-docto.
 /* Internal Tables (found by Frame, Query & Browse Queries)             */
-&Scoped-define INTERNAL-TABLES es-acordo-area-ficha
+&Scoped-define INTERNAL-TABLES ext-emitente
 
 /* Define KEY-PHRASE in case it is used by any query. */
 &Scoped-define KEY-PHRASE TRUE
 
 /* Definitions for BROWSE br-table                                      */
-&Scoped-define FIELDS-IN-QUERY-br-table es-acordo-area-ficha.num-ficha es-acordo-area-ficha.ano-ficha fn-sit-tp-docto() @ c-desc-docto es-acordo-area-ficha.dt-emiss es-acordo-area-ficha.dt-validade-ini es-acordo-area-ficha.dt-validade-fim es-acordo-area-ficha.vl-verba es-acordo-area-ficha.vl-pago es-acordo-area-ficha.vl-recebido es-acordo-area-ficha.vl-utilizado fn-sit-ficha() @ c-desc-sit-ficha es-acordo-area-ficha.usuario   
+&Scoped-define FIELDS-IN-QUERY-br-table ext-emitente.cod-emitente fn-desc-emit() @ c-desc-emitente ext-emitente.observacao-pedido ext-emitente.observacao-complentar   
 &Scoped-define ENABLED-FIELDS-IN-QUERY-br-table   
 &Scoped-define SELF-NAME br-table
-&Scoped-define QUERY-STRING-br-table FOR EACH es-acordo-area-ficha OF es-acordo-area-docto NO-LOCK     ~{&SORTBY-PHRASE}
-&Scoped-define OPEN-QUERY-br-table OPEN QUERY {&SELF-NAME} FOR EACH es-acordo-area-ficha OF es-acordo-area-docto NO-LOCK     ~{&SORTBY-PHRASE}.
-&Scoped-define TABLES-IN-QUERY-br-table es-acordo-area-ficha
-&Scoped-define FIRST-TABLE-IN-QUERY-br-table es-acordo-area-ficha
+&Scoped-define QUERY-STRING-br-table FOR EACH ext-emitente WHERE ~{&KEY-PHRASE}       AND ext-emitente.cod-emitente >= i-inicial  AND ext-emitente.cod-emitente <= i-final NO-LOCK     ~{&SORTBY-PHRASE}
+&Scoped-define OPEN-QUERY-br-table OPEN QUERY {&SELF-NAME} FOR EACH ext-emitente WHERE ~{&KEY-PHRASE}       AND ext-emitente.cod-emitente >= i-inicial  AND ext-emitente.cod-emitente <= i-final NO-LOCK     ~{&SORTBY-PHRASE}.
+&Scoped-define TABLES-IN-QUERY-br-table ext-emitente
+&Scoped-define FIRST-TABLE-IN-QUERY-br-table ext-emitente
 
 
 /* Definitions for FRAME F-Main                                         */
 
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-OBJECTS br-table RECT-5 bt-incluir bt-modificar ~
-bt-eliminar 
-&Scoped-Define DISPLAYED-OBJECTS de-fich1 de-fich2 de-fich3 
+&Scoped-Define ENABLED-OBJECTS IMAGE-1 IMAGE-2 bt-confirma i-inicial ~
+i-final br-table 
+&Scoped-Define DISPLAYED-OBJECTS i-inicial i-final 
 
 /* Custom List Definitions                                              */
 /* List-1,List-2,List-3,List-4,List-5,List-6                            */
@@ -115,7 +86,7 @@ bt-eliminar
 &BROWSE-NAME
 </KEY-OBJECT>
 <FOREIGN-KEYS>
-cod-area||y|ems2custom.es-acordo-area-ficha.cod-area
+cod-emitente||y|mgesp.ext-emitente.cod-emitente
 </FOREIGN-KEYS> 
 <EXECUTING-CODE>
 **************************
@@ -123,7 +94,7 @@ cod-area||y|ems2custom.es-acordo-area-ficha.cod-area
 */
 RUN set-attribute-list (
     'Keys-Accepted = ,
-     Keys-Supplied = "cod-area"':U).
+     Keys-Supplied = "cod-emitente"':U).
 
 /* Tell the ADM to use the OPEN-QUERY-CASES. */
 &Scoped-define OPEN-QUERY-CASES RUN dispatch ('open-query-cases':U).
@@ -160,15 +131,8 @@ RUN set-attribute-list IN THIS-PROCEDURE ('
 
 /* ************************  Function Prototypes ********************** */
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD fn-sit-ficha B-table-Win 
-FUNCTION fn-sit-ficha RETURNS CHARACTER
-  ( /* parameter-definitions */ )  FORWARD.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD fn-sit-tp-docto B-table-Win 
-FUNCTION fn-sit-tp-docto RETURNS CHARACTER
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD fn-desc-emit B-table-Win 
+FUNCTION fn-desc-emit RETURNS CHARACTER
   ( /* parameter-definitions */ )  FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
@@ -179,80 +143,56 @@ FUNCTION fn-sit-tp-docto RETURNS CHARACTER
 
 
 /* Definitions of the field level widgets                               */
-DEFINE BUTTON bt-eliminar 
-     LABEL "&Eliminar" 
-     SIZE 10 BY 1.
+DEFINE BUTTON bt-confirma 
+     IMAGE-UP FILE "image\im-sav":U
+     LABEL "Button 1" 
+     SIZE 5.14 BY 1.
 
-DEFINE BUTTON bt-incluir 
-     LABEL "&Incluir" 
-     SIZE 10 BY 1.
-
-DEFINE BUTTON bt-modificar 
-     LABEL "&Modificar" 
-     SIZE 10 BY 1.
-
-DEFINE VARIABLE de-fich1 AS DECIMAL FORMAT "->,>>>,>>>,>>>,>>>,>>9.99" INITIAL 0 
-     LABEL "Valor Total de Fichas" 
+DEFINE VARIABLE i-final AS INTEGER FORMAT ">>>>>>>>9" INITIAL 999999999 
      VIEW-AS FILL-IN 
-     SIZE 15 BY .88 NO-UNDO.
+     SIZE 10 BY .88 NO-UNDO.
 
-DEFINE VARIABLE de-fich2 AS DECIMAL FORMAT "->,>>>,>>>,>>>,>>>,>>9.99" INITIAL 0 
-     LABEL "Valor Total Recebido" 
+DEFINE VARIABLE i-inicial AS INTEGER FORMAT ">>>>>>>>9" INITIAL 0 
+     LABEL "Emitente" 
      VIEW-AS FILL-IN 
-     SIZE 15 BY .88 NO-UNDO.
+     SIZE 10 BY .88 NO-UNDO.
 
-DEFINE VARIABLE de-fich3 AS DECIMAL FORMAT "->,>>>,>>>,>>>,>>>,>>9.99" INITIAL 0 
-     LABEL "Valor Total Pago" 
-     VIEW-AS FILL-IN 
-     SIZE 15 BY .88 NO-UNDO.
+DEFINE IMAGE IMAGE-1
+     FILENAME "image\ii-fir":U
+     SIZE 2.86 BY 1.
 
-DEFINE RECTANGLE RECT-5
-     EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 87.57 BY 3.88.
+DEFINE IMAGE IMAGE-2
+     FILENAME "image\ii-las":U
+     SIZE 2.86 BY 1.
 
 /* Query definitions                                                    */
 &ANALYZE-SUSPEND
 DEFINE QUERY br-table FOR 
-      es-acordo-area-ficha SCROLLING.
+      ext-emitente SCROLLING.
 &ANALYZE-RESUME
 
 /* Browse definitions                                                   */
 DEFINE BROWSE br-table
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _DISPLAY-FIELDS br-table B-table-Win _FREEFORM
   QUERY br-table NO-LOCK DISPLAY
-      es-acordo-area-ficha.num-ficha FORMAT ">>>,>>9":U
-      es-acordo-area-ficha.ano-ficha FORMAT "9999":U
-      fn-sit-tp-docto() @ c-desc-docto COLUMN-LABEL "Tipo Documento" FORMAT "x(25)" WIDTH 25
-      es-acordo-area-ficha.dt-emiss FORMAT "99/99/9999":U
-      es-acordo-area-ficha.dt-validade-ini FORMAT "99/99/9999":U WIDTH 12
-      es-acordo-area-ficha.dt-validade-fim FORMAT "99/99/9999":U WIDTH 12
-      es-acordo-area-ficha.vl-verba FORMAT ">>>,>>>,>>>,>>>,>>>,>>9.99":U WIDTH 12
-      es-acordo-area-ficha.vl-pago FORMAT ">>>,>>>,>>>,>>>,>>>,>>9.99":U WIDTH 12
-      es-acordo-area-ficha.vl-recebido FORMAT ">>>,>>>,>>>,>>>,>>>,>>9.99":U WIDTH 12
-      es-acordo-area-ficha.vl-utilizado FORMAT ">>>,>>>,>>>,>>>,>>>,>>9.99":U WIDTH 12
-      fn-sit-ficha() @ c-desc-sit-ficha COLUMN-LABEL "Sit.Ficha" FORMAT "x(16)" WIDTH 18
-      es-acordo-area-ficha.usuario FORMAT "x(12)":U WIDTH 12
+      ext-emitente.cod-emitente COLUMN-LABEL "Emitente" FORMAT ">>>>>>>>9":U
+      fn-desc-emit() @ c-desc-emitente COLUMN-LABEL "Nome" FORMAT "X(20)":U
+      ext-emitente.observacao-pedido FORMAT "x(2000)":U WIDTH 50
+      ext-emitente.observacao-complentar FORMAT "x(2000)":U WIDTH 50
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
-    WITH NO-ASSIGN SEPARATORS SIZE 87 BY 7.75.
+    WITH NO-ASSIGN SEPARATORS SIZE 80 BY 9.
 
 
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME F-Main
-     br-table AT ROW 1 COL 1
-     bt-incluir AT ROW 8.83 COL 1
-     bt-modificar AT ROW 8.83 COL 11
-     bt-eliminar AT ROW 8.83 COL 21
-     de-fich1 AT ROW 11.04 COL 26 COLON-ALIGNED HELP
-          "Valor da Verba liberada." WIDGET-ID 2
-     de-fich2 AT ROW 12.04 COL 26 COLON-ALIGNED HELP
-          "Valor da Verba liberada." WIDGET-ID 12
-     de-fich3 AT ROW 13.08 COL 26 COLON-ALIGNED HELP
-          "Valor da Verba liberada." WIDGET-ID 14
-     "Total" VIEW-AS TEXT
-          SIZE 8 BY .67 AT ROW 10.17 COL 4 WIDGET-ID 10
-     RECT-5 AT ROW 10.38 COL 1 WIDGET-ID 8
+     bt-confirma AT ROW 1 COL 76
+     i-inicial AT ROW 1.13 COL 19.72 COLON-ALIGNED
+     i-final AT ROW 1.13 COL 42.43 COLON-ALIGNED NO-LABEL
+     br-table AT ROW 2.17 COL 1
+     IMAGE-1 AT ROW 1.13 COL 32.29
+     IMAGE-2 AT ROW 1.13 COL 41
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1 SCROLLABLE 
@@ -263,12 +203,21 @@ DEFINE FRAME F-Main
 
 &ANALYZE-SUSPEND _PROCEDURE-SETTINGS
 /* Settings for THIS-PROCEDURE
-   Type: BrowserCadastro2
-   External Tables: ems2custom.es-acordo-area-docto
+   Type: SmartBrowser
    Allow: Basic,Browse
    Frames: 1
-   Add Fields to: External-Tables
+   Add Fields to: EXTERNAL-TABLES
+   Other Settings: PERSISTENT-ONLY
  */
+
+/* This procedure should always be RUN PERSISTENT.  Report the error,  */
+/* then cleanup and return.                                            */
+IF NOT THIS-PROCEDURE:PERSISTENT THEN DO:
+  MESSAGE "{&FILE-NAME} should only be RUN PERSISTENT.":U
+          VIEW-AS ALERT-BOX ERROR BUTTONS OK.
+  RETURN.
+END.
+
 &ANALYZE-RESUME _END-PROCEDURE-SETTINGS
 
 /* *************************  Create Window  ************************** */
@@ -276,8 +225,8 @@ DEFINE FRAME F-Main
 &ANALYZE-SUSPEND _CREATE-WINDOW
 /* DESIGN Window definition (used by the UIB) 
   CREATE WINDOW B-table-Win ASSIGN
-         HEIGHT             = 13.42
-         WIDTH              = 87.57.
+         HEIGHT             = 10.17
+         WIDTH              = 80.14.
 /* END WINDOW DEFINITION */
                                                                         */
 &ANALYZE-RESUME
@@ -285,9 +234,9 @@ DEFINE FRAME F-Main
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _INCLUDED-LIB B-table-Win 
 /* ************************* Included-Libraries *********************** */
 
-{utp/ut-glob.i}
 {src/adm/method/browser.i}
-{include/c-brows3.i}
+{include/c-brwzoo.i}
+{utp/ut-glob.i}
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -302,17 +251,11 @@ DEFINE FRAME F-Main
   NOT-VISIBLE,,RUN-PERSISTENT                                           */
 /* SETTINGS FOR FRAME F-Main
    NOT-VISIBLE FRAME-NAME Size-to-Fit L-To-R                            */
-/* BROWSE-TAB br-table 1 F-Main */
+/* BROWSE-TAB br-table i-final F-Main */
 ASSIGN 
        FRAME F-Main:SCROLLABLE       = FALSE
        FRAME F-Main:HIDDEN           = TRUE.
 
-/* SETTINGS FOR FILL-IN de-fich1 IN FRAME F-Main
-   NO-ENABLE                                                            */
-/* SETTINGS FOR FILL-IN de-fich2 IN FRAME F-Main
-   NO-ENABLE                                                            */
-/* SETTINGS FOR FILL-IN de-fich3 IN FRAME F-Main
-   NO-ENABLE                                                            */
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
 
@@ -322,10 +265,14 @@ ASSIGN
 &ANALYZE-SUSPEND _QUERY-BLOCK BROWSE br-table
 /* Query rebuild information for BROWSE br-table
      _START_FREEFORM
-OPEN QUERY {&SELF-NAME} FOR EACH es-acordo-area-ficha OF es-acordo-area-docto NO-LOCK
+OPEN QUERY {&SELF-NAME} FOR EACH ext-emitente WHERE ~{&KEY-PHRASE}
+      AND ext-emitente.cod-emitente >= i-inicial
+ AND ext-emitente.cod-emitente <= i-final NO-LOCK
     ~{&SORTBY-PHRASE}.
      _END_FREEFORM
      _Options          = "NO-LOCK KEY-PHRASE SORTBY-PHRASE"
+     _Where[1]         = "mgesp.ext-emitente.cod-emitente >= i-inicial
+ AND mgesp.ext-emitente.cod-emitente <= i-final"
      _Query            is NOT OPENED
 */  /* BROWSE br-table */
 &ANALYZE-RESUME
@@ -348,7 +295,7 @@ OPEN QUERY {&SELF-NAME} FOR EACH es-acordo-area-ficha OF es-acordo-area-docto NO
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br-table B-table-Win
 ON MOUSE-SELECT-DBLCLICK OF br-table IN FRAME F-Main
 DO:
-    RUN New-State("DblClick, SELF":U).
+    RUN New-State('DblClick':U).
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -359,7 +306,10 @@ END.
 ON ROW-ENTRY OF br-table IN FRAME F-Main
 DO:
   /* This code displays initial values for newly added or copied rows. */
-  {src/adm/template/brsentry.i}  
+  {src/adm/template/brsentry.i}
+  
+  run new-state('New-Line|':U + string(rowid({&FIRST-TABLE-IN-QUERY-{&BROWSE-NAME}}))).
+  run seta-valor.
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -379,91 +329,26 @@ END.
 
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br-table B-table-Win
-ON U1 OF br-table IN FRAME F-Main
-DO:
-  /* Calcula e exibe os campos de totais abaixo do browse */
-
-  assign de-vficha1 = 0
-         de-vficha2 = 0
-         de-vficha3 = 0.
-
-  find first param-inv 
-       where param-inv.ep-codigo = i-ep-codigo-usuario no-lock no-error.
-  
-  
-
-  /* desvincula a query do browse */
-  ASSIGN br-table:REFRESHABLE IN FRAME {&frame-name}= no.
-
-  GET FIRST br-table.
-  DO WHILE AVAIL es-acordo-area-ficha:           /* tabela da query */
-
-     ASSIGN de-vficha1 = de-vficha1 + es-acordo-area-ficha.vl-verba
-            de-vficha2 = de-vficha2 + es-acordo-area-ficha.vl-recebido
-            de-vficha3 = de-vficha3 + es-acordo-area-ficha.vl-pago.
-                           
-     GET NEXT br-table.
-     
-  END.
-  
-   /* vincula a query no browse e torna disponivel o registro corrente */
-  ASSIGN br-table:REFRESHABLE IN FRAME {&frame-name} = yes.
-  br-table:FETCH-SELECTED-ROW(1) in frame {&frame-name} NO-ERROR.
- 
-  assign de-fich1:screen-value in frame {&frame-name} = string(de-vficha1)
-         de-fich2:screen-value in frame {&frame-name} = string(de-vficha2)
-         de-fich3:screen-value in frame {&frame-name} = string(de-vficha3).
-
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br-table B-table-Win
 ON VALUE-CHANGED OF br-table IN FRAME F-Main
 DO:
   /* This ADM trigger code must be preserved in order to notify other
      objects when the browser's current row changes. */
   {src/adm/template/brschnge.i}
-  /* run new-state('New-Line|':U + string(rowid({&FIRST-TABLE-IN-QUERY-{&BROWSE-NAME}}))). */
+  run new-state('New-Line|':U + string(rowid({&FIRST-TABLE-IN-QUERY-{&BROWSE-NAME}}))).
+  run new-state('Value-Changed|':U + string(this-procedure)).
 END.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 
-&Scoped-define SELF-NAME bt-eliminar
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-eliminar B-table-Win
-ON CHOOSE OF bt-eliminar IN FRAME F-Main /* Eliminar */
+&Scoped-define SELF-NAME bt-confirma
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-confirma B-table-Win
+ON CHOOSE OF bt-confirma IN FRAME F-Main /* Button 1 */
 DO:
-   RUN pi-eliminar.
-
-   IF AVAIL es-acordo-area-ficha THEN  DO:
-       APPLY 'U1' TO br-table IN FRAME {&FRAME-NAME}.
-   END.
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&Scoped-define SELF-NAME bt-incluir
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-incluir B-table-Win
-ON CHOOSE OF bt-incluir IN FRAME F-Main /* Incluir */
-DO:
-  RUN pi-Incmod ('incluir':U).
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&Scoped-define SELF-NAME bt-modificar
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-modificar B-table-Win
-ON CHOOSE OF bt-modificar IN FRAME F-Main /* Modificar */
-DO:
-  RUN pi-Incmod ('modificar':U).
+  assign input frame {&frame-name} i-inicial i-final.
+  RUN dispatch IN THIS-PROCEDURE ('open-query':U).
+  apply 'value-changed':U to {&browse-name}.
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -522,15 +407,6 @@ PROCEDURE adm-row-available :
   /* Define variables needed by this internal procedure.             */
   {src/adm/template/row-head.i}
 
-  /* Create a list of all the tables that we need to get.            */
-  {src/adm/template/row-list.i "es-acordo-area-docto"}
-
-  /* Get the record ROWID's from the RECORD-SOURCE.                  */
-  {src/adm/template/row-get.i}
-
-  /* FIND each record specified by the RECORD-SOURCE.                */
-  {src/adm/template/row-find.i "es-acordo-area-docto"}
-
   /* Process the newly available records (i.e. display fields,
      open queries, and/or pass records on to any RECORD-TARGETS).    */
   {src/adm/template/row-end.i}
@@ -558,52 +434,6 @@ END PROCEDURE.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-open-query B-table-Win 
-PROCEDURE local-open-query :
-/*------------------------------------------------------------------------------
-  Purpose:     
-  Parameters:  <none>
-  Notes:       
-------------------------------------------------------------------------------*/
-/* Code placed here will execute PRIOR to standard behavior. */
-
-  /* Dispatch standard ADM method.                             */
-  RUN dispatch IN THIS-PROCEDURE ( INPUT 'open-query':U ) .
-
-  /* Code placed here will execute AFTER standard behavior.    */
-
-  if avail es-acordo-area-ficha then  do:
-     apply 'U1' to br-table in frame {&FRAME-NAME}.
-  end.
-
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-row-available B-table-Win 
-PROCEDURE local-row-available :
-/*------------------------------------------------------------------------------
-  Purpose:     
-  Parameters:  <none>
-  Notes:       
-------------------------------------------------------------------------------*/
-/* Code placed here will execute PRIOR to standard behavior. */
-
-  /* Dispatch standard ADM method.                             */
-  RUN dispatch IN THIS-PROCEDURE ( INPUT 'row-available':U ) .
-
-  /* Code placed here will execute AFTER standard behavior.    */
-
-  if available es-acordo-area-ficha then do:
-     apply 'U1' to br-table in frame {&FRAME-NAME}.
-  end.
-
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-view B-table-Win 
 PROCEDURE local-view :
 /*------------------------------------------------------------------------------
@@ -624,6 +454,28 @@ END PROCEDURE.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE pi-retorna-valor B-table-Win 
+PROCEDURE pi-retorna-valor :
+DEFINE INPUT PARAMETER P-CAMPO AS CHARACTER NO-UNDO.
+
+    DEFINE VARIABLE P-VALOR AS CHAR INIT "" NO-UNDO.
+
+    if  avail mgesp.ext-emitente then do:
+        case p-campo:
+            when "cod-emitente" then
+                assign p-valor = string(ext-emitente.cod-emitente).
+            when "observacao-pedido" then
+                assign p-valor = string(ext-emitente.observacao-pedido).
+            when "observacao-complentar" then
+                assign p-valor = string(ext-emitente.observacao-complentar).
+        end.
+    end.
+    return p-valor.
+END PROCEDURE.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE send-key B-table-Win  adm/support/_key-snd.p
 PROCEDURE send-key :
 /*------------------------------------------------------------------------------
@@ -636,7 +488,7 @@ PROCEDURE send-key :
   {src/adm/template/sndkytop.i}
 
   /* Return the key value associated with each key case.             */
-  {src/adm/template/sndkycas.i "cod-area" "es-acordo-area-ficha" "cod-area"}
+  {src/adm/template/sndkycas.i "cod-emitente" "ext-emitente" "cod-emitente"}
 
   /* Close the CASE statement and end the procedure.                 */
   {src/adm/template/sndkyend.i}
@@ -658,8 +510,7 @@ PROCEDURE send-records :
   {src/adm/template/snd-head.i}
 
   /* For each requested table, put it's ROWID in the output list.      */
-  {src/adm/template/snd-list.i "es-acordo-area-docto"}
-  {src/adm/template/snd-list.i "es-acordo-area-ficha"}
+  {src/adm/template/snd-list.i "ext-emitente"}
 
   /* Deal with any unexpected table requests before closing.           */
   {src/adm/template/snd-end.i}
@@ -690,53 +541,30 @@ END PROCEDURE.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-/* ************************  Function Implementations ***************** */
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION fn-sit-ficha B-table-Win 
-FUNCTION fn-sit-ficha RETURNS CHARACTER
-  ( /* parameter-definitions */ ) :
-/*------------------------------------------------------------------------------
-  Purpose:  
-    Notes:  
-------------------------------------------------------------------------------*/
-
-    CASE es-acordo-area-ficha.situacao:
-    
-        WHEN 1 THEN
-            ASSIGN c-desc-sit-ficha = "Ficha sem Acordo".
-        WHEN 2 THEN
-            ASSIGN c-desc-sit-ficha = "Ficha com Acordo".
-        WHEN 3 THEN
-            ASSIGN c-desc-sit-ficha = "Ficha Finalizada".
-    
-    END CASE.
-
-    RETURN c-desc-sit-ficha.   /* Function return value. */
-
-END FUNCTION.
-
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _XFTR "RetornaValorCampo" B-table-Win _INLINE
+/* Actions: ? ? ? ? support/brwrtval.p */
+/* Procedure desativada */
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION fn-sit-tp-docto B-table-Win 
-FUNCTION fn-sit-tp-docto RETURNS CHARACTER
+/* ************************  Function Implementations ***************** */
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION fn-desc-emit B-table-Win 
+FUNCTION fn-desc-emit RETURNS CHARACTER
   ( /* parameter-definitions */ ) :
 /*------------------------------------------------------------------------------
   Purpose:  
     Notes:  
 ------------------------------------------------------------------------------*/
 
-    FIND es-tipo-docto NO-LOCK
-        WHERE es-tipo-docto.tp-docto = es-acordo-area-ficha.tp-docto NO-ERROR.
+  FIND emitente
+      WHERE emitente.cod-emitente = ext-emitente.cod-emitente NO-LOCK NO-ERROR.
+  IF AVAIL emitente THEN
+      ASSIGN c-desc-emitente = emitente.nome-emit.
+  ELSE
+     ASSIGN c-desc-emitente = "".
 
-    IF AVAIL es-tipo-docto THEN
-        ASSIGN c-desc-docto = es-tipo-docto.desc-docto.
-
-    ELSE
-        ASSIGN c-desc-docto = "".
-    
-    RETURN c-desc-docto.   /* Function return value. */
-
+  RETURN c-desc-emitente.   /* Function return value. */
 END FUNCTION.
 
 /* _UIB-CODE-BLOCK-END */

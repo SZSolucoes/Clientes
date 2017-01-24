@@ -13,7 +13,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i ESCM106-V01 2.12.00.001}
+{include/i-prgvrs.i V99XX999 9.99.99.999}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
@@ -50,23 +50,23 @@ def var v-row-parent as rowid no-undo.
 &Scoped-define FRAME-NAME f-main
 
 /* External Tables                                                      */
-&Scoped-define EXTERNAL-TABLES es-acordo-area
-&Scoped-define FIRST-EXTERNAL-TABLE es-acordo-area
+&Scoped-define EXTERNAL-TABLES es-acordo-area-docto
+&Scoped-define FIRST-EXTERNAL-TABLE es-acordo-area-docto
 
 
 /* Need to scope the external tables to this procedure                  */
-DEFINE QUERY external_tables FOR es-acordo-area.
+DEFINE QUERY external_tables FOR es-acordo-area-docto.
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-FIELDS es-acordo-area.cod-area ~
-es-acordo-area.descricao 
-&Scoped-define ENABLED-TABLES es-acordo-area
-&Scoped-define FIRST-ENABLED-TABLE es-acordo-area
+&Scoped-Define ENABLED-FIELDS es-acordo-area-docto.cod-area ~
+es-acordo-area-docto.tp-docto 
+&Scoped-define ENABLED-TABLES es-acordo-area-docto
+&Scoped-define FIRST-ENABLED-TABLE es-acordo-area-docto
 &Scoped-Define ENABLED-OBJECTS rt-key 
-&Scoped-Define DISPLAYED-FIELDS es-acordo-area.cod-area ~
-es-acordo-area.descricao 
-&Scoped-define DISPLAYED-TABLES es-acordo-area
-&Scoped-define FIRST-DISPLAYED-TABLE es-acordo-area
-
+&Scoped-Define DISPLAYED-FIELDS es-acordo-area-docto.cod-area ~
+es-acordo-area-docto.tp-docto 
+&Scoped-define DISPLAYED-TABLES es-acordo-area-docto
+&Scoped-define FIRST-DISPLAYED-TABLE es-acordo-area-docto
+&Scoped-Define DISPLAYED-OBJECTS c-des-area c-des-tp 
 
 /* Custom List Definitions                                              */
 /* ADM-CREATE-FIELDS,ADM-ASSIGN-FIELDS,ADM-MODIFY-FIELDS,List-4,List-5,List-6 */
@@ -82,15 +82,15 @@ es-acordo-area.descricao
 THIS-PROCEDURE
 </KEY-OBJECT>
 <FOREIGN-KEYS>
-cod-area|y|y|ems2custom.es-acordo-area.cod-area
+tp-docto||y|ems2custom.es-acordo-area-docto.tp-docto
 </FOREIGN-KEYS> 
 <EXECUTING-CODE>
 **************************
 * Set attributes related to FOREIGN KEYS
 */
 RUN set-attribute-list (
-    'Keys-Accepted = "cod-area",
-     Keys-Supplied = "cod-area"':U).
+    'Keys-Accepted = ,
+     Keys-Supplied = "tp-docto"':U).
 /**************************
 </EXECUTING-CODE> */
 /* _UIB-CODE-BLOCK-END */
@@ -101,21 +101,30 @@ RUN set-attribute-list (
 
 
 /* Definitions of the field level widgets                               */
+DEFINE VARIABLE c-des-area AS CHARACTER FORMAT "X(256)":U 
+     VIEW-AS FILL-IN 
+     SIZE 53 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-des-tp AS CHARACTER FORMAT "X(256)":U 
+     VIEW-AS FILL-IN 
+     SIZE 53 BY .88 NO-UNDO.
+
 DEFINE RECTANGLE rt-key
      EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 88.57 BY 1.75.
+     SIZE 88.57 BY 2.25.
 
 
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME f-main
-     es-acordo-area.cod-area AT ROW 1.46 COL 17 COLON-ALIGNED WIDGET-ID 2
-          LABEL "Area Comercial"
+     es-acordo-area-docto.cod-area AT ROW 1.21 COL 13 COLON-ALIGNED WIDGET-ID 2
           VIEW-AS FILL-IN 
-          SIZE 8 BY .88
-     es-acordo-area.descricao AT ROW 1.46 COL 25.14 COLON-ALIGNED NO-LABEL WIDGET-ID 4
+          SIZE 5 BY .88
+     c-des-area AT ROW 1.21 COL 18.14 COLON-ALIGNED NO-LABEL WIDGET-ID 6
+     es-acordo-area-docto.tp-docto AT ROW 2.21 COL 13 COLON-ALIGNED WIDGET-ID 4
           VIEW-AS FILL-IN 
-          SIZE 40 BY .88
+          SIZE 5 BY .88
+     c-des-tp AT ROW 2.21 COL 18.14 COLON-ALIGNED NO-LABEL WIDGET-ID 8
      rt-key AT ROW 1 COL 1
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
@@ -127,7 +136,7 @@ DEFINE FRAME f-main
 &ANALYZE-SUSPEND _PROCEDURE-SETTINGS
 /* Settings for THIS-PROCEDURE
    Type: SmartViewer
-   External Tables: ems2custom.es-acordo-area
+   External Tables: ems2custom.es-acordo-area-docto
    Allow: Basic,DB-Fields
    Frames: 1
    Add Fields to: EXTERNAL-TABLES
@@ -149,7 +158,7 @@ END.
 &ANALYZE-SUSPEND _CREATE-WINDOW
 /* DESIGN Window definition (used by the UIB) 
   CREATE WINDOW V-table-Win ASSIGN
-         HEIGHT             = 1.83
+         HEIGHT             = 2.29
          WIDTH              = 88.57.
 /* END WINDOW DEFINITION */
                                                                         */
@@ -180,8 +189,10 @@ ASSIGN
        FRAME f-main:SCROLLABLE       = FALSE
        FRAME f-main:HIDDEN           = TRUE.
 
-/* SETTINGS FOR FILL-IN es-acordo-area.cod-area IN FRAME f-main
-   EXP-LABEL                                                            */
+/* SETTINGS FOR FILL-IN c-des-area IN FRAME f-main
+   NO-ENABLE                                                            */
+/* SETTINGS FOR FILL-IN c-des-tp IN FRAME f-main
+   NO-ENABLE                                                            */
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
 
@@ -222,25 +233,8 @@ PROCEDURE adm-find-using-key :
                the 'Key-Name' and 'Key-Value' attributes.
   Parameters:  <none>
 ------------------------------------------------------------------------------*/
-  DEF VAR key-value AS CHAR NO-UNDO.
-  DEF VAR row-avail-enabled AS LOGICAL NO-UNDO.
 
-  /* LOCK status on the find depends on FIELDS-ENABLED. */
-  RUN get-attribute ('FIELDS-ENABLED':U).
-  row-avail-enabled = (RETURN-VALUE eq 'yes':U).
-  /* Look up the current key-value. */
-  RUN get-attribute ('Key-Value':U).
-  key-value = RETURN-VALUE.
-
-  /* Find the current record using the current Key-Name. */
-  RUN get-attribute ('Key-Name':U).
-  CASE RETURN-VALUE:
-    WHEN 'cod-area':U THEN
-       {src/adm/template/find-tbl.i
-           &TABLE = es-acordo-area
-           &WHERE = "WHERE es-acordo-area.cod-area eq INTEGER(key-value)"
-       }
-  END CASE.
+  /* No Foreign keys are accepted by this SmartObject. */
 
 END PROCEDURE.
 
@@ -261,13 +255,13 @@ PROCEDURE adm-row-available :
   {src/adm/template/row-head.i}
 
   /* Create a list of all the tables that we need to get.            */
-  {src/adm/template/row-list.i "es-acordo-area"}
+  {src/adm/template/row-list.i "es-acordo-area-docto"}
 
   /* Get the record ROWID's from the RECORD-SOURCE.                  */
   {src/adm/template/row-get.i}
 
   /* FIND each record specified by the RECORD-SOURCE.                */
-  {src/adm/template/row-find.i "es-acordo-area"}
+  {src/adm/template/row-find.i "es-acordo-area-docto"}
 
   /* Process the newly available records (i.e. display fields,
      open queries, and/or pass records on to any RECORD-TARGETS).    */
@@ -340,6 +334,39 @@ PROCEDURE local-disable-fields :
     disable {&ADM-MODIFY-FIELDS} with frame {&frame-name}.
     &endif
     
+END PROCEDURE.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-display-fields V-table-Win 
+PROCEDURE local-display-fields :
+/*------------------------------------------------------------------------------
+  Purpose:     
+  Parameters:  <none>
+  Notes:       
+------------------------------------------------------------------------------*/
+
+
+    /* Dispatch standard ADM method.                             */
+    run dispatch in this-procedure ( input 'display-fields':U ) .
+
+    find es-tipo-docto no-lock where 
+         es-tipo-docto.tp-docto = es-acordo-area-docto.tp-docto no-error.
+    if avail es-tipo-docto then
+        assign c-des-tp:screen-value in frame {&frame-name} = es-tipo-docto.desc-docto.
+    else
+        assign c-des-tp:screen-value in frame {&frame-name} = "".
+
+    find es-acordo-area no-lock where 
+         es-acordo-area.cod-area = input frame {&frame-name} es-acordo-area-docto.cod-area no-error.
+    if avail es-acordo-area then
+        assign c-des-area:screen-value in frame {&frame-name} = es-acordo-area.descricao.
+    else
+        assign c-des-area:screen-value in frame {&frame-name} = "".
+
+
+
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
@@ -421,7 +448,7 @@ PROCEDURE send-key :
   {src/adm/template/sndkytop.i}
 
   /* Return the key value associated with each key case.             */
-  {src/adm/template/sndkycas.i "cod-area" "es-acordo-area" "cod-area"}
+  {src/adm/template/sndkycas.i "tp-docto" "es-acordo-area-docto" "tp-docto"}
 
   /* Close the CASE statement and end the procedure.                 */
   {src/adm/template/sndkyend.i}
@@ -443,7 +470,7 @@ PROCEDURE send-records :
   {src/adm/template/snd-head.i}
 
   /* For each requested table, put it's ROWID in the output list.      */
-  {src/adm/template/snd-list.i "es-acordo-area"}
+  {src/adm/template/snd-list.i "es-acordo-area-docto"}
 
   /* Deal with any unexpected table requests before closing.           */
   {src/adm/template/snd-end.i}

@@ -1,0 +1,39 @@
+ADD TABLE "es-acordo-area-docto"
+  AREA "Schema Area"
+  DUMP-NAME "es-acordo-area-docto"
+
+ADD FIELD "cod-area" OF "es-acordo-area-docto" AS integer 
+  FORMAT ">>>>>9"
+  INITIAL "0"
+  LABEL "µrea"
+  POSITION 2
+  MAX-WIDTH 4
+  COLUMN-LABEL "µrea"
+  HELP "C¢digo da µrea"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "tp-docto" OF "es-acordo-area-docto" AS integer 
+  DESCRIPTION "Tipo do Documento"
+  FORMAT ">9"
+  INITIAL "0"
+  LABEL "Documento"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "Documento"
+  HELP "Tipo do Documento"
+  ORDER 20
+  MANDATORY
+
+ADD INDEX "id" ON "es-acordo-area-docto" 
+  AREA "Schema Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "cod-area" ASCENDING 
+  INDEX-FIELD "tp-docto" ASCENDING 
+
+.
+PSC
+cpstream=ibm850
+.
+0000000731

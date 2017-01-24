@@ -14,16 +14,6 @@ ADD FIELD "cod-area" OF "es-acordo-area-ficha" AS integer
   ORDER 10
   MANDATORY
 
-ADD FIELD "num-ficha" OF "es-acordo-area-ficha" AS integer 
-  FORMAT ">>>,>>9"
-  INITIAL "0"
-  LABEL "N£mero Ficha"
-  POSITION 3
-  MAX-WIDTH 4
-  COLUMN-LABEL "N£mero Ficha"
-  ORDER 20
-  MANDATORY
-
 ADD FIELD "tp-docto" OF "es-acordo-area-ficha" AS integer 
   DESCRIPTION "Tipo de documento"
   FORMAT ">9"
@@ -32,6 +22,16 @@ ADD FIELD "tp-docto" OF "es-acordo-area-ficha" AS integer
   POSITION 14
   MAX-WIDTH 4
   COLUMN-LABEL "Tipo Docto"
+  ORDER 20
+  MANDATORY
+
+ADD FIELD "num-ficha" OF "es-acordo-area-ficha" AS integer 
+  FORMAT ">>>,>>9"
+  INITIAL "0"
+  LABEL "N£mero Ficha"
+  POSITION 3
+  MAX-WIDTH 4
+  COLUMN-LABEL "N£mero Ficha"
   ORDER 30
   MANDATORY
 
@@ -139,24 +139,13 @@ ADD FIELD "situacao" OF "es-acordo-area-ficha" AS integer
   COLUMN-LABEL "Situa‡Æo"
   ORDER 130
 
-ADD FIELD "tp-docto" OF "es-acordo-area-ficha" AS integer 
-  DESCRIPTION "Tipo de documento"
-  FORMAT ">9"
-  INITIAL "0"
-  LABEL "Tipo Docto"
-  POSITION 14
-  MAX-WIDTH 4
-  COLUMN-LABEL "Tipo Docto"
-  ORDER 140
-  MANDATORY
-
 ADD INDEX "ch-area-ficha" ON "es-acordo-area-ficha" 
   AREA "Schema Area"
   UNIQUE
   PRIMARY
-  INDEX-FIELD "cod-area" ASCENDING 
-  INDEX-FIELD "num-ficha" ASCENDING 
-  INDEX-FIELD "tp-docto" ASCENDING 
+  INDEX-FIELD "cod-area" ASCENDING   
+  INDEX-FIELD "tp-docto" ASCENDING
+  INDEX-FIELD "num-ficha" ASCENDING  
 
 .
 PSC
