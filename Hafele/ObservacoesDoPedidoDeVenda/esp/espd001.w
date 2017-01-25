@@ -12,7 +12,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i XX9999 9.99.99.999}
+{include/i-prgvrs.i ESPD001 2.12.00.001}
 
 
 /* Create an unnamed pool to store all the widgets created 
@@ -95,8 +95,8 @@ DEFINE MENU m-cadastro MENUBAR
 
 
 /* Definitions of handles for SmartObjects                              */
-DEFINE VARIABLE h_esp001-q01 AS HANDLE NO-UNDO.
-DEFINE VARIABLE h_esp001-v01 AS HANDLE NO-UNDO.
+DEFINE VARIABLE h_espd001-q01 AS HANDLE NO-UNDO.
+DEFINE VARIABLE h_espd001-v01 AS HANDLE NO-UNDO.
 DEFINE VARIABLE h_p-cadsim AS HANDLE NO-UNDO.
 DEFINE VARIABLE h_p-exihel AS HANDLE NO-UNDO.
 DEFINE VARIABLE h_p-navega AS HANDLE NO-UNDO.
@@ -487,42 +487,42 @@ PROCEDURE adm-create-objects :
        /* Size in UIB:  ( 1.25 , 16.00 ) */
 
        RUN init-object IN THIS-PROCEDURE (
-             INPUT  'esp/esp001-v01.w':U ,
+             INPUT  'esp/espd001-v01.w':U ,
              INPUT  FRAME f-cad:HANDLE ,
              INPUT  'Layout = ':U ,
-             OUTPUT h_esp001-v01 ).
-       RUN set-position IN h_esp001-v01 ( 2.75 , 1.57 ) NO-ERROR.
+             OUTPUT h_espd001-v01 ).
+       RUN set-position IN h_espd001-v01 ( 2.75 , 1.57 ) NO-ERROR.
        /* Size in UIB:  ( 12.25 , 88.57 ) */
 
        RUN init-object IN THIS-PROCEDURE (
-             INPUT  'esp/esp001-q01.w':U ,
+             INPUT  'esp/espd001-q01.w':U ,
              INPUT  FRAME f-cad:HANDLE ,
-             INPUT  'ProgPesquisa = esp/esp001-z01.w,
-                     ProgVaPara = esp/esp001-g01.w,
+             INPUT  'ProgPesquisa = esp/espd001-z01.w,
+                     ProgVaPara = esp/espd001-g01.w,
                      ProgIncMod = ,
                      Implantar = no':U ,
-             OUTPUT h_esp001-q01 ).
-       RUN set-position IN h_esp001-q01 ( 1.33 , 65.57 ) NO-ERROR.
+             OUTPUT h_espd001-q01 ).
+       RUN set-position IN h_espd001-q01 ( 1.33 , 65.57 ) NO-ERROR.
        /* Size in UIB:  ( 1.25 , 7.72 ) */
 
        /* Links to SmartPanel h_p-exihel. */
        RUN add-link IN adm-broker-hdl ( h_p-cadsim , 'State':U , h_p-exihel ).
 
-       /* Links to SmartViewer h_esp001-v01. */
-       RUN add-link IN adm-broker-hdl ( h_esp001-q01 , 'Record':U , h_esp001-v01 ).
-       RUN add-link IN adm-broker-hdl ( h_p-cadsim , 'TableIO':U , h_esp001-v01 ).
+       /* Links to SmartViewer h_espd001-v01. */
+       RUN add-link IN adm-broker-hdl ( h_espd001-q01 , 'Record':U , h_espd001-v01 ).
+       RUN add-link IN adm-broker-hdl ( h_p-cadsim , 'TableIO':U , h_espd001-v01 ).
 
-       /* Links to SmartQuery h_esp001-q01. */
-       RUN add-link IN adm-broker-hdl ( h_p-exihel , 'State':U , h_esp001-q01 ).
-       RUN add-link IN adm-broker-hdl ( h_p-navega , 'Navigation':U , h_esp001-q01 ).
-       RUN add-link IN adm-broker-hdl ( h_p-navega , 'State':U , h_esp001-q01 ).
+       /* Links to SmartQuery h_espd001-q01. */
+       RUN add-link IN adm-broker-hdl ( h_p-exihel , 'State':U , h_espd001-q01 ).
+       RUN add-link IN adm-broker-hdl ( h_p-navega , 'Navigation':U , h_espd001-q01 ).
+       RUN add-link IN adm-broker-hdl ( h_p-navega , 'State':U , h_espd001-q01 ).
 
        /* Adjust the tab order of the smart objects. */
        RUN adjust-tab-order IN adm-broker-hdl ( h_p-cadsim ,
              h_p-navega , 'AFTER':U ).
        RUN adjust-tab-order IN adm-broker-hdl ( h_p-exihel ,
              h_p-cadsim , 'AFTER':U ).
-       RUN adjust-tab-order IN adm-broker-hdl ( h_esp001-v01 ,
+       RUN adjust-tab-order IN adm-broker-hdl ( h_espd001-v01 ,
              h_p-exihel , 'AFTER':U ).
     END. /* Page 0 */
 
@@ -641,7 +641,7 @@ PROCEDURE local-initialize :
 
   run pi-before-initialize.
 
-  {utp/ut9000.i "XX9999" "9.99.99.999"}
+  {utp/ut9000.i "ESPD001" "2.12.00.001"}
 
   /* Dispatch standard ADM method.                             */
   RUN dispatch IN THIS-PROCEDURE ( INPUT 'initialize':U ) .

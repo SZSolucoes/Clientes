@@ -13,7 +13,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i B99XX999 9.99.99.999}
+{include/i-prgvrs.i ESPD001-B01 2.12.00.001}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
@@ -460,7 +460,7 @@ DEFINE INPUT PARAMETER P-CAMPO AS CHARACTER NO-UNDO.
 
     DEFINE VARIABLE P-VALOR AS CHAR INIT "" NO-UNDO.
 
-    if  avail mgesp.ext-emitente then do:
+    if  avail ext-emitente then do:
         case p-campo:
             when "cod-emitente" then
                 assign p-valor = string(ext-emitente.cod-emitente).

@@ -13,7 +13,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i V99XX999 9.99.99.999}
+{include/i-prgvrs.i ESPD001-V01 2.12.00.001}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures

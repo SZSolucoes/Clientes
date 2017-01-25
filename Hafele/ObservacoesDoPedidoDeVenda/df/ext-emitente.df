@@ -1,0 +1,45 @@
+ADD TABLE "ext-emitente"
+  AREA "Schema Area"
+  LABEL "ext-emitente"
+  DESCRIPTION "Cadastro especifico de emitente, com informa‡äes que serÆo disponibilizadas no pd4000"
+  DUMP-NAME "ext-emitente"
+
+ADD FIELD "cod-emitente" OF "ext-emitente" AS integer 
+  FORMAT ">>>>>>>>9"
+  INITIAL "0"
+  LABEL "C¢digo"
+  POSITION 2
+  MAX-WIDTH 4
+  COLUMN-LABEL "C¢digo"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "observacao-pedido" OF "ext-emitente" AS character 
+  FORMAT "x(2000)"
+  INITIAL ""
+  LABEL "Observa‡Æo do Pedido"
+  POSITION 3
+  MAX-WIDTH 4000
+  COLUMN-LABEL "Observa‡Æo do Pedido"
+  ORDER 20
+
+ADD FIELD "observacao-complentar" OF "ext-emitente" AS character 
+  FORMAT "x(2000)"
+  INITIAL ""
+  LABEL "Observa‡Æo Complentar do Pedido"
+  POSITION 4
+  MAX-WIDTH 4000
+  COLUMN-LABEL "Observa‡Æo Complentar do Pedido"
+  ORDER 30
+
+ADD INDEX "ch-ext-emitente" ON "ext-emitente" 
+  AREA "Schema Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "cod-emitente" ASCENDING 
+
+.
+PSC
+cpstream=ibm850
+.
+0000000988
