@@ -35,7 +35,7 @@ IF p-ind-event = "endEfetivaNota" THEN DO:
             IF AVAIL ext-emitente
                 AND ext-emitente.observacao-complentar <> "" THEN 
 
-                ASSIGN bf-nota-fiscal.observ-nota = TRIM(bf-nota-fiscal.observ-nota) + ext-emitente.observacao-complentar.
+                ASSIGN bf-nota-fiscal.observ-nota = TRIM(bf-nota-fiscal.observ-nota) + " / " + ext-emitente.observacao-pedido  + " / " + ext-emitente.observacao-complentar .
         END.
     END.
 END.

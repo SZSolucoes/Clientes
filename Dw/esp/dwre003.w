@@ -561,9 +561,6 @@ PROCEDURE pi-imprime-etiqueta :
     RUN pi-inicializar IN h-acomp (INPUT RETURN-VALUE).
 
     OUTPUT STREAM s-etiq TO VALUE(c-arquivo)APPEND.
-
-    MESSAGE "Altera‡Æo - 02 - DWRE003"
-    VIEW-AS ALERT-BOX INFO BUTTONS OK.
     
     DO i-cont = i-seq-ini TO i-seq-final:
 

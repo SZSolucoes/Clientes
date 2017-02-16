@@ -1,0 +1,524 @@
+
+
+
+
+
+
+
+
+
+
+                                         TERMO ABERTURA LRE                      
+                                         ----------------------------------------
+
+
+
+
+
+
+                         .
+              R E G I S T R O  DE  E N T R A D A S                       *------------ (a) - CODIGOS DE VALORES FISCAIS -----------*
+                                                                         * 1 - OPERACOES COM CREDITO DO IMPOSTO                    *
+FIRMA: COMERCIAL ELETRICA DW S/A                                         * 2 - OPER. SEM CRED. DO IMPOSTO - ISENTAS OU NAO TRIBUT. *
+INSCR. EST.: 90.270.196-65         CNPJ: 05.381.281/0001-93              * 3 - OPERACOES SEM CREDITO DO IMPOSTO - OUTRAS           *
+FOLHA:       2          MES OU PERIODO/ANO: 18/11/2016 A 18/11/2016      *---------------------------------------------------------*
+
+         *----- DOCUMENTOS FISCAIS ----*                                *------- V A L O R E S  F I S C A I S -------*
+DATA DE      SERIE          DATA DO   CODIGO   UF      VALOR     CODIFICACAO                BASE CALCULO         IMPOSTO
+ENTRADA  ESP SUB-   NUMERO  DOCUMENTO EMITENTE ORIG   CONTABIL CONTABIL  FISCAL ICMS COD OU VALOR DA ALIQ    CREDITADO  OBSERVACOES
+FORNECEDOR   SERIE                                                              IPI  (a)    OPERACAO
+CNPJ                                     INSC. ESTADUAL                         ST
+
+18/11/16 NFE 0       3140 16/11/16       205 SP        346,50                2102 ICMS 1         346,50  1,86          6,44
+IND COM AP  APELATOM LTDA                                                         IPI  2         346,50                0,00
+60.927.415/0001-37                       105853917113       
+                                                                                                                                    
+18/11/16 NFE 0       9716 16/11/16      1145 SP       1581,00                2102 ICMS 1        1550,00 12,00        186,00
+SNJ IND DE MAT ELETR.E ELETR.LTDA                                                 IPI  3        1550,00                0,00
+07.390.409/0001-00                       190174218113       
+                                                                                                                                    
+18/11/16 NFE 0      94534 27/10/16     30797 RS         37,89                2353 ICMS 1          37,89 12,00          4,55
+MERIDIONAL CARGAS LTDA                                                            IPI  2          37,89                0,00
+23.864.838/0011-09                       0963271342         
+                                                                                                                                    
+18/11/16 NFE 0      94546 27/10/16     30797 RS        242,67                2353 ICMS 1         242,67 12,00         29,12
+MERIDIONAL CARGAS LTDA                                                            IPI  2         242,67                0,00
+23.864.838/0011-09                       0963271342         
+                                                                                                                                    
+18/11/16 NFE 0      94692 28/10/16     30797 RS         49,31                2353 ICMS 1          49,31 12,00          5,92
+MERIDIONAL CARGAS LTDA                                                            IPI  2          49,31                0,00
+23.864.838/0011-09                       0963271342         
+                                                                                                                                    
+18/11/16 NFE 0      94832 31/10/16     30797 RS         52,07                2353 ICMS 1          52,07 12,00          6,25
+MERIDIONAL CARGAS LTDA                                                            IPI  2          52,07                0,00
+23.864.838/0011-09                       0963271342         
+                                                                                                                                    
+18/11/16 NFE 0     223812 28/10/16     29367 SP         42,87                2353 ICMS 1          42,87 12,00          5,14
+MERIDIONAL CARGAS LTDA                                                            IPI  2          42,87                0,00
+23.864.838/0007-14                       244995524116       
+                                                                                                                                    
+18/11/16 NFE 0     469736 09/11/16      4572 SP        154,07                2353 ICMS 1         154,07 12,00         18,49
+TRANSJOI TRANSPORTES LTDA                                                         IPI  2         154,07                0,00
+83.630.053/0003-85                       492278333110       
+                                                                                                                                    
+18/11/16 NFE 0     485566 28/10/16       688 RJ         52,93                2353 ICMS 1          52,93 12,00          6,35
+MERIDIONAL CARGAS LTDA (21) 3885-1515                                             IPI  2          52,93                0,00
+23.864.838/0006-33                       85208527           
+                                                                                                                                    
+18/11/16 NFE 0     976336 27/10/16       915 SP         69,11                2353 ICMS 1          69,11 12,00          8,29
+MERIDIONAL CARGAS LTDA                                                            IPI  2          69,11                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     976338 27/10/16       915 SP         47,80                2353 ICMS 1          47,80 12,00          5,74
+MERIDIONAL CARGAS LTDA                                                            IPI  2          47,80                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     976382 27/10/16       915 SP         41,95                2353 ICMS 1          41,95 12,00          5,03
+MERIDIONAL CARGAS LTDA                                                            IPI  2          41,95                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     976409 27/10/16       915 SP         47,75                2353 ICMS 1          47,75 12,00          5,73
+MERIDIONAL CARGAS LTDA                                                            IPI  2          47,75                0,00
+                                                                                                                                    
+              R E G I S T R O  DE  E N T R A D A S                       *------------ (a) - CODIGOS DE VALORES FISCAIS -----------*
+                                                                         * 1 - OPERACOES COM CREDITO DO IMPOSTO                    *
+FIRMA: COMERCIAL ELETRICA DW S/A                                         * 2 - OPER. SEM CRED. DO IMPOSTO - ISENTAS OU NAO TRIBUT. *
+INSCR. EST.: 90.270.196-65         CNPJ: 05.381.281/0001-93              * 3 - OPERACOES SEM CREDITO DO IMPOSTO - OUTRAS           *
+FOLHA:       3          MES OU PERIODO/ANO: 18/11/2016 A 18/11/2016      *---------------------------------------------------------*
+
+         *----- DOCUMENTOS FISCAIS ----*                                *------- V A L O R E S  F I S C A I S -------*
+DATA DE      SERIE          DATA DO   CODIGO   UF      VALOR     CODIFICACAO                BASE CALCULO         IMPOSTO
+ENTRADA  ESP SUB-   NUMERO  DOCUMENTO EMITENTE ORIG   CONTABIL CONTABIL  FISCAL ICMS COD OU VALOR DA ALIQ    CREDITADO  OBSERVACOES
+FORNECEDOR   SERIE                                                              IPI  (a)    OPERACAO
+CNPJ                                     INSC. ESTADUAL                         ST
+
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     977143 27/10/16       915 SP         42,38                2353 ICMS 1          42,38 12,00          5,09
+MERIDIONAL CARGAS LTDA                                                            IPI  2          42,38                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     977509 28/10/16       915 SP         45,49                2353 ICMS 1          45,49 12,00          5,46
+MERIDIONAL CARGAS LTDA                                                            IPI  2          45,49                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     977540 28/10/16       915 SP         85,05                2353 ICMS 1          85,05 12,00         10,21
+MERIDIONAL CARGAS LTDA                                                            IPI  2          85,05                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     978636 31/10/16       915 SP         68,90                2353 ICMS 1          68,90 12,00          8,27
+MERIDIONAL CARGAS LTDA                                                            IPI  2          68,90                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     978642 31/10/16       915 SP         51,57                2353 ICMS 1          51,57 12,00          6,19
+MERIDIONAL CARGAS LTDA                                                            IPI  2          51,57                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     978738 31/10/16       915 SP        114,98                2353 ICMS 1         114,98 12,00         13,80
+MERIDIONAL CARGAS LTDA                                                            IPI  2         114,98                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     979245 31/10/16       915 SP         49,93                2353 ICMS 1          49,93 12,00          5,99
+MERIDIONAL CARGAS LTDA                                                            IPI  2          49,93                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     979901 01/11/16       915 SP         46,23                2353 ICMS 1          46,23 12,00          5,55
+MERIDIONAL CARGAS LTDA                                                            IPI  2          46,23                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     980501 01/11/16       915 SP         66,69                2353 ICMS 1          66,69 12,00          8,00
+MERIDIONAL CARGAS LTDA                                                            IPI  2          66,69                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 0     980521 01/11/16       915 SP        271,40                2353 ICMS 1         271,40 12,00         32,57
+MERIDIONAL CARGAS LTDA                                                            IPI  2         271,40                0,00
+23.864.838/0004-71                       113893783112       
+                                                                                                                                    
+18/11/16 NFE 1       2028 16/11/16      2442 SP        640,00                2102 ICMS 2         640,00                0,00
+AMES ILUMINACAO E.I.E LTDA ME                                                     IPI  2         640,00                0,00
+10.832.609/0001-80                       144792205116       
+                                                                                                                                    
+18/11/16 NFE 1       9492 16/11/16      2820 SP        651,00                2102 ICMS 2         651,00                0,00
+EX BRASIL LTDA ME                                                                 IPI  2         651,00                0,00
+10.623.708/0001-52                       219100234111       
+                                                                                                                                    
+                                                                                                                                    
+              R E G I S T R O  DE  E N T R A D A S                       *------------ (a) - CODIGOS DE VALORES FISCAIS -----------*
+                                                                         * 1 - OPERACOES COM CREDITO DO IMPOSTO                    *
+FIRMA: COMERCIAL ELETRICA DW S/A                                         * 2 - OPER. SEM CRED. DO IMPOSTO - ISENTAS OU NAO TRIBUT. *
+INSCR. EST.: 90.270.196-65         CNPJ: 05.381.281/0001-93              * 3 - OPERACOES SEM CREDITO DO IMPOSTO - OUTRAS           *
+FOLHA:       4          MES OU PERIODO/ANO: 18/11/2016 A 18/11/2016      *---------------------------------------------------------*
+
+         *----- DOCUMENTOS FISCAIS ----*                                *------- V A L O R E S  F I S C A I S -------*
+DATA DE      SERIE          DATA DO   CODIGO   UF      VALOR     CODIFICACAO                BASE CALCULO         IMPOSTO
+ENTRADA  ESP SUB-   NUMERO  DOCUMENTO EMITENTE ORIG   CONTABIL CONTABIL  FISCAL ICMS COD OU VALOR DA ALIQ    CREDITADO  OBSERVACOES
+FORNECEDOR   SERIE                                                              IPI  (a)    OPERACAO
+CNPJ                                     INSC. ESTADUAL                         ST
+
+18/11/16 NFE 1       9503 17/11/16      3857 PR        109,32                1102 ICMS 2         109,32                0,00
+ELETRICAL COM.PRODUTOS ELETRICOS LTDA                                             IPI  2         109,32                0,00
+00.620.869/0001-39                       1050746972         
+                                                                                                                                    
+18/11/16 NFE 1       9504 17/11/16      3857 PR       1835,13                1102 ICMS 2        1835,13                0,00
+ELETRICAL COM.PRODUTOS ELETRICOS LTDA                                             IPI  2        1835,13                0,00
+00.620.869/0001-39                       1050746972         
+                                                                                                                                    
+18/11/16 NFE 1      28245 17/11/16      4279 SP       1780,47                2102 ICMS 1        1548,23 12,00        185,79
+HIGH LUX METALURGICA IMP E EXP EIRELI EP                                          IPI  3        1548,23                0,00
+00.592.277/0001-50                       623021515113       
+                                                                                                                                    
+18/11/16 NFE 1      37336 16/11/16       338 SP        403,84                2102 ICMS 1         384,61  4,00         15,38
+KOTEK ELETRO ELETRONICA LTDA                                                      IPI  3         384,61                0,00
+02.767.329/0001-08                       115253550117       
+                                                                                                                                    
+18/11/16 NFE 1      44210 16/11/16      4464 SP       5317,49                2102 ICMS 1        4623,90 12,00        554,87
+SIEMENS LTDA                                                                      IPI  3        4623,90                0,00
+44.013.159/0080-10                       407266506117       
+                                                                                                                                    
+18/11/16 NFE 1      49304 14/11/16      4546 SP        547,00                2102 ICMS 1         547,00  4,00         21,88
+NEWORK DO BRASIL LTDA                                                             IPI  2         547,00                0,00
+02.863.803/0001-03                       115283389114       
+                                                                                                                                    
+18/11/16 NFE 1      52298 16/11/16       342 SP        310,00                2102 ICMS 1         310,00 12,00         37,20
+PARATEC PARA RAIOS E ACESSORIOS LTDA                                              IPI  2         310,00                0,00
+02.495.199/0001-00                       114920561112       
+                                                                                                                                    
+18/11/16 NFT 1      60665 18/11/16        16 PR       6463,41                1209 ICMS 1        6463,41 18,00        775,65  716|1|0059
+COMERCIAL ELETRICA DW S/A                                                         IPI  2        6463,41                0,00 024| Diferi
+05.381.281/0016-70                       9069064571                                                                         mento parci
+                                                                                                                            al de 33,33
+                                                                                                                            % do valor 
+                                                                                                                                    
+18/11/16 NFE 1      71431 11/11/16       273 SP       2583,85                2102 ICMS 1        2371,15  4,00         94,85
+FINDER COMPONENTES LTDA                                                           IPI  3        2371,15                0,00
+02.457.479/0001-15                       636158170114       
+                                                                                                                                    
+18/11/16 NFE 1      75918 17/11/16       660 PR       2530,00                1102 ICMS 1        1686,66 18,00        303,59
+DISTRIBUIDORA DE PECAS ELETRICAS SOL LTD                                          ICMS 3         843,25                0,00
+00.338.610/0002-80                       9018730704                               IPI  2        2530,00                0,00
+                                                                                                                                    
+18/11/16 NFE 1      80143 16/11/16      4515 RS       1375,56                2102 ICMS 1        1375,56 12,00        165,07
+QT EQUIPAMENTOS LTDA                                                              IPI  2        1375,56                0,00
+90.248.691/0001-30                       1770043990         
+                                                                                                                                    
+18/11/16 NFE 1      84471 14/11/16       263 PR        250,00                1949 ICMS 2         250,00                0,00
+SOLUMAX SOLUCOES E TECNOLOGIA LTDA                                                IPI  2         250,00                0,00
+05.236.166/0001-25                       9026482400         
+                                                                                                                                    
+                                                                                                                                    
+              R E G I S T R O  DE  E N T R A D A S                       *------------ (a) - CODIGOS DE VALORES FISCAIS -----------*
+                                                                         * 1 - OPERACOES COM CREDITO DO IMPOSTO                    *
+FIRMA: COMERCIAL ELETRICA DW S/A                                         * 2 - OPER. SEM CRED. DO IMPOSTO - ISENTAS OU NAO TRIBUT. *
+INSCR. EST.: 90.270.196-65         CNPJ: 05.381.281/0001-93              * 3 - OPERACOES SEM CREDITO DO IMPOSTO - OUTRAS           *
+FOLHA:       5          MES OU PERIODO/ANO: 18/11/2016 A 18/11/2016      *---------------------------------------------------------*
+
+         *----- DOCUMENTOS FISCAIS ----*                                *------- V A L O R E S  F I S C A I S -------*
+DATA DE      SERIE          DATA DO   CODIGO   UF      VALOR     CODIFICACAO                BASE CALCULO         IMPOSTO
+ENTRADA  ESP SUB-   NUMERO  DOCUMENTO EMITENTE ORIG   CONTABIL CONTABIL  FISCAL ICMS COD OU VALOR DA ALIQ    CREDITADO  OBSERVACOES
+FORNECEDOR   SERIE                                                              IPI  (a)    OPERACAO
+CNPJ                                     INSC. ESTADUAL                         ST
+
+18/11/16 NFE 1      84516 16/11/16       263 PR        476,00                1949 ICMS 2         476,00                0,00
+SOLUMAX SOLUCOES E TECNOLOGIA LTDA                                                IPI  2         476,00                0,00
+05.236.166/0001-25                       9026482400         
+                                                                                                                                    
+18/11/16 NFE 1     104902 14/11/16       123 SP        965,80                2102 ICMS 1         919,81 12,00        110,38
+CRIMPER DO BRASIL IND E COM DE TERM  E C                                          IPI  3         919,81                0,00
+46.976.924/0001-29                       244196826110       
+                                                                                                                                    
+18/11/16 NFT 1     112745 17/11/16         9 SC       1628,77                2152 ICMS 1        1576,28 12,00        189,15
+COMERCIAL ELETRICA DW S/A                                                         IPI  2        1628,77                0,00
+05.381.281/0009-40                       256781222          
+                                                                                                                                    
+18/11/16 NFT 1     112749 17/11/16         9 SC        960,63                2152 ICMS 1         203,17  4,00          8,13
+COMERCIAL ELETRICA DW S/A                                                         ICMS 1         833,20 12,00         99,98
+05.381.281/0009-40                       256781222                                ICMS 3         839,37                0,00
+                                                                                  IPI  2         960,63                0,00
+                                                                                                                                    
+18/11/16 NFT 1     117547 17/11/16         2 PR         88,17                1152 ICMS 3           0,00                0,00
+COMERCIAL ELETRICA DW S/A                                                         IPI  2          88,17                0,00
+05.381.281/0002-74                       9033409165         
+                                                                                                                                    
+18/11/16 NFT 1     117547 17/11/16         2 PR        140,66                1409 ICMS 3         140,66                0,00
+COMERCIAL ELETRICA DW S/A                                                         IPI  2         140,66                0,00
+05.381.281/0002-74                       9033409165         
+                                                                                                                                    
+18/11/16 NFT 1     117555 17/11/16         2 PR        153,13                1409 ICMS 3         153,13                0,00
+COMERCIAL ELETRICA DW S/A                                                         IPI  2         153,13                0,00
+05.381.281/0002-74                       9033409165         
+                                                                                                                                    
+18/11/16 NFE 1     128434 16/11/16      4305 SP       1245,70                2102 ICMS 1        1245,70 12,00        149,48
+NEXANS DO BRASIL S/A                                                              IPI  2        1245,70                0,00
+31.860.364/0012-28                       165373372114       
+                                                                                                                                    
+18/11/16 NFE 1     128435 16/11/16      4305 SP        979,20                2102 ICMS 1         979,20 12,00        117,50
+NEXANS DO BRASIL S/A                                                              IPI  2         979,20                0,00
+31.860.364/0012-28                       165373372114       
+                                                                                                                                    
+18/11/16 NFE 1     128437 16/11/16      4305 SP        657,04                2102 ICMS 1         657,04 12,00         78,84
+NEXANS DO BRASIL S/A                                                              IPI  2         657,04                0,00
+31.860.364/0012-28                       165373372114       
+                                                                                                                                    
+18/11/16 NFE 1     128454 16/11/16      4305 SP        972,40                2102 ICMS 1         972,40 12,00        116,69
+NEXANS DO BRASIL S/A                                                              IPI  2         972,40                0,00
+31.860.364/0012-28                       165373372114       
+                                                                                                                                    
+18/11/16 NFT 1     130198 17/11/16        10 SC       5560,44                2152 ICMS 1        2950,54  4,00        118,01
+COMERCIAL ELETRICA DW S/A                                                         ICMS 1        1509,92 12,00        181,19
+05.381.281/0010-84                       256905894                                ICMS 3        2081,04                0,00
+                                                                                  IPI  2        5560,44                0,00
+                                                                                                                                    
+                                                                                                                                    
+              R E G I S T R O  DE  E N T R A D A S                       *------------ (a) - CODIGOS DE VALORES FISCAIS -----------*
+                                                                         * 1 - OPERACOES COM CREDITO DO IMPOSTO                    *
+FIRMA: COMERCIAL ELETRICA DW S/A                                         * 2 - OPER. SEM CRED. DO IMPOSTO - ISENTAS OU NAO TRIBUT. *
+INSCR. EST.: 90.270.196-65         CNPJ: 05.381.281/0001-93              * 3 - OPERACOES SEM CREDITO DO IMPOSTO - OUTRAS           *
+FOLHA:       6          MES OU PERIODO/ANO: 18/11/2016 A 18/11/2016      *---------------------------------------------------------*
+
+         *----- DOCUMENTOS FISCAIS ----*                                *------- V A L O R E S  F I S C A I S -------*
+DATA DE      SERIE          DATA DO   CODIGO   UF      VALOR     CODIFICACAO                BASE CALCULO         IMPOSTO
+ENTRADA  ESP SUB-   NUMERO  DOCUMENTO EMITENTE ORIG   CONTABIL CONTABIL  FISCAL ICMS COD OU VALOR DA ALIQ    CREDITADO  OBSERVACOES
+FORNECEDOR   SERIE                                                              IPI  (a)    OPERACAO
+CNPJ                                     INSC. ESTADUAL                         ST
+
+18/11/16 NFT 1     130199 17/11/16        10 SC       1843,70                2152 ICMS 1          15,41  4,00          0,62
+COMERCIAL ELETRICA DW S/A                                                         ICMS 1        1957,44 12,00        234,89
+05.381.281/0010-84                       256905894                                IPI  2        1843,70                0,00
+                                                                                                                                    
+18/11/16 NFT 1     130201 17/11/16        10 SC        207,97                2152 ICMS 1         148,59 12,00         17,83
+COMERCIAL ELETRICA DW S/A                                                         IPI  2         207,97                0,00
+05.381.281/0010-84                       256905894          
+                                                                                                                                    
+18/11/16 NFT 1     130223 17/11/16        10 SC       2670,33                2152 ICMS 1         747,62  4,00         29,90
+COMERCIAL ELETRICA DW S/A                                                         ICMS 1        2124,56 12,00        254,95
+05.381.281/0010-84                       256905894                                IPI  2        2670,33                0,00
+                                                                                                                                    
+18/11/16 NFE 1     234860 17/11/16      4017 SP       4256,26                2102 ICMS 1        1228,30  4,00         49,13
+WEIDMULLER CONEXEL DO BR CONEX ELETR LTD                                          ICMS 1        2650,80 12,00        318,10
+47.160.221/0001-90                       286358763118                             IPI  2         396,00                0,00
+                                                                                  IPI  3        3483,10                0,00
+                                                                                                                                    
+18/11/16 NFE 1     305892 17/11/16      4267 SP        615,94                2102 ICMS 1         535,60  4,00         21,42
+PHOENIX CONTACT IND E COM LTDA                                                    IPI  3         535,60                0,00
+68.404.912/0001-62                       113659559112       
+                                                                                                                                    
+18/11/16 NFE 1     305935 17/11/16      4267 SP       3424,26                2102 ICMS 1        2088,72  4,00         83,55
+PHOENIX CONTACT IND E COM LTDA                                                    ICMS 1        1050,00 12,00        126,00
+68.404.912/0001-62                       113659559112                             IPI  3        3138,72                0,00
+                                                                                                                                    
+18/11/16 NFE 1     306020 17/11/16      4267 SP       1824,06                2102 ICMS 1        1419,65  4,00         56,78
+PHOENIX CONTACT IND E COM LTDA                                                    ICMS 1         175,00 12,00         21,00
+68.404.912/0001-62                       113659559112                             IPI  3        1594,65                0,00
+                                                                                                                                    
+18/11/16 NFE 1     306035 17/11/16      4267 SP       4564,40                2102 ICMS 1        3969,04  4,00        158,76
+PHOENIX CONTACT IND E COM LTDA                                                    IPI  3        3969,04                0,00
+68.404.912/0001-62                       113659559112       
+                                                                                                                                    
+18/11/16 NFE 1     379916 22/10/16     30625 GO       1545,59                2303 ICMS 3        1545,59                0,00
+CLARO S.A                                                                         IPI  2        1545,59                0,00
+40.432.544/0436-28                       105450944          
+                                                                                                                                    
+18/11/16 NFD 1     414380 03/11/16      6163 RS        270,30                2411 ICMS 1         255,00 12,00         30,60  Devolução 
+COOP CENTRAL AURORA ALIMENTOS                                                     IPI  2         255,00                0,00 referente  
+83.310.441/0043-76                       0390131571                               ST             255,00               15,30 anf 577984,
+                                                                                                                             emissão em
+                                                                                                                             30/09/2016
+                                                                                                                                    
+18/11/16 NFE 1     419044 17/11/16      4006 PR        256,29                1102 ICMS 2         256,29                0,00
+IRMAOS ABAGE E CIA LTDA                                                           IPI  2         256,29                0,00
+76.509.041/0001-70                       1014253129         
+                                                                                                                                    
+18/11/16 NFE 1     568643 10/11/16       442 RS         71,70                2353 ICMS 1          71,70 12,00          8,60
+VENETOSUL TRANSPORTES LTDA                                                        IPI  2          71,70                0,00
+93.949.899/0001-74                       0290211611         
+                                                                                                                                    
+              R E G I S T R O  DE  E N T R A D A S                       *------------ (a) - CODIGOS DE VALORES FISCAIS -----------*
+                                                                         * 1 - OPERACOES COM CREDITO DO IMPOSTO                    *
+FIRMA: COMERCIAL ELETRICA DW S/A                                         * 2 - OPER. SEM CRED. DO IMPOSTO - ISENTAS OU NAO TRIBUT. *
+INSCR. EST.: 90.270.196-65         CNPJ: 05.381.281/0001-93              * 3 - OPERACOES SEM CREDITO DO IMPOSTO - OUTRAS           *
+FOLHA:       7          MES OU PERIODO/ANO: 18/11/2016 A 18/11/2016      *---------------------------------------------------------*
+
+         *----- DOCUMENTOS FISCAIS ----*                                *------- V A L O R E S  F I S C A I S -------*
+DATA DE      SERIE          DATA DO   CODIGO   UF      VALOR     CODIFICACAO                BASE CALCULO         IMPOSTO
+ENTRADA  ESP SUB-   NUMERO  DOCUMENTO EMITENTE ORIG   CONTABIL CONTABIL  FISCAL ICMS COD OU VALOR DA ALIQ    CREDITADO  OBSERVACOES
+FORNECEDOR   SERIE                                                              IPI  (a)    OPERACAO
+CNPJ                                     INSC. ESTADUAL                         ST
+
+18/11/16 NFD 1     585611 18/11/16      6366 SC       6337,32                2411 ICMS 1        5608,25  4,00        224,33  Devolução 
+ELIANE S/A REVESTIMENTOS CERAMICOS                                                IPI  2        5608,25                0,00 referente a
+86.532.538/0032-69                       250058960                                ST            5608,25              729,07  nf 583993,
+                                                                                                                             emissão em
+                                                                                                                             08/11/2016
+                                                                                                                                    
+18/11/16 NFE 1     659746 11/11/16      4334 SP      10235,80                2102 ICMS 1        9284,90  4,00        371,39
+SIEMENS LTDA                                                                      IPI  3        9284,90                0,00
+44.013.159/0077-14                       233086147119       
+                                                                                                                                    
+18/11/16 NFE 1     840868 16/11/16      4343 SC        368,00                2102 ICMS 1         357,28 12,00         42,87
+WEG DRIVES & CONTROLS AUTOMACAO LTDA                                              IPI  3         357,28                0,00
+14.309.992/0001-48                       256520801          
+                                                                                                                                    
+18/11/16 NFE 1     840983 16/11/16      4343 SC       1459,85                2102 ICMS 1        1442,48 12,00        173,09
+WEG DRIVES & CONTROLS AUTOMACAO LTDA                                              IPI  3        1442,48                0,00
+14.309.992/0001-48                       256520801          
+                                                                                                                                    
+18/11/16 NFE 1     841095 17/11/16      4343 SC        832,30                2102 ICMS 1         792,66 12,00         95,12
+WEG DRIVES & CONTROLS AUTOMACAO LTDA                                              IPI  3         792,66                0,00
+14.309.992/0001-48                       256520801          
+                                                                                                                                    
+18/11/16 NFE 1    1108199 17/11/16      4067 PR        564,02                1102 ICMS 2         564,02                0,00
+FERRAMENTAS GERAIS COM IMP S/A                                                    IPI  2         564,02                0,00
+92.664.028/0024-38                       9018559606         
+                                                                                                                                    
+18/11/16 NFE 10     73854 17/11/16      4265 PR        598,68                1102 ICMS 1         598,68 18,00         71,84
+AVIC DISTRIBUIDORA DE ACUMULADORES LTDA                                           IPI  2         598,68                0,00
+76.102.839/0001-00                       1013393270         
+                                                                                                                                    
+18/11/16 NFE 10     73877 18/11/16      4265 PR        475,14                1102 ICMS 2         475,14                0,00
+AVIC DISTRIBUIDORA DE ACUMULADORES LTDA                                           IPI  2         475,14                0,00
+76.102.839/0001-00                       1013393270         
+                                                                                                                                    
+18/11/16 NFE 15     63492 27/10/16      1108 SC        152,09                2353 ICMS 1         152,09 12,00         18,25
+AGGAMBA TRANSPORTES RODOVIARIOS DE CARGA                                          IPI  2         152,09                0,00
+02.742.623/0001-65                       254919774          
+                                                                                                                                    
+18/11/16 NFE 2     277713 17/11/16     29363 SC      11623,43                2102 ICMS 1       11623,43 12,00       1394,81
+ELETROCAL IND E COM MATS ELETR LTDA                                               IPI  2       10612,67                0,00
+83.060.012/0001-39                       250142147                                IPI  3        1010,76                0,00
+                                                                                                                                    
+18/11/16 NFE 2     277714 17/11/16     29363 SC      30838,70                2102 ICMS 1       30838,70 12,00       3700,64
+ELETROCAL IND E COM MATS ELETR LTDA                                               IPI  2       30838,70                0,00
+83.060.012/0001-39                       250142147          
+                                                                                                                                    
+18/11/16 NFE 21    292708 12/11/16       131 SP       8537,09                2102 ICMS 1        7768,49 12,00        932,22
+3M DO BRASIL LTDA                                                                 IPI  3        7768,49                0,00
+45.985.371/0001-08                       671000090114       
+                                                                                                                                    
+                                                                                                                                    
+              R E G I S T R O  DE  E N T R A D A S                       *------------ (a) - CODIGOS DE VALORES FISCAIS -----------*
+                                                                         * 1 - OPERACOES COM CREDITO DO IMPOSTO                    *
+FIRMA: COMERCIAL ELETRICA DW S/A                                         * 2 - OPER. SEM CRED. DO IMPOSTO - ISENTAS OU NAO TRIBUT. *
+INSCR. EST.: 90.270.196-65         CNPJ: 05.381.281/0001-93              * 3 - OPERACOES SEM CREDITO DO IMPOSTO - OUTRAS           *
+FOLHA:       8          MES OU PERIODO/ANO: 18/11/2016 A 18/11/2016      *---------------------------------------------------------*
+
+         *----- DOCUMENTOS FISCAIS ----*                                *------- V A L O R E S  F I S C A I S -------*
+DATA DE      SERIE          DATA DO   CODIGO   UF      VALOR     CODIFICACAO                BASE CALCULO         IMPOSTO
+ENTRADA  ESP SUB-   NUMERO  DOCUMENTO EMITENTE ORIG   CONTABIL CONTABIL  FISCAL ICMS COD OU VALOR DA ALIQ    CREDITADO  OBSERVACOES
+FORNECEDOR   SERIE                                                              IPI  (a)    OPERACAO
+CNPJ                                     INSC. ESTADUAL                         ST
+
+18/11/16 NFE 3      46029 10/11/16       267 AM       1243,95                2102 ICMS 1        1243,95 12,00        149,27
+COELMATIC LTDA - AM                                                               IPI  2        1243,95                0,00
+05.156.224/0001-00                       063002981          
+                                                                                                                                    
+18/11/16 NFE 3      46030 10/11/16       267 AM       2298,95                2102 ICMS 1        2298,95 12,00        275,87
+COELMATIC LTDA - AM                                                               IPI  2        2298,95                0,00
+05.156.224/0001-00                       063002981          
+                                                                                                                                    
+18/11/16 NFE 4      11412 04/11/16     34989 SC       1486,06                2353 ICMS 1        1486,06  4,00         59,44
+TAM LINHAS AEREAS SA BNU                                                          IPI  2        1486,06                0,00
+02.012.862/0083-06                       256529329          
+                                                                                                                                    
+18/11/16 NFE 4      36849 04/11/16      1580 PR        133,98                2353 ICMS 1         133,98  4,00          5,36
+TAM LINHAS AEREAS SA                                                              IPI  2         133,98                0,00
+02.012.862/0016-46                       9013039590         
+                                                                                                                                    
+18/11/16 NFE 4     224368 16/11/16      4772 RS       2179,53                2102 ICMS 1        2075,74 12,00        249,09
+INTRAL SA IND DE MATERIAIS ELETRICOS                                              IPI  3        2075,74                0,00
+88.611.264/0001-22                       0290009588         
+                                                                                                                                    
+18/11/16 NFE 50    359907 07/11/16      4439 SP       5405,83                2102 ICMS 1        4914,39 12,00        589,73
+SCHNEIDER ELECTRIC BRASIL LTDA                                                    IPI  3        4914,39                0,00
+82.743.287/0035-53                       241029868119       
+                                                                                                                                    
+18/11/16 NFE 50    362577 11/11/16      4439 SP       6084,77                2102 ICMS 1        5291,10  4,00        211,64
+SCHNEIDER ELECTRIC BRASIL LTDA                                                    IPI  3        5291,10                0,00
+82.743.287/0035-53                       241029868119       
+                                                                                                                                    
+18/11/16 NFE 50    362612 11/11/16      4439 SP        630,95                2102 ICMS 1         548,65  4,00         21,95
+SCHNEIDER ELECTRIC BRASIL LTDA                                                    IPI  3         548,65                0,00
+82.743.287/0035-53                       241029868119       
+                                                                                                                                    
+18/11/16 NFE 50    362613 11/11/16      4439 SP        783,55                2102 ICMS 1         746,24  4,00         29,85
+SCHNEIDER ELECTRIC BRASIL LTDA                                                    IPI  3         746,24                0,00
+82.743.287/0035-53                       241029868119       
+                                                                                                                                    
+18/11/16 NFE 50    362614 11/11/16      4439 SP        549,75                2102 ICMS 1         549,75  4,00         21,99
+SCHNEIDER ELECTRIC BRASIL LTDA                                                    IPI  2         549,75                0,00
+82.743.287/0035-53                       241029868119       
+                                                                                                                                    
+18/11/16 NFE 50    362809 16/11/16      4439 SP        333,79                2102 ICMS 1         290,25  4,00         11,61
+SCHNEIDER ELECTRIC BRASIL LTDA                                                    IPI  3         290,25                0,00
+82.743.287/0035-53                       241029868119       
+                                                                                                                                    
+18/11/16 NFE 50    362810 16/11/16      4439 SP        505,08                2102 ICMS 1         439,20  4,00         17,57
+SCHNEIDER ELECTRIC BRASIL LTDA                                                    IPI  3         439,20                0,00
+82.743.287/0035-53                       241029868119       
+                                                                                                                                    
+18/11/16 NFE 50    362915 16/11/16      4439 SP        122,96                2102 ICMS 1         106,92  4,00          4,28
+SCHNEIDER ELECTRIC BRASIL LTDA                                                    IPI  3         106,92                0,00
+                                                                                                                                    
+              R E G I S T R O  DE  E N T R A D A S                       *------------ (a) - CODIGOS DE VALORES FISCAIS -----------*
+                                                                         * 1 - OPERACOES COM CREDITO DO IMPOSTO                    *
+FIRMA: COMERCIAL ELETRICA DW S/A                                         * 2 - OPER. SEM CRED. DO IMPOSTO - ISENTAS OU NAO TRIBUT. *
+INSCR. EST.: 90.270.196-65         CNPJ: 05.381.281/0001-93              * 3 - OPERACOES SEM CREDITO DO IMPOSTO - OUTRAS           *
+FOLHA:       9          MES OU PERIODO/ANO: 18/11/2016 A 18/11/2016      *---------------------------------------------------------*
+
+         *----- DOCUMENTOS FISCAIS ----*                                *------- V A L O R E S  F I S C A I S -------*
+DATA DE      SERIE          DATA DO   CODIGO   UF      VALOR     CODIFICACAO                BASE CALCULO         IMPOSTO
+ENTRADA  ESP SUB-   NUMERO  DOCUMENTO EMITENTE ORIG   CONTABIL CONTABIL  FISCAL ICMS COD OU VALOR DA ALIQ    CREDITADO  OBSERVACOES
+FORNECEDOR   SERIE                                                              IPI  (a)    OPERACAO
+CNPJ                                     INSC. ESTADUAL                         ST
+
+82.743.287/0035-53                       241029868119       
+                                                                                                                                    
+18/11/16 NFE 50    362954 16/11/16      4439 SP       4643,93                2102 ICMS 1        4038,20  4,00        161,53
+SCHNEIDER ELECTRIC BRASIL LTDA                                                    IPI  3        4038,20                0,00
+82.743.287/0035-53                       241029868119       
+                                                                                                                                    
+18/11/16 NFE 500   181472 16/11/16     29176 SP       2335,59                2102 ICMS 1        2067,89  4,00         82,72
+EATON LTDA                                                                        IPI  3        2067,89                0,00
+54.625.819/0042-41                       407263701110       
+                                                                                                                                    
+18/11/16 NFE 500   181505 16/11/16     29176 SP        215,30                2102 ICMS 1         187,22  4,00          7,49
+EATON LTDA                                                                        IPI  3         187,22                0,00
+54.625.819/0042-41                       407263701110       
+                                                                                                                                    
+18/11/16 NFE 55     12627 11/11/16      4498 PR      20345,20                1102 ICMS 1       20345,20 18,00       2441,54
+INBRAELL IND BRASILEIRA DE ELETROCALHAS                                           IPI  2       20345,20                0,00
+15.241.069/0001-84                       9058992876         
+                                                                                                                                    
+18/11/16 NFE 8     121895 16/11/16     29112 RS       1249,86                2102 ICMS 1         121,20  4,00          4,85
+NOVUS PRODUTOS ELETRONICOS LTDA                                                   ICMS 1        1122,60 12,00        134,71
+88.176.995/0001-97                       0960693637                               IPI  2        1122,60                0,00
+                                                                                  IPI  3         121,20                0,00
+                                                                                                                                    
+18/11/16 NFE 8     121898 16/11/16     29112 RS       5157,30                2102 ICMS 1          90,00  4,00          3,60
+NOVUS PRODUTOS ELETRONICOS LTDA                                                   ICMS 1        5062,80 12,00        607,54
+88.176.995/0001-97                       0960693637                               IPI  2        5062,80                0,00
+                                                                                  IPI  3          90,00                0,00
+                                                                                                                                    
+SUBTOTAL DE 18/11/2016 A 18/11/2016                                               ICMS 1      174800,00            17246,13
+                                                                                       2        5256,90                0,00
+                                                                                       3        5603,04                0,00
+                                                                                  IPI  1           0,00                0,00
+                                                                                       2      117940,52                0,00
+                                                                                       3       65692,38                0,00
+                                                                                  ST            5863,25              744,37
+
+TOTAL GERAL DE 01/11/2016 A 18/11/2016                                            ICMS 1     3263626,31           264919,71
+                                                                                       2      155957,58                0,00
+                                                                                       3      894175,56                0,00
+                                                                                  IPI  1           0,00                0,00
+                                                                                       2     1799759,44                0,00             
+                                                                                       3     2131863,11                0,00
+                                                                                                                                      
+                                                                                  ST           26239,99             2646,10
+                                                                                                                                       
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+

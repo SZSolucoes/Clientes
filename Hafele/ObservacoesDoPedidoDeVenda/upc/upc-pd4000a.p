@@ -16,7 +16,7 @@ DEFINE INPUT PARAMETER p-wgh-frame   AS WIDGET-HANDLE NO-UNDO.
 DEFINE INPUT PARAMETER p-cod-table   AS CHAR          NO-UNDO.
 DEFINE INPUT PARAMETER p-row-table   AS ROWID         NO-UNDO.
 
-RUN upc/upc-pd4000.p (INPUT p-ind-event ,
+/*RUN upc/upc-pd4000.p (INPUT p-ind-event ,
                       INPUT p-ind-object,
                       INPUT p-wgh-object,
                       INPUT p-wgh-frame ,
@@ -24,7 +24,7 @@ RUN upc/upc-pd4000.p (INPUT p-ind-event ,
                       INPUT p-row-table ).
 
 IF RETURN-VALUE = "NOK":U THEN
-    RETURN "NOK":U.
+    RETURN "NOK":U.*/
 
 RUN upc/upc-pd4000-sz.p (INPUT p-ind-event ,
                          INPUT p-ind-object,

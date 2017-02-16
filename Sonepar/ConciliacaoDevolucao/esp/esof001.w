@@ -64,6 +64,9 @@ DEFINE VARIABLE tot AS DECIMAL     NO-UNDO.
 DEFINE VARIABLE c-tipo-nat              AS CHARACTER   NO-UNDO.
 DEFINE VARIABLE l-mostra-dif            AS LOGICAL NO-UNDO.
 DEFINE VARIABLE da-movto                LIKE docum-est.dt-emissao NO-UNDO.
+DEFINE VARIABLE d-valor                 AS decimal NO-UNDO.
+
+
 
 DEFINE NEW GLOBAL SHARED VAR c-seg-usuario AS CHAR FORMAT "x(12)" NO-UNDO.
 
@@ -344,8 +347,6 @@ END.
 &ANALYZE-RESUME
 
 
-&Scoped-define BROWSE-NAME brTable1
-&Scoped-define SELF-NAME brTable1
 &Scoped-define SELF-NAME btAtualiza
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL btAtualiza w-livre
 ON CHOOSE OF btAtualiza IN FRAME f-cad
@@ -508,6 +509,7 @@ END.
 &ANALYZE-RESUME
 
 
+&Scoped-define BROWSE-NAME brTable1
 &UNDEFINE SELF-NAME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK w-livre 
@@ -616,9 +618,11 @@ PROCEDURE carregaBrowser :
             OR doc-fiscal.nat-operacao = "1209"
             OR doc-fiscal.nat-operacao = "2209" ) THEN
             NEXT.
+            
         
-        CREATE tt-doc-fiscal.
-        BUFFER-COPY doc-fiscal TO tt-doc-fiscal.
+            CREATE tt-doc-fiscal.
+            BUFFER-COPY doc-fiscal TO tt-doc-fiscal.
+        
 
     END.
   
@@ -816,28 +820,119 @@ DO da-movto = p-dt-transacao-ini TO p-dt-transacao-fim:
              WHERE tt-concilia-fiscal.cod-emitente = movto-estoq.cod-emitente
                AND tt-concilia-fiscal.cod-estabel  = movto-estoq.cod-estabel
                AND tt-concilia-fiscal.serie-docto  = movto-estoq.serie-docto
-               AND tt-concilia-fiscal.nro-docto    = movto-estoq.nro-docto
-    /*           and tt-concilia-fiscal.nat-operacao = movto-estoq.nat-operacao*/ NO-ERROR.
+               AND tt-concilia-fiscal.nro-docto    = movto-estoq.nro-docto NO-ERROR.
         IF NOT AVAIL tt-concilia-fiscal THEN DO:
             CREATE tt-concilia-fiscal.
             BUFFER-COPY movto-estoq TO tt-concilia-fiscal.
         END.
-      
+
         IF movto-estoq.tipo-trans = 1 THEN
             ASSIGN tt-concilia-fiscal.valor-ce-db = tt-concilia-fiscal.valor-ce-db
                                                     + (movto-estoq.valor-mat-m[1]
                                                     + movto-estoq.valor-ggf-m[1]
-                                                    + movto-estoq.valor-mob-m[1]). 
+                                                    + movto-estoq.valor-mob-m[1])
+                                                    + movto-estoq.valor-icm
+                                                    + movto-estoq.valor-ipi
+                                                    + movto-estoq.valor-iss
+                                                    + movto-estoq.valor-pis
+                                                    + movto-estoq.val-cofins . 
         ELSE
-            ASSIGN tt-concilia-fiscal.valor-ce-cr = tt-concilia-fiscal.valor-ce-cr + (movto-estoq.valor-ggf-m[1]
-                                                                                   + movto-estoq.valor-mat-m[1]
-                                                                                   + movto-estoq.valor-mob-m[1]
-                                                                                   + movto-estoq.valor-icm
-                                                                                   + movto-estoq.valor-ipi
-                                                                                   + movto-estoq.valor-iss
-                                                                                   + movto-estoq.valor-pis
-                                                                                   + movto-estoq.val-cofins).
+            ASSIGN tt-concilia-fiscal.valor-ce-cr = tt-concilia-fiscal.valor-ce-cr 
+                                                    + movto-estoq.valor-mat-m[1]
+                                                    + movto-estoq.valor-ggf-m[1]
+                                                    + movto-estoq.valor-mob-m[1]
+                                                    + movto-estoq.valor-icm
+                                                    + movto-estoq.valor-ipi
+                                                    + movto-estoq.valor-iss
+                                                    + movto-estoq.valor-pis
+                                                    + movto-estoq.val-cofins.
+            
     END.
+    
+    /*Entradas*/
+    FOR EACH doc-fiscal NO-LOCK
+       WHERE doc-fiscal.dt-docto      = da-movto
+         AND doc-fiscal.cod-estabel  >= p-cod-estabel-ini    
+         AND doc-fiscal.cod-estabel  <= p-cod-estabel-fim    
+         AND doc-fiscal.serie        >= p-serie-ini     
+         AND doc-fiscal.serie        <= p-serie-fim     
+         AND doc-fiscal.nr-doc-fis   >= p-nr-doc-fis-ini
+         AND doc-fiscal.nr-doc-fis   <= p-nr-doc-fis-fim
+         AND (doc-fiscal.tipo-nat   = 1 OR 
+             (doc-fiscal.tipo-nat   = 3 AND
+              doc-fiscal.cod-cfop = "1933" OR
+              doc-fiscal.cod-cfop = "2933"))         
+         AND   doc-fiscal.ind-sit-doc = 1,
+        EACH it-doc-fisc OF doc-fiscal:
+        
+        FIND FIRST tt-concilia-fiscal
+             WHERE tt-concilia-fiscal.cod-emitente = doc-fiscal.cod-emitente
+               AND tt-concilia-fiscal.cod-estabel  = doc-fiscal.cod-estabel
+               AND tt-concilia-fiscal.serie-docto  = doc-fiscal.serie
+               AND tt-concilia-fiscal.nro-docto    = doc-fiscal.nr-doc-fis NO-ERROR.
+        IF NOT AVAIL tt-concilia-fiscal THEN DO:
+            CREATE tt-concilia-fiscal.
+            BUFFER-COPY doc-fiscal TO tt-concilia-fiscal.
+            ASSIGN tt-concilia-fiscal.nro-docto    = doc-fiscal.nr-doc-fis
+                   tt-concilia-fiscal.serie-docto  = doc-fiscal.serie
+                   tt-concilia-fiscal.dt-trans     = doc-fiscal.dt-docto.
+        END.
+        
+        
+        ASSIGN tt-concilia-fiscal.valor-of-db = tt-concilia-fiscal.valor-of-db 
+                                              + it-doc-fisc.vl-tot-item
+                                              + it-doc-fisc.val-pis
+                                              + it-doc-fisc.val-cofins
+                                              + it-doc-fisc.vl-iss-it 
+                                              + it-doc-fisc.vl-icms-it 
+                                              + it-doc-fisc.vl-ipi-it 
+                                              + it-doc-fisc.vl-ipi-devol
+                                              + it-doc-fisc.vl-icmsub-it .
+                                          
+    END.
+
+    /*Sa¡das*/
+    FOR EACH doc-fiscal NO-LOCK
+       WHERE doc-fiscal.dt-docto      = da-movto
+         AND doc-fiscal.cod-estabel  >= p-cod-estabel-ini 
+         AND doc-fiscal.cod-estabel  <= p-cod-estabel-fim 
+         AND doc-fiscal.serie        >= p-serie-ini       
+         AND doc-fiscal.serie        <= p-serie-fim       
+         AND doc-fiscal.nr-doc-fis   >= p-nr-doc-fis-ini  
+         AND doc-fiscal.nr-doc-fis   <= p-nr-doc-fis-fim  
+         AND ((doc-fiscal.tipo-nat    = 3 AND
+               (doc-fiscal.cod-cfop = "5933" OR
+                doc-fiscal.cod-cfop = "6933")) OR
+           doc-fiscal.tipo-nat = 2 OR  
+          (doc-fiscal.tipo-nat = 1 and doc-fiscal.ind-sit-doc = 2)),
+        EACH it-doc-fisc OF doc-fiscal no-lock:
+        
+        FIND FIRST tt-concilia-fiscal
+             WHERE tt-concilia-fiscal.cod-emitente = doc-fiscal.cod-emitente
+               AND tt-concilia-fiscal.cod-estabel  = doc-fiscal.cod-estabel
+               AND tt-concilia-fiscal.serie-docto  = doc-fiscal.serie
+               AND tt-concilia-fiscal.nro-docto    = doc-fiscal.nr-doc-fis NO-ERROR.
+        IF NOT AVAIL tt-concilia-fiscal THEN DO:
+            CREATE tt-concilia-fiscal.
+            BUFFER-COPY doc-fiscal TO tt-concilia-fiscal.
+            ASSIGN tt-concilia-fiscal.cod-emitente = doc-fiscal.cod-emitente
+                   tt-concilia-fiscal.nro-docto    = doc-fiscal.nr-doc-fis
+                   tt-concilia-fiscal.serie-docto  = doc-fiscal.serie
+                   tt-concilia-fiscal.dt-trans     = doc-fiscal.dt-docto.
+        END.
+        
+        ASSIGN tt-concilia-fiscal.valor-of-cr = tt-concilia-fiscal.valor-of-cr
+                                              + it-doc-fisc.vl-tot-item
+                                              + it-doc-fisc.val-pis
+                                              + it-doc-fisc.val-cofins
+                                              + it-doc-fisc.vl-iss-it 
+                                              + it-doc-fisc.vl-icms-it 
+                                              + it-doc-fisc.vl-ipi-it 
+                                              + it-doc-fisc.vl-ipi-devol
+                                              + it-doc-fisc.vl-icmsub-it .
+       
+    END.
+
 END.
 
 FOR EACH tt-doc-fiscal :
@@ -845,21 +940,22 @@ FOR EACH tt-doc-fiscal :
     IF (tt-doc-fiscal.numero-dt-nota = ""
         OR tt-doc-fiscal.numero-dt-nota = ?) THEN
         DELETE tt-doc-fiscal.
-
+   
     FOR EACH tt-concilia-fiscal
         WHERE tt-concilia-fiscal.cod-emitente = tt-doc-fiscal.cod-emitente
           AND tt-concilia-fiscal.cod-estabel  = tt-doc-fiscal.cod-estabel 
           AND tt-concilia-fiscal.serie-docto  = tt-doc-fiscal.serie 
-          AND tt-concilia-fiscal.nro-docto    = tt-doc-fiscal.nr-doc-fis :
-
-        IF tt-concilia-fiscal.valor-ce-db >= tt-concilia-fiscal.valor-ce-cr  THEN
-            ASSIGN tt-doc-fiscal.valor-tot-integrado = tt-concilia-fiscal.valor-ce-db - tt-concilia-fiscal.valor-ce-cr.
+          AND tt-concilia-fiscal.nro-docto    = tt-doc-fiscal.nr-doc-fis :  
+        
+        IF tt-concilia-fiscal.valor-of-db >= tt-concilia-fiscal.valor-ce-cr  THEN
+            ASSIGN tt-doc-fiscal.valor-tot-integrado = tt-concilia-fiscal.valor-of-db - tt-concilia-fiscal.valor-ce-cr.
         ELSE
-            ASSIGN tt-doc-fiscal.valor-tot-integrado = tt-concilia-fiscal.valor-ce-cr - tt-concilia-fiscal.valor-ce-db .
+            ASSIGN tt-doc-fiscal.valor-tot-integrado = tt-concilia-fiscal.valor-ce-cr - tt-concilia-fiscal.valor-of-db .
     
         ASSIGN tt-doc-fiscal.valor-tot-diferenca = tt-doc-fiscal.valor-tot-doc-fiscal - tt-doc-fiscal.valor-tot-integrado .
                   
-    END.
+    END.   
+
 
 END.
 
@@ -880,7 +976,7 @@ PROCEDURE verifica-nota-devolucao :
 ------------------------------------------------------------------------------*/
 
     FOR EACH tt-doc-fiscal:
-        
+                
         FOR EACH nota-fisc-adc NO-LOCK
             WHERE nota-fisc-adc.cod-estab        = tt-doc-fiscal.cod-estabel
               AND nota-fisc-adc.cod-serie        = tt-doc-fiscal.serie
@@ -892,11 +988,15 @@ PROCEDURE verifica-nota-devolucao :
             
         END.
         
-        FOR EACH it-doc-fisc NO-LOCK OF tt-doc-fiscal:
+        FOR EACH it-doc-fisc NO-LOCK 
+            WHERE it-doc-fisc.cod-estabel   = tt-doc-fiscal.cod-estabel    
+              AND it-doc-fisc.serie         = tt-doc-fiscal.serie    
+              AND it-doc-fisc.nr-doc-fis    = tt-doc-fiscal.nr-doc-fis
+              AND it-doc-fisc.cod-emitente  = tt-doc-fiscal.cod-emitente :
                 
              ASSIGN tt-doc-fiscal.valor-tot-doc-fiscal = tt-doc-fiscal.valor-tot-doc-fiscal + it-doc-fisc.vl-tot-item.
                 
-        END.
+        END. 
     
     END.
 

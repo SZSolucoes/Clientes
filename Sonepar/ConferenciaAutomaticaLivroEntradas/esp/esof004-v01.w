@@ -1,7 +1,7 @@
 &ANALYZE-SUSPEND _VERSION-NUMBER UIB_v8r12 GUI ADM1
 &ANALYZE-RESUME
 /* Connected Databases 
-          mgesp            PROGRESS
+          mgdis            PROGRESS
 */
 &Scoped-define WINDOW-NAME CURRENT-WINDOW
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _DEFINITIONS V-table-Win 
@@ -13,7 +13,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i ESPD001-V01 2.12.00.001}
+{include/i-prgvrs.i V99XX999 9.99.99.999}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
@@ -46,31 +46,28 @@ def var v-row-parent as rowid no-undo.
 
 &Scoped-define ADM-SUPPORTED-LINKS Record-Source,Record-Target,TableIO-Target
 
-/* Name of designated FRAME-NAME and/or first browse and/or first query */
+/* Name of first Frame and/or Browse and/or first Query                 */
 &Scoped-define FRAME-NAME f-main
 
 /* External Tables                                                      */
-&Scoped-define EXTERNAL-TABLES ext-emitente
-&Scoped-define FIRST-EXTERNAL-TABLE ext-emitente
+&Scoped-define EXTERNAL-TABLES cfop-natur
+&Scoped-define FIRST-EXTERNAL-TABLE cfop-natur
 
 
 /* Need to scope the external tables to this procedure                  */
-DEFINE QUERY external_tables FOR ext-emitente.
+DEFINE QUERY external_tables FOR cfop-natur.
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-FIELDS ext-emitente.observacao-pedido ~
-ext-emitente.observacao-complentar 
-&Scoped-define ENABLED-TABLES ext-emitente
-&Scoped-define FIRST-ENABLED-TABLE ext-emitente
-&Scoped-Define ENABLED-OBJECTS rt-key rt-mold 
-&Scoped-Define DISPLAYED-FIELDS ext-emitente.cod-emitente ~
-ext-emitente.observacao-pedido ext-emitente.observacao-complentar 
-&Scoped-define DISPLAYED-TABLES ext-emitente
-&Scoped-define FIRST-DISPLAYED-TABLE ext-emitente
-&Scoped-Define DISPLAYED-OBJECTS c-nome-emit 
+&Scoped-Define ENABLED-FIELDS cfop-natur.cod-cfop cfop-natur.des-cfop 
+&Scoped-define ENABLED-TABLES cfop-natur
+&Scoped-define FIRST-ENABLED-TABLE cfop-natur
+&Scoped-Define ENABLED-OBJECTS rt-key 
+&Scoped-Define DISPLAYED-FIELDS cfop-natur.cod-cfop cfop-natur.des-cfop 
+&Scoped-define DISPLAYED-TABLES cfop-natur
+&Scoped-define FIRST-DISPLAYED-TABLE cfop-natur
+
 
 /* Custom List Definitions                                              */
 /* ADM-CREATE-FIELDS,ADM-ASSIGN-FIELDS,ADM-MODIFY-FIELDS,List-4,List-5,List-6 */
-&Scoped-define ADM-CREATE-FIELDS ext-emitente.cod-emitente 
 
 /* _UIB-PREPROCESSOR-BLOCK-END */
 &ANALYZE-RESUME
@@ -83,15 +80,15 @@ ext-emitente.observacao-pedido ext-emitente.observacao-complentar
 THIS-PROCEDURE
 </KEY-OBJECT>
 <FOREIGN-KEYS>
-cod-emitente|y|y|mgesp.ext-emitente.cod-emitente
+cod-cfop|y|y|mgdis.cfop-natur.cod-cfop
 </FOREIGN-KEYS> 
 <EXECUTING-CODE>
 **************************
 * Set attributes related to FOREIGN KEYS
 */
 RUN set-attribute-list (
-    'Keys-Accepted = "cod-emitente",
-     Keys-Supplied = "cod-emitente"':U).
+    'Keys-Accepted = "cod-cfop",
+     Keys-Supplied = "cod-cfop"':U).
 /**************************
 </EXECUTING-CODE> */
 /* _UIB-CODE-BLOCK-END */
@@ -102,39 +99,21 @@ RUN set-attribute-list (
 
 
 /* Definitions of the field level widgets                               */
-DEFINE VARIABLE c-nome-emit AS CHARACTER FORMAT "X(60)":U 
-     VIEW-AS FILL-IN 
-     SIZE 59 BY .88 NO-UNDO.
-
 DEFINE RECTANGLE rt-key
      EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 88.57 BY 1.25.
-
-DEFINE RECTANGLE rt-mold
-     EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 88.57 BY 10.75.
+     SIZE 88.57 BY 1.5.
 
 
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME f-main
-     ext-emitente.cod-emitente AT ROW 1.13 COL 12.29 COLON-ALIGNED WIDGET-ID 2
-          LABEL "Emitente"
+     cfop-natur.cod-cfop AT ROW 1.29 COL 15.57 COLON-ALIGNED WIDGET-ID 2
           VIEW-AS FILL-IN 
-          SIZE 10 BY .88
-     c-nome-emit AT ROW 1.13 COL 22.57 COLON-ALIGNED NO-LABEL WIDGET-ID 6
-     ext-emitente.observacao-pedido AT ROW 3.25 COL 2.29 NO-LABEL WIDGET-ID 10
-          VIEW-AS EDITOR NO-WORD-WRAP SCROLLBAR-HORIZONTAL SCROLLBAR-VERTICAL
-          SIZE 86.72 BY 4.67
-     ext-emitente.observacao-complentar AT ROW 8.42 COL 2.29 NO-LABEL WIDGET-ID 8
-          VIEW-AS EDITOR NO-WORD-WRAP SCROLLBAR-HORIZONTAL SCROLLBAR-VERTICAL
-          SIZE 86.72 BY 4.71
-     "Observa‡Æo do Pedido" VIEW-AS TEXT
-          SIZE 23 BY .67 AT ROW 2.63 COL 6 WIDGET-ID 12
-     "Condi‡äes Especiais do Pedido" VIEW-AS TEXT
-          SIZE 32 BY .67 AT ROW 7.79 COL 6 WIDGET-ID 14
+          SIZE 12 BY .88
+     cfop-natur.des-cfop AT ROW 1.29 COL 27.72 COLON-ALIGNED NO-LABEL WIDGET-ID 4
+          VIEW-AS FILL-IN 
+          SIZE 55 BY .88
      rt-key AT ROW 1 COL 1
-     rt-mold AT ROW 2.5 COL 1
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1 SCROLLABLE  WIDGET-ID 100.
@@ -145,7 +124,7 @@ DEFINE FRAME f-main
 &ANALYZE-SUSPEND _PROCEDURE-SETTINGS
 /* Settings for THIS-PROCEDURE
    Type: SmartViewer
-   External Tables: mgesp.ext-emitente
+   External Tables: mgdis.cfop-natur
    Allow: Basic,DB-Fields
    Frames: 1
    Add Fields to: EXTERNAL-TABLES
@@ -167,7 +146,7 @@ END.
 &ANALYZE-SUSPEND _CREATE-WINDOW
 /* DESIGN Window definition (used by the UIB) 
   CREATE WINDOW V-table-Win ASSIGN
-         HEIGHT             = 12.46
+         HEIGHT             = 1.63
          WIDTH              = 88.57.
 /* END WINDOW DEFINITION */
                                                                         */
@@ -193,15 +172,11 @@ END.
 /* SETTINGS FOR WINDOW V-table-Win
   VISIBLE,,RUN-PERSISTENT                                               */
 /* SETTINGS FOR FRAME f-main
-   NOT-VISIBLE FRAME-NAME Size-to-Fit                                   */
+   NOT-VISIBLE Size-to-Fit                                              */
 ASSIGN 
        FRAME f-main:SCROLLABLE       = FALSE
        FRAME f-main:HIDDEN           = TRUE.
 
-/* SETTINGS FOR FILL-IN c-nome-emit IN FRAME f-main
-   NO-ENABLE                                                            */
-/* SETTINGS FOR FILL-IN ext-emitente.cod-emitente IN FRAME f-main
-   NO-ENABLE 1 EXP-LABEL                                                */
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
 
@@ -217,58 +192,13 @@ ASSIGN
 
  
 
-
-
-/* ************************  Control Triggers  ************************ */
-
-&Scoped-define SELF-NAME ext-emitente.cod-emitente
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ext-emitente.cod-emitente V-table-Win
-ON F5 OF ext-emitente.cod-emitente IN FRAME f-main /* Emitente */
-DO:
-    {include/zoomvar.i &prog-zoom  = adzoom/z02ad098.w
-                     &campo      = ext-emitente.cod-emitente
-                     &campozoom  = cod-emitente
-                     &campo2     = c-nome-emit
-                     &campozoom2 = nome-emit}
-END.
-
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _XFTR "SmartViewerCues" V-table-Win _INLINE
+/* Actions: adecomm/_so-cue.w ? adecomm/_so-cued.p ? adecomm/_so-cuew.p */
+/*:T SmartViewer,uib,50030 
+Destroy on next read */
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ext-emitente.cod-emitente V-table-Win
-ON LEAVE OF ext-emitente.cod-emitente IN FRAME f-main /* Emitente */
-DO:
-    FIND emitente NO-LOCK
-        WHERE emitente.cod-emitente = int(ext-emitente.cod-emitente:SCREEN-VALUE IN FRAME {&FRAME-NAME}) NO-ERROR.
-
-    IF NOT AVAIL emitente THEN DO:
-        RUN utp/ut-msgs.p (INPUT "show":U, 
-                           INPUT 56, 
-                           INPUT "Emmitente").
-        ASSIGN c-nome-emit:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "".
-        APPLY "entry" TO ext-emitente.cod-emitente IN FRAME {&FRAME-NAME}.
-        RETURN "adm-error". 
-    END.
-    ELSE
-        ASSIGN c-nome-emit:SCREEN-VALUE IN FRAME {&FRAME-NAME} = emitente.nome-emit.
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ext-emitente.cod-emitente V-table-Win
-ON MOUSE-SELECT-DBLCLICK OF ext-emitente.cod-emitente IN FRAME f-main /* Emitente */
-DO:
-    APPLY 'F5' TO SELF.
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&UNDEFINE SELF-NAME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK V-table-Win 
 
@@ -277,9 +207,7 @@ END.
 
   &IF DEFINED(UIB_IS_RUNNING) <> 0 &THEN          
     RUN dispatch IN THIS-PROCEDURE ('initialize':U).        
-  &ENDIF 
-          
-  ext-emitente.cod-emitente:LOAD-MOUSE-POINTER ("image/lupa.cur") IN FRAME {&FRAME-NAME}.
+  &ENDIF         
   
   /************************ INTERNAL PROCEDURES ********************/
 
@@ -309,10 +237,10 @@ PROCEDURE adm-find-using-key :
   /* Find the current record using the current Key-Name. */
   RUN get-attribute ('Key-Name':U).
   CASE RETURN-VALUE:
-    WHEN 'cod-emitente':U THEN
+    WHEN 'cod-cfop':U THEN
        {src/adm/template/find-tbl.i
-           &TABLE = ext-emitente
-           &WHERE = "WHERE ext-emitente.cod-emitente eq INTEGER(key-value)"
+           &TABLE = cfop-natur
+           &WHERE = "WHERE cfop-natur.cod-cfop eq key-value"
        }
   END CASE.
 
@@ -335,13 +263,13 @@ PROCEDURE adm-row-available :
   {src/adm/template/row-head.i}
 
   /* Create a list of all the tables that we need to get.            */
-  {src/adm/template/row-list.i "ext-emitente"}
+  {src/adm/template/row-list.i "cfop-natur"}
 
   /* Get the record ROWID's from the RECORD-SOURCE.                  */
   {src/adm/template/row-get.i}
 
   /* FIND each record specified by the RECORD-SOURCE.                */
-  {src/adm/template/row-find.i "ext-emitente"}
+  {src/adm/template/row-find.i "cfop-natur"}
 
   /* Process the newly available records (i.e. display fields,
      open queries, and/or pass records on to any RECORD-TARGETS).    */
@@ -378,37 +306,16 @@ PROCEDURE local-assign-record :
 ------------------------------------------------------------------------------*/
 
     /* Code placed here will execute PRIOR to standard behavior. */
-/*     {include/i-valid.i} */
-
-     if  not frame {&frame-name}:validate() then
-      return 'ADM-ERROR':U.
+    {include/i-valid.i}
     
     /*:T Ponha na pi-validate todas as valida‡äes */
     /*:T NÆo gravar nada no registro antes do dispatch do assign-record e 
        nem na PI-validate. */
-
-     IF adm-new-record THEN DO:
-         
-        FIND ext-emitente NO-LOCK
-            WHERE ext-emitente.cod-emitente = INPUT FRAME {&FRAME-NAME} ext-emitente.cod-emitente NO-ERROR.
-
-        IF AVAIL ext-emitente THEN DO:
-            RUN utp/ut-msgs.p (INPUT "show":U, 
-                               INPUT 1, 
-                               INPUT "Emitente").     
-            APPLY "entry" TO ext-emitente.cod-emitente IN FRAME {&FRAME-NAME}.
-            RETURN "adm-error".        
-            
-        END.
-    END.
     
     /* Dispatch standard ADM method.                             */
     RUN dispatch IN THIS-PROCEDURE ( INPUT 'assign-record':U ) .
     if RETURN-VALUE = 'ADM-ERROR':U then 
         return 'ADM-ERROR':U.
-
-    /*ASSIGN ext-emitente.observacao-pedido = ext-emitente.observacao-pedido:SCREEN-VALUE IN FRAME {&FRAME-NAME}
-           ext-emitente.observacao-complentar = ext-emitente.observacao-complentar:SCREEN-VALUE IN FRAME {&FRAME-NAME} .*/
     
     /*:T Todos os assignïs nÆo feitos pelo assign-record devem ser feitos aqui */  
     /* Code placed here will execute AFTER standard behavior.    */
@@ -435,31 +342,6 @@ PROCEDURE local-disable-fields :
     disable {&ADM-MODIFY-FIELDS} with frame {&frame-name}.
     &endif
     
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-display-fields V-table-Win 
-PROCEDURE local-display-fields :
-/*------------------------------------------------------------------------------
-  Purpose:     
-  Parameters:  <none>
-  Notes:       
-------------------------------------------------------------------------------*/
-
-/* Dispatch standard ADM method.                             */
-    RUN dispatch IN THIS-PROCEDURE ( INPUT 'display-fields':U ) .
-
-    FIND emitente NO-LOCK
-        WHERE emitente.cod-emitente = int(ext-emitente.cod-emitente:SCREEN-VALUE IN FRAME {&FRAME-NAME}) NO-ERROR.
-
-    IF AVAIL emitente THEN
-        ASSIGN c-nome-emit:SCREEN-VALUE IN FRAME {&FRAME-NAME} = emitente.nome-emit.
-    ELSE
-        ASSIGN c-nome-emit:SCREEN-VALUE IN FRAME {&FRAME-NAME} = "".
-
-
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
@@ -541,7 +423,7 @@ PROCEDURE send-key :
   {src/adm/template/sndkytop.i}
 
   /* Return the key value associated with each key case.             */
-  {src/adm/template/sndkycas.i "cod-emitente" "ext-emitente" "cod-emitente"}
+  {src/adm/template/sndkycas.i "cod-cfop" "cfop-natur" "cod-cfop"}
 
   /* Close the CASE statement and end the procedure.                 */
   {src/adm/template/sndkyend.i}
@@ -563,7 +445,7 @@ PROCEDURE send-records :
   {src/adm/template/snd-head.i}
 
   /* For each requested table, put it's ROWID in the output list.      */
-  {src/adm/template/snd-list.i "ext-emitente"}
+  {src/adm/template/snd-list.i "cfop-natur"}
 
   /* Deal with any unexpected table requests before closing.           */
   {src/adm/template/snd-end.i}
