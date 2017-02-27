@@ -12,7 +12,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i ESOF001 2.12.00.001}
+{include/i-prgvrs.i ESOF003 2.12.00.001}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
@@ -24,51 +24,56 @@ CREATE WIDGET-POOL.
 
 /* ***************************  Definitions  ************************** */
 DEFINE TEMP-TABLE tt-doc-fiscal NO-UNDO LIKE doc-fiscal
-    FIELD numero-dt-nota AS CHAR FORMAT "x(400)"
+    FIELD vl-tot-trib AS DEC
+    FIELD cod-cfop-xml  LIKE doc-fiscal.cod-cfop
+    FIELD vl-cont-doc-xml LIKE doc-fiscal.vl-cont-doc
+    FIELD vl-tot-trib-xml AS DEC
     FIELD valor-tot-doc-fiscal LIKE doc-fiscal.vl-mercad
     FIELD valor-tot-integrado LIKE doc-fiscal.vl-mercad
-    FIELD valor-tot-diferenca AS DEC.
+    FIELD valor-tot-diferenca AS DEC
+    FIELD cfop-correta AS LOGICAL.
 
 DEFINE TEMP-TABLE tt-concilia-fiscal NO-UNDO 
-    field cod-emitente like movto-estoq.cod-emitente
-    field cod-estabel  like movto-estoq.cod-estabel
-    field serie-docto  like movto-estoq.serie-docto
-    field nro-docto    like movto-estoq.nro-docto
-    field nat-operacao like movto-estoq.nat-operacao 
-    field dt-trans     like movto-estoq.dt-trans
-    field valor-ce-db as dec
-    field valor-ce-cr as dec
-    field valor-ft-cr as dec
-    field valor-ft-db as dec
-    field valor-of-cr as dec
-    field valor-of-db as dec
-    field valor-dif   as dec.
+    FIELD cod-emitente like movto-estoq.cod-emitente
+    FIELD cod-estabel  like movto-estoq.cod-estabel
+    FIELD serie-docto  like movto-estoq.serie-docto
+    FIELD nro-docto    like movto-estoq.nro-docto
+    FIELD nat-operacao like movto-estoq.nat-operacao 
+    FIELD dt-trans     like movto-estoq.dt-trans
+    FIELD valor-ce-db  AS DEC
+    FIELD valor-ce-cr  AS DEC
+    FIELD valor-ft-cr  AS DEC
+    FIELD valor-ft-db  AS DEC
+    FIELD valor-of-cr  AS DEC
+    FIELD valor-of-db  AS DEC
+    FIELD valor-dif    AS DEC.
+
+DEFINE NEW SHARED TEMP-TABLE tt-data NO-UNDO
+    FIELD data AS DATE.
 
 /* Parameters Definitions ---                                           */
-DEFINE VARIABLE p-cod-estabel-ini   LIKE doc-fiscal.cod-estabel     NO-UNDO. 
-DEFINE VARIABLE p-cod-estabel-fim   LIKE doc-fiscal.cod-estabel     NO-UNDO.
+DEFINE VARIABLE p-cod-estabel       LIKE doc-fiscal.cod-estabel     NO-UNDO.
+DEFINE VARIABLE p-dt-transacao-ini  LIKE doc-fiscal.dt-impl         NO-UNDO. 
+DEFINE VARIABLE p-dt-transacao-fim  LIKE doc-fiscal.dt-impl         NO-UNDO.
 DEFINE VARIABLE p-serie-ini         LIKE doc-fiscal.serie           NO-UNDO.
 DEFINE VARIABLE p-serie-fim         LIKE doc-fiscal.serie           NO-UNDO.
 DEFINE VARIABLE p-nr-doc-fis-ini    LIKE doc-fiscal.nr-doc-fis      NO-UNDO.
 DEFINE VARIABLE p-nr-doc-fis-fim    LIKE doc-fiscal.nr-doc-fis      NO-UNDO.
 DEFINE VARIABLE p-cod-emitente-ini  LIKE doc-fiscal.cod-emitente    NO-UNDO.
 DEFINE VARIABLE p-cod-emitente-fim  LIKE doc-fiscal.cod-emitente    NO-UNDO.
-DEFINE VARIABLE p-nat-operacao-ini  LIKE doc-fiscal.nat-operacao    NO-UNDO. 
-DEFINE VARIABLE p-nat-operacao-fim  LIKE doc-fiscal.nat-operacao    NO-UNDO.
-DEFINE VARIABLE p-dt-transacao-ini  LIKE doc-fiscal.dt-impl         NO-UNDO. 
-DEFINE VARIABLE p-dt-transacao-fim  LIKE doc-fiscal.dt-impl         NO-UNDO.
-DEFINE VARIABLE p-tip-natoper       AS INTEGER                      NO-UNDO.
+DEFINE VARIABLE p-nota-sem-xml      AS LOGICAL                      NO-UNDO.
 
-
-DEFINE VARIABLE tot AS DECIMAL     NO-UNDO.
+DEFINE VARIABLE tot           AS DECIMAL  NO-UNDO.
+DEFINE VARIABLE da-cont       AS DATE     NO-UNDO.
+DEFINE VARIABLE da-est-ini    AS DATE     NO-UNDO.
+DEFINE VARIABLE da-est-fim    AS DATE     NO-UNDO.
+DEF NEW SHARED VAR l-consid-cfop-serv AS LOGICAL            NO-UNDO.
                                                                           
 /* Local Variable Definitions ---                                       */
 DEFINE VARIABLE c-tipo-nat              AS CHARACTER   NO-UNDO.
 DEFINE VARIABLE l-mostra-dif            AS LOGICAL NO-UNDO.
-DEFINE VARIABLE da-movto                LIKE docum-est.dt-emissao NO-UNDO.
-DEFINE VARIABLE d-valor                 AS decimal NO-UNDO.
-
-
+DEFINE VARIABLE da-movto                LIKE docum-est.dt-emissao NO-UNDO. 
+DEFINE VARIABLE c-nome-abrev            AS CHARACTER   NO-UNDO.
 
 DEFINE NEW GLOBAL SHARED VAR c-seg-usuario AS CHAR FORMAT "x(12)" NO-UNDO.
 
@@ -93,11 +98,11 @@ DEFINE NEW GLOBAL SHARED VAR c-seg-usuario AS CHAR FORMAT "x(12)" NO-UNDO.
 &Scoped-define INTERNAL-TABLES tt-doc-fiscal
 
 /* Definitions for BROWSE brTable1                                      */
-&Scoped-define FIELDS-IN-QUERY-brTable1 tt-doc-fiscal.cod-estabel tt-doc-fiscal.dt-docto tt-doc-fiscal.nome-ab-emi tt-doc-fiscal.cod-emitente tt-doc-fiscal.nr-doc-fis tt-doc-fiscal.serie tt-doc-fiscal.nat-operacao tt-doc-fiscal.esp-docto fn-tipo-nat () @ c-tipo-nat tt-doc-fiscal.numero-dt-nota tt-doc-fiscal.valor-tot-doc-fiscal tt-doc-fiscal.valor-tot-integrado tt-doc-fiscal.valor-tot-diferenca   
+&Scoped-define FIELDS-IN-QUERY-brTable1 tt-doc-fiscal.cod-estabel tt-doc-fiscal.cod-emitente fn-nome-abrev() @ c-nome-abrev tt-doc-fiscal.cgc tt-doc-fiscal.ins-estadual tt-doc-fiscal.esp-docto tt-doc-fiscal.nr-doc-fis tt-doc-fiscal.serie tt-doc-fiscal.dt-emis-doc tt-doc-fiscal.cod-cfop tt-doc-fiscal.cod-cfop-xml tt-doc-fiscal.vl-cont-doc tt-doc-fiscal.vl-cont-doc-xml tt-doc-fiscal.vl-tot-trib tt-doc-fiscal.vl-tot-trib-xml   
 &Scoped-define ENABLED-FIELDS-IN-QUERY-brTable1   
 &Scoped-define SELF-NAME brTable1
-&Scoped-define QUERY-STRING-brTable1 FOR EACH tt-doc-fiscal NO-LOCK     WHERE IF l-mostra-dif THEN tt-doc-fiscal.valor-tot-diferenca > 0 ELSE YES                               BY tt-doc-fiscal.cod-estabel                                    BY tt-doc-fiscal.dt-docto                                    BY tt-doc-fiscal.nome-ab-emi        INDEXED-REPOSITION
-&Scoped-define OPEN-QUERY-brTable1 OPEN QUERY {&SELF-NAME} FOR EACH tt-doc-fiscal NO-LOCK     WHERE IF l-mostra-dif THEN tt-doc-fiscal.valor-tot-diferenca > 0 ELSE YES                               BY tt-doc-fiscal.cod-estabel                                    BY tt-doc-fiscal.dt-docto                                    BY tt-doc-fiscal.nome-ab-emi        INDEXED-REPOSITION.
+&Scoped-define QUERY-STRING-brTable1 FOR EACH tt-doc-fiscal NO-LOCK     /*WHERE IF l-mostra-dif THEN tt-doc-fiscal.valor-tot-diferenca > 0 ELSE YES*/                               BY tt-doc-fiscal.cod-estabel                                    BY tt-doc-fiscal.dt-emis-doc        INDEXED-REPOSITION
+&Scoped-define OPEN-QUERY-brTable1 OPEN QUERY {&SELF-NAME} FOR EACH tt-doc-fiscal NO-LOCK     /*WHERE IF l-mostra-dif THEN tt-doc-fiscal.valor-tot-diferenca > 0 ELSE YES*/                               BY tt-doc-fiscal.cod-estabel                                    BY tt-doc-fiscal.dt-emis-doc        INDEXED-REPOSITION.
 &Scoped-define TABLES-IN-QUERY-brTable1 tt-doc-fiscal
 &Scoped-define FIRST-TABLE-IN-QUERY-brTable1 tt-doc-fiscal
 
@@ -119,8 +124,8 @@ btExcel btSelecao btTotal
 
 /* ************************  Function Prototypes ********************** */
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD fn-tipo-nat w-livre 
-FUNCTION fn-tipo-nat RETURNS CHARACTER
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD fn-nome-abrev w-livre 
+FUNCTION fn-nome-abrev RETURNS CHARACTER
   ( /* parameter-definitions */ )  FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
@@ -184,7 +189,7 @@ DEFINE BUTTON btTotal
 
 DEFINE RECTANGLE rt-button
      EDGE-PIXELS 2 GRAPHIC-EDGE    
-     SIZE 160 BY 1.46
+     SIZE 159 BY 1.46
      BGCOLOR 7 .
 
 /* Query definitions                                                    */
@@ -197,24 +202,26 @@ DEFINE QUERY brTable1 FOR
 DEFINE BROWSE brTable1
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _DISPLAY-FIELDS brTable1 w-livre _FREEFORM
   QUERY brTable1 NO-LOCK DISPLAY
-      tt-doc-fiscal.cod-estabel  WIDTH 5
-      tt-doc-fiscal.dt-docto FORMAT "99/99/9999":U WIDTH 10
-      tt-doc-fiscal.nome-ab-emi WIDTH 12
-      tt-doc-fiscal.cod-emitente  WIDTH 5
-      tt-doc-fiscal.nr-doc-fis WIDTH 10
-      tt-doc-fiscal.serie WIDTH 5
-      tt-doc-fiscal.nat-operacao WIDTH 8
-      tt-doc-fiscal.esp-docto WIDTH 5
-      fn-tipo-nat () @ c-tipo-nat FORMAT "x(30)":U WIDTH 11 COLUMN-LABEL "Tipo Natureza"
-      tt-doc-fiscal.numero-dt-nota COLUMN-LABEL "Nota Fiscal/Data EmissÆo" WIDTH 30
-      tt-doc-fiscal.valor-tot-doc-fiscal COLUMN-LABEL "Valor Tot. Docto" WIDTH 12
-      tt-doc-fiscal.valor-tot-integrado COLUMN-LABEL "Tot. Integ. Di rio" WIDTH 12
-      tt-doc-fiscal.valor-tot-diferenca COLUMN-LABEL "Dif. Devol x Di rio" WIDTH 13
+      tt-doc-fiscal.cod-estabel       WIDTH 5
+      tt-doc-fiscal.cod-emitente      FORMAT ">>>>>>>>9":U WIDTH 5
+      fn-nome-abrev() @ c-nome-abrev  FORMAT "x(12)":U COLUMN-LABEL "Cliente" WIDTH 15
+      tt-doc-fiscal.cgc               COLUMN-LABEL "CNPJ" WIDTH 15
+      tt-doc-fiscal.ins-estadual      WIDTH 15
+      tt-doc-fiscal.esp-docto         WIDTH 5
+      tt-doc-fiscal.nr-doc-fis        WIDTH 10
+      tt-doc-fiscal.serie             WIDTH 5
+      tt-doc-fiscal.dt-emis-doc       FORMAT "99/99/9999":U WIDTH 10
+      tt-doc-fiscal.cod-cfop          WIDTH 5
+      tt-doc-fiscal.cod-cfop-xml      COLUMN-LABEL "CFOP XML" WIDTH 8
+      tt-doc-fiscal.vl-cont-doc       WIDTH 12
+      tt-doc-fiscal.vl-cont-doc-xml   COLUMN-LABEL "Vl Cont bil XML" WIDTH 12
+      tt-doc-fiscal.vl-tot-trib       COLUMN-LABEL "Val.Trib." WIDTH 12
+      tt-doc-fiscal.vl-tot-trib-xml   COLUMN-LABEL "Val.Trib.XML " WIDTH 12
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
     WITH NO-ROW-MARKERS NO-COLUMN-SCROLLING SEPARATORS SIZE 158 BY 23.42
          FONT 1
-         TITLE "Concilia‡Æo Devolu‡Æo".
+         TITLE "Conferˆncia Livro Fiscal de Entrada".
 
 
 /* ************************  Frame Definitions  *********************** */
@@ -230,7 +237,7 @@ DEFINE FRAME f-cad
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1
-         SIZE 185.14 BY 26.54 WIDGET-ID 100.
+         SIZE 160.57 BY 25.38 WIDGET-ID 100.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -251,8 +258,8 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW w-livre ASSIGN
          HIDDEN             = YES
          TITLE              = "Template Livre <Insira complemento>"
-         HEIGHT             = 25.08
-         WIDTH              = 159.29
+         HEIGHT             = 25.13
+         WIDTH              = 159.72
          MAX-HEIGHT         = 27.96
          MAX-WIDTH          = 195.14
          VIRTUAL-HEIGHT     = 27.96
@@ -305,10 +312,9 @@ THEN w-livre:HIDDEN = yes.
 /* Query rebuild information for BROWSE brTable1
      _START_FREEFORM
 OPEN QUERY {&SELF-NAME} FOR EACH tt-doc-fiscal NO-LOCK
-    WHERE IF l-mostra-dif THEN tt-doc-fiscal.valor-tot-diferenca > 0 ELSE YES
+    /*WHERE IF l-mostra-dif THEN tt-doc-fiscal.valor-tot-diferenca > 0 ELSE YES*/
                               BY tt-doc-fiscal.cod-estabel
-                                   BY tt-doc-fiscal.dt-docto
-                                   BY tt-doc-fiscal.nome-ab-emi
+                                   BY tt-doc-fiscal.dt-emis-doc
        INDEXED-REPOSITION.
      _END_FREEFORM
      _Options          = "NO-LOCK INDEXED-REPOSITION"
@@ -350,6 +356,60 @@ END.
 &ANALYZE-RESUME
 
 
+&Scoped-define BROWSE-NAME brTable1
+&Scoped-define SELF-NAME brTable1
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL brTable1 w-livre
+ON ROW-DISPLAY OF brTable1 IN FRAME f-cad /* Conferˆncia Livro Fiscal de Entrada */
+DO:
+  
+    IF AVAIL tt-doc-fiscal THEN DO:
+        IF (tt-doc-fiscal.cfop-correta = NO OR
+            tt-doc-fiscal.vl-cont-doc <> tt-doc-fiscal.vl-cont-doc-xml OR
+            tt-doc-fiscal.vl-tot-trib <> tt-doc-fiscal.vl-tot-trib-xml) THEN DO:
+
+            ASSIGN tt-doc-fiscal.cod-estabel      :FGCOLOR IN BROWSE brTable1 = 12
+                   tt-doc-fiscal.cod-emitente     :FGCOLOR IN BROWSE brTable1 = 12           
+                   c-nome-abrev                   :FGCOLOR IN BROWSE brTable1 = 12        
+                   tt-doc-fiscal.cgc              :FGCOLOR IN BROWSE brTable1 = 12
+                   tt-doc-fiscal.ins-estadual     :FGCOLOR IN BROWSE brTable1 = 12     
+                   tt-doc-fiscal.esp-docto        :FGCOLOR IN BROWSE brTable1 = 12
+                   tt-doc-fiscal.nr-doc-fis       :FGCOLOR IN BROWSE brTable1 = 12     
+                   tt-doc-fiscal.serie            :FGCOLOR IN BROWSE brTable1 = 12  
+                   tt-doc-fiscal.dt-emis-doc      :FGCOLOR IN BROWSE brTable1 = 12  
+                   tt-doc-fiscal.cod-cfop         :FGCOLOR IN BROWSE brTable1 = 12  
+                   tt-doc-fiscal.cod-cfop-xml     :FGCOLOR IN BROWSE brTable1 = 12 
+                   tt-doc-fiscal.vl-cont-doc      :FGCOLOR IN BROWSE brTable1 = 12
+                   tt-doc-fiscal.vl-cont-doc-xml  :FGCOLOR IN BROWSE brTable1 = 12 
+                   tt-doc-fiscal.vl-tot-trib      :FGCOLOR IN BROWSE brTable1 = 12 
+                   tt-doc-fiscal.vl-tot-trib-xml  :FGCOLOR IN BROWSE brTable1 = 12.
+                   
+        END.
+        ELSE DO:
+            ASSIGN  tt-doc-fiscal.cod-estabel     :FGCOLOR IN BROWSE brTable1 = 2
+                   tt-doc-fiscal.cod-emitente     :FGCOLOR IN BROWSE brTable1 = 2           
+                   c-nome-abrev                   :FGCOLOR IN BROWSE brTable1 = 2        
+                   tt-doc-fiscal.cgc              :FGCOLOR IN BROWSE brTable1 = 2
+                   tt-doc-fiscal.ins-estadual     :FGCOLOR IN BROWSE brTable1 = 2     
+                   tt-doc-fiscal.esp-docto        :FGCOLOR IN BROWSE brTable1 = 2
+                   tt-doc-fiscal.nr-doc-fis       :FGCOLOR IN BROWSE brTable1 = 2     
+                   tt-doc-fiscal.serie            :FGCOLOR IN BROWSE brTable1 = 2  
+                   tt-doc-fiscal.dt-emis-doc      :FGCOLOR IN BROWSE brTable1 = 2  
+                   tt-doc-fiscal.cod-cfop         :FGCOLOR IN BROWSE brTable1 = 2  
+                   tt-doc-fiscal.cod-cfop-xml     :FGCOLOR IN BROWSE brTable1 = 2 
+                   tt-doc-fiscal.vl-cont-doc      :FGCOLOR IN BROWSE brTable1 = 2
+                   tt-doc-fiscal.vl-cont-doc-xml  :FGCOLOR IN BROWSE brTable1 = 2 
+                   tt-doc-fiscal.vl-tot-trib      :FGCOLOR IN BROWSE brTable1 = 2 
+                   tt-doc-fiscal.vl-tot-trib-xml  :FGCOLOR IN BROWSE brTable1 = 2.
+        END.
+    END.
+
+    RETURN "OK":U.
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
 &Scoped-define SELF-NAME btAtualiza
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL btAtualiza w-livre
 ON CHOOSE OF btAtualiza IN FRAME f-cad
@@ -367,12 +427,12 @@ END.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL btDif-2 w-livre
 ON CHOOSE OF btDif-2 IN FRAME f-cad
 DO: 
-    if l-mostra-dif then
+    /*if l-mostra-dif then
         assign l-mostra-dif = no.    
     else
         assign l-mostra-dif = yes.
 
-    {&open-query-brTable1}
+    {&open-query-brTable1}*/
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -383,7 +443,7 @@ END.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL btExcel w-livre
 ON CHOOSE OF btExcel IN FRAME f-cad
 DO: 
-    RUN utp/ut-msgs.p ("show",
+    /*RUN utp/ut-msgs.p ("show",
                        27100 ,
                        "Gerar Relat¢rio Excel?~~" +
                        "Ser  Gerado um Relat¢rio em Excel com as Informa‡äes do Browser, confirma?").
@@ -392,7 +452,7 @@ DO:
 
     ELSE DO:
         RUN esp/esof001crp.p (INPUT TABLE tt-doc-fiscal). 
-    END.
+    END.*/
 
       
 
@@ -408,19 +468,16 @@ ON CHOOSE OF btSelecao IN FRAME f-cad /* Sele‡Æo */
 DO:
    {&WINDOW-NAME}:SENSITIVE = FALSE.
 
-    RUN esp/esof001a.w (INPUT-OUTPUT p-cod-estabel-ini,
-                        INPUT-OUTPUT p-cod-estabel-fim,
-                        INPUT-OUTPUT p-serie-ini,
-                        INPUT-OUTPUT p-serie-fim,
-                        INPUT-OUTPUT p-nr-doc-fis-ini,
-                        INPUT-OUTPUT p-nr-doc-fis-fim,
-                        INPUT-OUTPUT p-cod-emitente-ini, 
-                        INPUT-OUTPUT p-cod-emitente-fim,
-                        INPUT-OUTPUT p-nat-operacao-ini, 
-                        INPUT-OUTPUT p-nat-operacao-fim,
+    RUN esp/esof003a.w (INPUT-OUTPUT p-cod-estabel,
                         INPUT-OUTPUT p-dt-transacao-ini,   
                         INPUT-OUTPUT p-dt-transacao-fim,
-                        INPUT-OUTPUT p-tip-natoper).
+                        INPUT-OUTPUT p-serie-ini,       
+                        INPUT-OUTPUT p-serie-fim,       
+                        INPUT-OUTPUT p-nr-doc-fis-ini,  
+                        INPUT-OUTPUT p-nr-doc-fis-fim,  
+                        INPUT-OUTPUT p-cod-emitente-ini,
+                        INPUT-OUTPUT p-cod-emitente-fim,
+                        INPUT-OUTPUT p-nota-sem-xml).
 
     {&WINDOW-NAME}:SENSITIVE = TRUE.
 
@@ -437,7 +494,7 @@ END.
 ON CHOOSE OF btTotal IN FRAME f-cad
 DO: 
     {&WINDOW-NAME}:SENSITIVE = FALSE.    
-    RUN esp/esof001b.w (INPUT TABLE tt-doc-fiscal).
+    RUN esp/esof003b.w (INPUT TABLE tt-doc-fiscal).
     {&WINDOW-NAME}:SENSITIVE = TRUE.
   
 END.
@@ -513,7 +570,6 @@ END.
 &ANALYZE-RESUME
 
 
-&Scoped-define BROWSE-NAME brTable1
 &UNDEFINE SELF-NAME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CUSTOM _MAIN-BLOCK w-livre 
@@ -552,7 +608,7 @@ PROCEDURE adm-create-objects :
                      SmartPanelType = NAV-ICON,
                      Right-to-Left = First-On-Left':U ,
              OUTPUT h_p-exihel ).
-       RUN set-position IN h_p-exihel ( 1.17 , 143.43 ) NO-ERROR.
+       RUN set-position IN h_p-exihel ( 1.17 , 142.86 ) NO-ERROR.
        /* Size in UIB:  ( 1.25 , 16.00 ) */
 
        /* Links to SmartPanel h_p-exihel. */
@@ -597,109 +653,145 @@ PROCEDURE carregaBrowser :
   Parameters:  <none>
   Notes:       
 ------------------------------------------------------------------------------*/
+    
+    FOR EACH tt-data:
+        DELETE tt-data.
+    END.
+    
+    DO da-cont = p-dt-transacao-ini TO p-dt-transacao-fim:
+        CREATE tt-data.
+        ASSIGN tt-data.data = da-cont.
+    END.
 
     FOR EACH tt-doc-fiscal:
         DELETE tt-doc-fiscal.
     END. 
-  
-    IF p-tip-natoper = 3 THEN DO:
-   
-        FOR EACH doc-fiscal
-            WHERE doc-fiscal.cod-estabel        >= p-cod-estabel-ini  
-              AND doc-fiscal.cod-estabel        <= p-cod-estabel-fim  
-              AND doc-fiscal.serie              >= p-serie-ini         
-              AND doc-fiscal.serie              <= p-serie-fim         
-              AND doc-fiscal.nr-doc-fis         >= p-nr-doc-fis-ini    
-              AND doc-fiscal.nr-doc-fis         <= p-nr-doc-fis-fim    
-              AND doc-fiscal.cod-emitente       >= p-cod-emitente-ini  
-              AND doc-fiscal.cod-emitente       <= p-cod-emitente-fim  
-              AND doc-fiscal.nat-operacao       >= p-nat-operacao-ini 
-              AND doc-fiscal.nat-operacao       <= p-nat-operacao-fim 
-              AND doc-fiscal.dt-docto           >= p-dt-transacao-ini  
-              AND doc-fiscal.dt-docto           <= p-dt-transacao-fim
-              AND doc-fiscal.esp-docto           = "NFD"
-              AND doc-fiscal.ind-sit-doc         = 1 /* 1 - Normal, 2 Cancelado, 3 Incompleto*/ NO-LOCK:
-    
-            IF (doc-fiscal.nat-operacao    = "5209"
-                OR doc-fiscal.nat-operacao = "6209"
-                OR doc-fiscal.nat-operacao = "1209"
-                OR doc-fiscal.nat-operacao = "2209" ) THEN
-                NEXT.
-    
-                CREATE tt-doc-fiscal.
-                BUFFER-COPY doc-fiscal TO tt-doc-fiscal.
-    
+
+    FOR EACH tt-data,
+        EACH  doc-fiscal USE-INDEX  ch-registro 
+        WHERE doc-fiscal.dt-docto        = tt-data.data
+            AND (doc-fiscal.tipo-nat     = 1 OR
+                 doc-fiscal.tipo-nat     = 3)
+            AND  doc-fiscal.cod-estabel  = p-cod-estabel
+            AND  doc-fiscal.serie        >= p-serie-ini
+            AND  doc-fiscal.serie        <= p-serie-fim
+            AND  doc-fiscal.nr-doc-fis   >= p-nr-doc-fis-ini
+            AND  doc-fiscal.nr-doc-fis   <= p-nr-doc-fis-fim
+            AND  doc-fiscal.cod-emitente >= p-cod-emitente-ini
+            AND  doc-fiscal.cod-emitente <= p-cod-emitente-fim
+            AND  doc-fiscal.ind-sit-doc = 1
+        
+        /** EPC ****************************/
+       /* AND   NOT CAN-FIND(FIRST tt-doctos-excluidos
+                           WHERE tt-doctos-excluidos.rw-reg = ROWID(doc-fiscal))*/
+        /** EPC ****************************/
+        NO-LOCK
+        BREAK BY doc-fiscal.dt-docto
+              BY doc-fiscal.cod-estabel
+              BY doc-fiscal.serie
+              BY doc-fiscal.nr-doc-fis
+              BY doc-fiscal.cod-emitente
+              BY doc-fiscal.tipo-nat    
+              BY doc-fiscal.esp-docto
+              BY doc-fiscal.cod-cfop:
+        
+        IF  doc-fiscal.tipo-nat = 3 AND NOT l-consid-cfop-serv THEN NEXT.
+        
+        IF  doc-fiscal.tipo-nat = 3 AND
+                doc-fiscal.cod-cfop <> "1933" AND
+                doc-fiscal.cod-cfop <> "2933" THEN NEXT.
+        
+            CREATE tt-doc-fiscal.
+            BUFFER-COPY doc-fiscal TO tt-doc-fiscal.
+            
+            ASSIGN tt-doc-fiscal.vl-tot-trib  = doc-fiscal.vl-ipi + doc-fiscal.vl-pis + doc-fiscal.vl-icms.
+
+            /*MESSAGE "Docto" tt-doc-fiscal.nr-doc-fis SKIP
+                    "VlTribut" tt-doc-fiscal.vl-tot-trib SKIP
+                    "val-base-contrib-social" tt-doc-fiscal.val-base-contrib-social  SKIP
+                    "val-desp-outros" tt-doc-fiscal.val-desp-outros  SKIP
+                    "val-despch" tt-doc-fiscal.val-despch  SKIP
+                    "vl-bicms" tt-doc-fiscal.vl-bicms  SKIP
+                    "vl-bipi" tt-doc-fiscal.vl-bipi  SKIP
+                    "vl-biss" tt-doc-fiscal.vl-biss  SKIP
+                    "vl-bsubs" tt-doc-fiscal.vl-bsubs  SKIP
+                    "vl-cont-doc" tt-doc-fiscal.vl-cont-doc  SKIP
+                    "vl-embalagem" tt-doc-fiscal.vl-embalagem  SKIP
+                    "vl-finsocial" tt-doc-fiscal.vl-finsocial  SKIP
+                    "vl-frete" tt-doc-fiscal.vl-frete  SKIP
+                    "vl-icms" tt-doc-fiscal.vl-icms  SKIP
+                    "vl-icms-com" tt-doc-fiscal.vl-icms-com  SKIP
+                    "vl-icmsnt" tt-doc-fiscal.vl-icmsnt  SKIP
+                    "vl-icmsou" tt-doc-fiscal.vl-icmsou  SKIP
+                    "vl-icmsub" tt-doc-fiscal.vl-icmsub  SKIP
+                    "vl-ipi" tt-doc-fiscal.vl-ipi  SKIP
+                    "vl-ipi-devol" tt-doc-fiscal.vl-ipi-devol  SKIP
+                    "vl-ipint" tt-doc-fiscal.vl-ipint  SKIP
+                    "vl-ipiou" tt-doc-fiscal.vl-ipiou  SKIP
+                    "vl-irf" tt-doc-fiscal.vl-irf  SKIP
+                    "vl-iss" tt-doc-fiscal.vl-iss  SKIP
+                    "vl-issnt" tt-doc-fiscal.vl-issnt  SKIP
+                    "vl-issou" tt-doc-fiscal.vl-issou  SKIP
+                    "vl-mercad" tt-doc-fiscal.vl-mercad  SKIP
+                    "vl-pis" tt-doc-fiscal.vl-pis
+                VIEW-AS ALERT-BOX INFO BUTTONS OK.*/
+        
+        
+    END.
+
+    IF p-nota-sem-xml = NO THEN DO:
+        FOR EACH tt-doc-fiscal:
+
+            FIND FIRST doc-orig-nfe NO-LOCK
+                WHERE doc-orig-nfe.idi-orig-trad = 2
+                  AND doc-orig-nfe.cod-emitente  = tt-doc-fiscal.cod-emitente
+                  AND doc-orig-nfe.cod-estabel   = tt-doc-fiscal.cod-estabel
+                  AND doc-orig-nfe.serie         = tt-doc-fiscal.serie
+                  AND doc-orig-nfe.nro-docto     = tt-doc-fiscal.nr-doc-fis
+                  AND doc-orig-nfe.dt-emissao    = tt-doc-fiscal.dt-emis-doc
+                  AND doc-orig-nfe.dt-transacao  = tt-doc-fiscal.dt-docto NO-ERROR.
+                IF NOT AVAIL doc-orig-nfe THEN
+                    DELETE tt-doc-fiscal.
         END.
     END.
-    else
-        IF p-tip-natoper = 1 THEN DO:
 
-            FOR EACH doc-fiscal
-                WHERE doc-fiscal.cod-estabel        >= p-cod-estabel-ini  
-                  AND doc-fiscal.cod-estabel        <= p-cod-estabel-fim  
-                  AND doc-fiscal.serie              >= p-serie-ini         
-                  AND doc-fiscal.serie              <= p-serie-fim         
-                  AND doc-fiscal.nr-doc-fis         >= p-nr-doc-fis-ini    
-                  AND doc-fiscal.nr-doc-fis         <= p-nr-doc-fis-fim    
-                  AND doc-fiscal.cod-emitente       >= p-cod-emitente-ini  
-                  AND doc-fiscal.cod-emitente       <= p-cod-emitente-fim  
-                  AND doc-fiscal.nat-operacao       >= p-nat-operacao-ini 
-                  AND doc-fiscal.nat-operacao       <= p-nat-operacao-fim 
-                  AND doc-fiscal.dt-docto           >= p-dt-transacao-ini  
-                  AND doc-fiscal.dt-docto           <= p-dt-transacao-fim
-                  AND doc-fiscal.esp-docto           = "NFD" 
-                  AND doc-fiscal.ind-ori-doc         = 2
-                  AND doc-fiscal.ind-sit-doc         = 1 NO-LOCK:
-    
-                IF (doc-fiscal.nat-operacao    = "5209"
-                    OR doc-fiscal.nat-operacao = "6209"
-                    OR doc-fiscal.nat-operacao = "1209"
-                    OR doc-fiscal.nat-operacao = "2209" ) THEN
-                    NEXT.
-    
-                    CREATE tt-doc-fiscal.
-                    BUFFER-COPY doc-fiscal TO tt-doc-fiscal.
-                        
-            END.
-        END.
-        else do:
+    FOR EACH tt-doc-fiscal:
+        
+        FOR EACH doc-orig-nfe 
+           WHERE doc-orig-nfe.idi-orig-trad = 2
+             AND doc-orig-nfe.cod-emitente  = tt-doc-fiscal.cod-emitente
+             AND doc-orig-nfe.cod-estabel   = tt-doc-fiscal.cod-estabel
+             AND doc-orig-nfe.serie         = tt-doc-fiscal.serie
+             AND doc-orig-nfe.nro-docto     = tt-doc-fiscal.nr-doc-fis
+             AND doc-orig-nfe.dt-emissao    = tt-doc-fiscal.dt-emis-doc
+             AND doc-orig-nfe.dt-transacao  = tt-doc-fiscal.dt-docto NO-LOCK:
 
-            FOR EACH doc-fiscal
-                WHERE doc-fiscal.cod-estabel        >= p-cod-estabel-ini  
-                AND doc-fiscal.cod-estabel        <= p-cod-estabel-fim  
-                AND doc-fiscal.serie              >= p-serie-ini         
-                AND doc-fiscal.serie              <= p-serie-fim         
-                AND doc-fiscal.nr-doc-fis         >= p-nr-doc-fis-ini    
-                AND doc-fiscal.nr-doc-fis         <= p-nr-doc-fis-fim    
-                AND doc-fiscal.cod-emitente       >= p-cod-emitente-ini  
-                AND doc-fiscal.cod-emitente       <= p-cod-emitente-fim  
-                AND doc-fiscal.nat-operacao       >= p-nat-operacao-ini 
-                AND doc-fiscal.nat-operacao       <= p-nat-operacao-fim 
-                AND doc-fiscal.dt-docto           >= p-dt-transacao-ini  
-                AND doc-fiscal.dt-docto           <= p-dt-transacao-fim
-                AND doc-fiscal.esp-docto           = "NFD" 
-                AND doc-fiscal.ind-ori-doc         = 1
-                AND doc-fiscal.ind-sit-doc         = 1 NO-LOCK:
-    
-                IF (doc-fiscal.nat-operacao    = "5209"
-                    OR doc-fiscal.nat-operacao = "6209"
-                    OR doc-fiscal.nat-operacao = "1209"
-                    OR doc-fiscal.nat-operacao = "2209" ) THEN
-                    NEXT.
+            FIND FIRST item-doc-orig-nfe OF doc-orig-nfe NO-LOCK NO-ERROR.
             
-                    CREATE tt-doc-fiscal.
-                    BUFFER-COPY doc-fiscal TO tt-doc-fiscal.
-    
+            IF AVAIL item-doc-orig-nfe THEN DO:
+            
+                ASSIGN tt-doc-fiscal.cod-cfop-xml    = item-doc-orig-nfe.cod-cfop.
             END.
+
+            ASSIGN tt-doc-fiscal.vl-cont-doc-xml = doc-orig-nfe.valor-total
+                   tt-doc-fiscal.vl-tot-trib-xml = doc-orig-nfe.valor-ipi + doc-orig-nfe.valor-pis + doc-orig-nfe.valor-icms.
+
+            /* esof004*/
+            FIND esp-cfop-natur NO-LOCK
+                WHERE esp-cfop-natur.cod-cfop       = tt-doc-fiscal.cod-cfop-xml
+                  AND esp-cfop-natur.cod-cfop-relac = tt-doc-fiscal.cod-cfop NO-ERROR.
+
+            IF AVAIL esp-cfop-natur THEN
+                ASSIGN tt-doc-fiscal.cfop-correta = YES.
+            ELSE
+                ASSIGN tt-doc-fiscal.cfop-correta = NO.
+
         END.
-  
-    RUN verifica-nota-devolucao.
-    
-    RUN verifica-diario-estoque.
+    END.
     
     {&open-query-brTable1}
 
-    APPLY 'MOUSE-SELECT-CLICK' TO brTable1 IN FRAME f-cad.
+    /*APPLY 'MOUSE-SELECT-CLICK' TO brTable1 IN FRAME f-cad.*/
     
     RETURN "OK":U.
 END PROCEDURE.
@@ -793,24 +885,21 @@ PROCEDURE local-initialize :
 
   {include/win-size.i}
 
-  {utp/ut9000.i "ESOF001" "2.12.00.001"}
+  {utp/ut9000.i "ESOF003" "2.12.00.001"}
 
   /* Dispatch standard ADM method.                             */
   RUN dispatch IN THIS-PROCEDURE ( INPUT 'initialize':U ) .
 
-  ASSIGN p-cod-estabel-ini  = ""
-         p-cod-estabel-fim  = "ZZZ"
-         p-serie-ini        = ""
-         p-serie-fim        = "ZZZZZ"
-         p-nr-doc-fis-ini   = ""
-         p-nr-doc-fis-fim   = "ZZZZZZZZZZZZZZZZ"
-         p-cod-emitente-ini = 0
-         p-cod-emitente-fim = 999999999
-         p-nat-operacao-ini = ""
-         p-nat-operacao-fim = "ZZZZZZ"
+  ASSIGN p-cod-estabel       = "01"
          p-dt-transacao-ini  = TODAY 
-         p-dt-transacao-fim  = TODAY
-         p-tip-natoper       = 1. 
+         p-dt-transacao-fim  = TODAY 
+         p-serie-ini         = ""
+         p-serie-fim         = "ZZZZ"
+         p-nr-doc-fis-ini    = ""
+         p-nr-doc-fis-fim    = "ZZZZZZZZZZZZZZZZ"
+         p-cod-emitente-ini  = 0
+         p-cod-emitente-fim  = 999999999
+         p-nota-sem-xml      = YES. 
 
   /* Code placed here will execute AFTER standard behavior.    */
 
@@ -861,245 +950,24 @@ END PROCEDURE.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE verifica-diario-estoque w-livre 
-PROCEDURE verifica-diario-estoque :
-/*------------------------------------------------------------------------------
-  Purpose:     
-  Parameters:  <none>
-  Notes:       
-------------------------------------------------------------------------------*/
-
-EMPTY TEMP-TABLE tt-concilia-fiscal.
-
-DO da-movto = p-dt-transacao-ini TO p-dt-transacao-fim:
-    
-    FOR EACH movto-estoq 
-       WHERE movto-estoq.dt-trans      = da-movto
-         AND movto-estoq.cod-emitente >= p-cod-emitente-ini
-         AND movto-estoq.cod-emitente <= p-cod-emitente-fim
-         AND movto-estoq.cod-estabel  >= p-cod-estabel-ini
-         AND movto-estoq.cod-estabel  <= p-cod-estabel-fim
-         AND movto-estoq.serie-docto  >= p-serie-ini
-         AND movto-estoq.serie-docto  <= p-serie-fim
-         AND movto-estoq.nro-docto    >= p-nr-doc-fis-ini
-         AND movto-estoq.nro-docto    <= p-nr-doc-fis-fim NO-LOCK:  
-
-        FIND FIRST tt-concilia-fiscal
-             WHERE tt-concilia-fiscal.cod-emitente = movto-estoq.cod-emitente
-               AND tt-concilia-fiscal.cod-estabel  = movto-estoq.cod-estabel
-               AND tt-concilia-fiscal.serie-docto  = movto-estoq.serie-docto
-               AND tt-concilia-fiscal.nro-docto    = movto-estoq.nro-docto NO-ERROR.
-        IF NOT AVAIL tt-concilia-fiscal THEN DO:
-            CREATE tt-concilia-fiscal.
-            BUFFER-COPY movto-estoq TO tt-concilia-fiscal.
-        END.
-
-        IF movto-estoq.tipo-trans = 1 THEN
-            ASSIGN tt-concilia-fiscal.valor-ce-db = tt-concilia-fiscal.valor-ce-db
-                                                    + (movto-estoq.valor-mat-m[1]
-                                                    + movto-estoq.valor-ggf-m[1]
-                                                    + movto-estoq.valor-mob-m[1])
-                                                    + movto-estoq.valor-icm
-                                                    + movto-estoq.valor-ipi
-                                                    + movto-estoq.valor-iss
-                                                    + movto-estoq.valor-pis
-                                                    + movto-estoq.val-cofins . 
-        ELSE
-            ASSIGN tt-concilia-fiscal.valor-ce-cr = tt-concilia-fiscal.valor-ce-cr 
-                                                    + movto-estoq.valor-mat-m[1]
-                                                    + movto-estoq.valor-ggf-m[1]
-                                                    + movto-estoq.valor-mob-m[1]
-                                                    + movto-estoq.valor-icm
-                                                    + movto-estoq.valor-ipi
-                                                    + movto-estoq.valor-iss
-                                                    + movto-estoq.valor-pis
-                                                    + movto-estoq.val-cofins.
-            
-    END.
-
-    IF (p-tip-natoper = 3 OR 
-        p-tip-natoper = 1) THEN DO:
-        
-        /*Entradas*/
-        FOR EACH doc-fiscal NO-LOCK
-           WHERE doc-fiscal.dt-docto      = da-movto
-             AND doc-fiscal.cod-estabel  >= p-cod-estabel-ini    
-             AND doc-fiscal.cod-estabel  <= p-cod-estabel-fim    
-             AND doc-fiscal.serie        >= p-serie-ini     
-             AND doc-fiscal.serie        <= p-serie-fim     
-             AND doc-fiscal.nr-doc-fis   >= p-nr-doc-fis-ini
-             AND doc-fiscal.nr-doc-fis   <= p-nr-doc-fis-fim
-             AND (doc-fiscal.tipo-nat   = 1 OR 
-                 (doc-fiscal.tipo-nat   = 3 AND
-                  doc-fiscal.cod-cfop = "1933" OR
-                  doc-fiscal.cod-cfop = "2933"))         
-             AND   doc-fiscal.ind-sit-doc = 1,
-            EACH it-doc-fisc OF doc-fiscal:
-            
-            FIND FIRST tt-concilia-fiscal
-                 WHERE tt-concilia-fiscal.cod-emitente = doc-fiscal.cod-emitente
-                   AND tt-concilia-fiscal.cod-estabel  = doc-fiscal.cod-estabel
-                   AND tt-concilia-fiscal.serie-docto  = doc-fiscal.serie
-                   AND tt-concilia-fiscal.nro-docto    = doc-fiscal.nr-doc-fis NO-ERROR.
-            IF NOT AVAIL tt-concilia-fiscal THEN DO:
-                CREATE tt-concilia-fiscal.
-                BUFFER-COPY doc-fiscal TO tt-concilia-fiscal.
-                ASSIGN tt-concilia-fiscal.nro-docto    = doc-fiscal.nr-doc-fis
-                       tt-concilia-fiscal.serie-docto  = doc-fiscal.serie
-                       tt-concilia-fiscal.dt-trans     = doc-fiscal.dt-docto.
-            END.
-            
-            
-            ASSIGN tt-concilia-fiscal.valor-of-db = tt-concilia-fiscal.valor-of-db 
-                                                  + it-doc-fisc.vl-tot-item
-                                                  + it-doc-fisc.val-pis
-                                                  + it-doc-fisc.val-cofins
-                                                  + it-doc-fisc.vl-iss-it 
-                                                  + it-doc-fisc.vl-icms-it 
-                                                  + it-doc-fisc.vl-ipi-it 
-                                                  + it-doc-fisc.vl-ipi-devol
-                                                  + it-doc-fisc.vl-icmsub-it .
-                                             
-        END.
-    END.
-
-    IF (p-tip-natoper = 3 OR 
-        p-tip-natoper = 2) THEN DO:
-
-        /*Sa¡das*/
-        FOR EACH doc-fiscal NO-LOCK
-           WHERE doc-fiscal.dt-docto      = da-movto
-             AND doc-fiscal.cod-estabel  >= p-cod-estabel-ini 
-             AND doc-fiscal.cod-estabel  <= p-cod-estabel-fim 
-             AND doc-fiscal.serie        >= p-serie-ini       
-             AND doc-fiscal.serie        <= p-serie-fim       
-             AND doc-fiscal.nr-doc-fis   >= p-nr-doc-fis-ini  
-             AND doc-fiscal.nr-doc-fis   <= p-nr-doc-fis-fim  
-             AND ((doc-fiscal.tipo-nat    = 3 AND
-                   (doc-fiscal.cod-cfop = "5933" OR
-                    doc-fiscal.cod-cfop = "6933")) OR
-               doc-fiscal.tipo-nat = 2 /*OR  
-              (doc-fiscal.tipo-nat = 1
-               and doc-fiscal.ind-sit-doc = 2)*/ ),
-            EACH it-doc-fisc OF doc-fiscal no-lock:
-            
-            FIND FIRST tt-concilia-fiscal
-                 WHERE tt-concilia-fiscal.cod-emitente = doc-fiscal.cod-emitente
-                   AND tt-concilia-fiscal.cod-estabel  = doc-fiscal.cod-estabel
-                   AND tt-concilia-fiscal.serie-docto  = doc-fiscal.serie
-                   AND tt-concilia-fiscal.nro-docto    = doc-fiscal.nr-doc-fis NO-ERROR.
-            IF NOT AVAIL tt-concilia-fiscal THEN DO:
-                CREATE tt-concilia-fiscal.
-                BUFFER-COPY doc-fiscal TO tt-concilia-fiscal.
-                ASSIGN tt-concilia-fiscal.cod-emitente = doc-fiscal.cod-emitente
-                       tt-concilia-fiscal.nro-docto    = doc-fiscal.nr-doc-fis
-                       tt-concilia-fiscal.serie-docto  = doc-fiscal.serie
-                       tt-concilia-fiscal.dt-trans     = doc-fiscal.dt-docto.
-            END.
-            
-            ASSIGN tt-concilia-fiscal.valor-of-cr = tt-concilia-fiscal.valor-of-cr
-                                                  + it-doc-fisc.vl-tot-item
-                                                  + it-doc-fisc.val-pis
-                                                  + it-doc-fisc.val-cofins
-                                                  + it-doc-fisc.vl-iss-it 
-                                                  + it-doc-fisc.vl-icms-it 
-                                                  + it-doc-fisc.vl-ipi-it 
-                                                  + it-doc-fisc.vl-ipi-devol
-                                                  + it-doc-fisc.vl-icmsub-it .
-
-           
-        END.
-    END.
-END.
-
-FOR EACH tt-doc-fiscal :    
-
-           
-    IF tt-doc-fiscal.numero-dt-nota = ? THEN
-        DELETE tt-doc-fiscal.
-   
-    FOR EACH tt-concilia-fiscal
-        WHERE tt-concilia-fiscal.cod-emitente = tt-doc-fiscal.cod-emitente
-          AND tt-concilia-fiscal.cod-estabel  = tt-doc-fiscal.cod-estabel 
-          AND tt-concilia-fiscal.serie-docto  = tt-doc-fiscal.serie 
-          AND tt-concilia-fiscal.nro-docto    = tt-doc-fiscal.nr-doc-fis :  
-        
-        IF tt-concilia-fiscal.valor-of-db >= tt-concilia-fiscal.valor-ce-cr  THEN
-            ASSIGN tt-doc-fiscal.valor-tot-integrado = tt-concilia-fiscal.valor-of-db - tt-concilia-fiscal.valor-ce-cr.
-        ELSE
-            ASSIGN tt-doc-fiscal.valor-tot-integrado = tt-concilia-fiscal.valor-ce-cr - tt-concilia-fiscal.valor-of-db .
-    
-        ASSIGN tt-doc-fiscal.valor-tot-diferenca = tt-doc-fiscal.valor-tot-doc-fiscal - tt-doc-fiscal.valor-tot-integrado .
-                  
-    END.   
-
-
-END.
-
-{&open-query-brTable1}
-
-
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE verifica-nota-devolucao w-livre 
-PROCEDURE verifica-nota-devolucao :
-/*------------------------------------------------------------------------------
-  Purpose:     
-  Parameters:  <none>
-  Notes:       
-------------------------------------------------------------------------------*/
-
-    FOR EACH tt-doc-fiscal:    
-               
-        FOR EACH nota-fisc-adc NO-LOCK
-            WHERE nota-fisc-adc.cod-estab        = tt-doc-fiscal.cod-estabel
-              AND nota-fisc-adc.cod-serie        = tt-doc-fiscal.serie
-              AND nota-fisc-adc.cod-nota-fisc    = tt-doc-fiscal.nr-doc-fis
-              AND nota-fisc-adc.cdn-emitente     = tt-doc-fiscal.cod-emitente
-              AND nota-fisc-adc.cod-natur-operac = tt-doc-fiscal.nat-operacao:
-              
-              if nota-fisc-adc.cod-docto-referado = "" then
-                next. 
-
-            ASSIGN tt-doc-fiscal.numero-dt-nota = tt-doc-fiscal.numero-dt-nota + STRING(nota-fisc-adc.cod-docto-referado) + STRING("-") + STRING(nota-fisc-adc.dat-docto-referado,"99/99/9999") + STRING("/") + " ".
-                        
-        END.
-        
-        FOR EACH it-doc-fisc NO-LOCK 
-            WHERE it-doc-fisc.cod-estabel   = tt-doc-fiscal.cod-estabel    
-              AND it-doc-fisc.serie         = tt-doc-fiscal.serie    
-              AND it-doc-fisc.nr-doc-fis    = tt-doc-fiscal.nr-doc-fis
-              AND it-doc-fisc.cod-emitente  = tt-doc-fiscal.cod-emitente :
-                
-             ASSIGN tt-doc-fiscal.valor-tot-doc-fiscal = tt-doc-fiscal.valor-tot-doc-fiscal + it-doc-fisc.vl-tot-item.
-                
-        END.
-            
-    END.
-
-END PROCEDURE.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
 /* ************************  Function Implementations ***************** */
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION fn-tipo-nat w-livre 
-FUNCTION fn-tipo-nat RETURNS CHARACTER
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION fn-nome-abrev w-livre 
+FUNCTION fn-nome-abrev RETURNS CHARACTER
   ( /* parameter-definitions */ ) :
 /*------------------------------------------------------------------------------
   Purpose:  
     Notes:  
 ------------------------------------------------------------------------------*/
+  FIND emitente
+      WHERE emitente.cod-emitente = tt-doc-fiscal.cod-emitente NO-LOCK NO-ERROR.
+  IF AVAIL emitente THEN
+      ASSIGN c-nome-abrev = emitente.nome-abrev.
+  ELSE
+      ASSIGN c-nome-abrev = "".
 
-  ASSIGN c-tipo-nat = "".
 
-  ASSIGN c-tipo-nat   = {diinc/i07di037.i 04 tt-doc-fiscal.ind-ori-doc}.
-
-  RETURN c-tipo-nat.   /* Function return value. */
+  RETURN c-nome-abrev.   /* Function return value. */
 
 END FUNCTION.
 

@@ -10,7 +10,7 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i ESOF001A 2.12.00.001}
+{include/i-prgvrs.i ESOF003A 2.12.00.001}
 
 /* Create an unnamed pool to store all the widgets created 
      by this procedure. This is a good default which assures
@@ -23,20 +23,16 @@ CREATE WIDGET-POOL.
 /* ***************************  Definitions  ************************** */
 
 /* Parameters Definitions ---                                           */
-DEFINE INPUT-OUTPUT PARAM p-cod-estabel-ini   LIKE doc-fiscal.cod-estabel     NO-UNDO.
-DEFINE INPUT-OUTPUT PARAM p-cod-estabel-fim   LIKE doc-fiscal.cod-estabel     NO-UNDO.
-DEFINE INPUT-OUTPUT PARAM p-serie-ini         LIKE doc-fiscal.serie           NO-UNDO.
-DEFINE INPUT-OUTPUT PARAM p-serie-fim         LIKE doc-fiscal.serie           NO-UNDO.
+DEFINE INPUT-OUTPUT PARAM p-cod-estabel       LIKE doc-fiscal.cod-estabel     NO-UNDO.
+DEFINE INPUT-OUTPUT PARAM p-dt-transacao-ini  LIKE doc-fiscal.dt-impl         NO-UNDO.
+DEFINE INPUT-OUTPUT PARAM p-dt-transacao-fim  LIKE doc-fiscal.dt-impl         NO-UNDO.
+DEFINE INPUT-OUTPUT PARAM p-serie-ini         LIKE doc-fiscal.serie         NO-UNDO.
+DEFINE INPUT-OUTPUT PARAM p-serie-fim         LIKE doc-fiscal.serie         NO-UNDO.
 DEFINE INPUT-OUTPUT PARAM p-nr-doc-fis-ini    LIKE doc-fiscal.nr-doc-fis      NO-UNDO.
 DEFINE INPUT-OUTPUT PARAM p-nr-doc-fis-fim    LIKE doc-fiscal.nr-doc-fis      NO-UNDO.
 DEFINE INPUT-OUTPUT PARAM p-cod-emitente-ini  LIKE doc-fiscal.cod-emitente    NO-UNDO.
 DEFINE INPUT-OUTPUT PARAM p-cod-emitente-fim  LIKE doc-fiscal.cod-emitente    NO-UNDO.
-DEFINE INPUT-OUTPUT PARAM p-nat-operacao-ini  LIKE doc-fiscal.nat-operacao    NO-UNDO.
-DEFINE INPUT-OUTPUT PARAM p-nat-operacao-fim  LIKE doc-fiscal.nat-operacao    NO-UNDO.
-DEFINE INPUT-OUTPUT PARAM p-dt-transacao-ini  LIKE doc-fiscal.dt-impl         NO-UNDO.
-DEFINE INPUT-OUTPUT PARAM p-dt-transacao-fim  LIKE doc-fiscal.dt-impl         NO-UNDO.
-DEFINE INPUT-OUTPUT PARAM p-tip-natoper       AS INTEGER                      NO-UNDO .
-
+DEFINE INPUT-OUTPUT PARAM p-nota-sem-xml      AS LOGICAL    NO-UNDO.
 
 /* Local Variable Definitions ---                                       */
 
@@ -57,16 +53,14 @@ DEFINE INPUT-OUTPUT PARAM p-tip-natoper       AS INTEGER                      NO
 &Scoped-define FRAME-NAME F-Main
 
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-OBJECTS RECT-1 IMAGE-3 IMAGE-4 IMAGE-24 IMAGE-25 ~
-IMAGE-26 IMAGE-27 IMAGE-28 IMAGE-29 IMAGE-30 IMAGE-31 IMAGE-32 IMAGE-33 ~
-RECT-14 c-cod-estabel-ini c-cod-estabel-fim c-serie-ini c-serie-fim ~
-c-nr-doc-fis-ini c-nr-doc-fis-fim i-cod-emitente-ini i-cod-emitente-fim ~
-c-nat-operacao-ini c-nat-operacao-fim d-dt-transacao-ini d-dt-transacao-fim ~
-i-tip-natoper bt-ok bt-cancelar bt-ajuda 
-&Scoped-Define DISPLAYED-OBJECTS c-cod-estabel-ini c-cod-estabel-fim ~
-c-serie-ini c-serie-fim c-nr-doc-fis-ini c-nr-doc-fis-fim ~
-i-cod-emitente-ini i-cod-emitente-fim c-nat-operacao-ini c-nat-operacao-fim ~
-d-dt-transacao-ini d-dt-transacao-fim i-tip-natoper c-texto-4 
+&Scoped-Define ENABLED-OBJECTS RECT-1 IMAGE-32 IMAGE-33 IMAGE-34 IMAGE-35 ~
+IMAGE-36 IMAGE-37 IMAGE-38 IMAGE-39 c-cod-estabel d-dt-transacao-ini ~
+d-dt-transacao-fim c-serie-ini c-serie-fim c-nr-doc-fis-ini ~
+c-nr-doc-fis-fim i-cod-emitente-ini i-cod-emitente-fim l-nota-sem-xml bt-ok ~
+bt-cancelar bt-ajuda 
+&Scoped-Define DISPLAYED-OBJECTS c-cod-estabel d-dt-transacao-ini ~
+d-dt-transacao-fim c-serie-ini c-serie-fim c-nr-doc-fis-ini ~
+c-nr-doc-fis-fim i-cod-emitente-ini i-cod-emitente-fim l-nota-sem-xml 
 
 /* Custom List Definitions                                              */
 /* List-1,List-2,List-3,List-4,List-5,List-6                            */
@@ -94,45 +88,28 @@ DEFINE BUTTON bt-ok AUTO-GO
      LABEL "OK" 
      SIZE 10 BY 1.
 
-DEFINE VARIABLE c-cod-estabel-fim AS CHARACTER FORMAT "X(3)" INITIAL "ZZZ" 
-     VIEW-AS FILL-IN 
-     SIZE 8 BY .88 NO-UNDO.
-
-DEFINE VARIABLE c-cod-estabel-ini AS CHARACTER FORMAT "X(3)" 
+DEFINE VARIABLE c-cod-estabel AS CHARACTER FORMAT "X(3)" 
      LABEL "Estab.":R8 
      VIEW-AS FILL-IN 
      SIZE 8 BY .88 NO-UNDO.
 
-DEFINE VARIABLE c-nat-operacao-fim AS CHARACTER FORMAT "x(06)" INITIAL "ZZZZZZ" 
+DEFINE VARIABLE c-nr-doc-fis-fim AS CHARACTER FORMAT "x(16)" 
      VIEW-AS FILL-IN 
      SIZE 12 BY .88 NO-UNDO.
-
-DEFINE VARIABLE c-nat-operacao-ini AS CHARACTER FORMAT "x(06)" 
-     LABEL "Natureza Opera‡Æo":R21 
-     VIEW-AS FILL-IN 
-     SIZE 12 BY .88 NO-UNDO.
-
-DEFINE VARIABLE c-nr-doc-fis-fim AS CHARACTER FORMAT "x(16)" INITIAL "ZZZZZZZZZZZZZZZZ" 
-     VIEW-AS FILL-IN 
-     SIZE 15 BY .88 NO-UNDO.
 
 DEFINE VARIABLE c-nr-doc-fis-ini AS CHARACTER FORMAT "x(16)" 
      LABEL "Documento Fiscal":R20 
      VIEW-AS FILL-IN 
-     SIZE 15 BY .88 NO-UNDO.
+     SIZE 12 BY .88 NO-UNDO.
 
-DEFINE VARIABLE c-serie-fim AS CHARACTER FORMAT "X(5)" INITIAL "ZZZZZ" 
+DEFINE VARIABLE c-serie-fim AS CHARACTER FORMAT "x(5)" 
      VIEW-AS FILL-IN 
      SIZE 5 BY .88 NO-UNDO.
 
-DEFINE VARIABLE c-serie-ini AS CHARACTER FORMAT "X(5)" 
-     LABEL "S‚rie":R8 
+DEFINE VARIABLE c-serie-ini AS CHARACTER FORMAT "x(5)" 
+     LABEL "S‚rie":R7 
      VIEW-AS FILL-IN 
      SIZE 5 BY .88 NO-UNDO.
-
-DEFINE VARIABLE c-texto-4 AS CHARACTER FORMAT "X(256)":U INITIAL "Tipo Nat Oper" 
-      VIEW-AS TEXT 
-     SIZE 11 BY .67 NO-UNDO.
 
 DEFINE VARIABLE d-dt-transacao-fim AS DATE FORMAT "99/99/9999" 
      VIEW-AS FILL-IN 
@@ -143,50 +120,14 @@ DEFINE VARIABLE d-dt-transacao-ini AS DATE FORMAT "99/99/9999"
      VIEW-AS FILL-IN 
      SIZE 12 BY .88 NO-UNDO.
 
-DEFINE VARIABLE i-cod-emitente-fim AS INTEGER FORMAT ">>>>>>>>9" INITIAL 999999999 
+DEFINE VARIABLE i-cod-emitente-fim AS INTEGER FORMAT ">>>>>>>>9" INITIAL 0 
      VIEW-AS FILL-IN 
      SIZE 12 BY .88 NO-UNDO.
 
 DEFINE VARIABLE i-cod-emitente-ini AS INTEGER FORMAT ">>>>>>>>9" INITIAL 0 
-     LABEL "Emitente":R8 
+     LABEL "Cliente/Fornec":R17 
      VIEW-AS FILL-IN 
      SIZE 12 BY .88 NO-UNDO.
-
-DEFINE IMAGE IMAGE-24
-     FILENAME "image\im-fir":U
-     SIZE 3 BY .88.
-
-DEFINE IMAGE IMAGE-25
-     FILENAME "image\im-las":U
-     SIZE 3 BY .88.
-
-DEFINE IMAGE IMAGE-26
-     FILENAME "image\im-fir":U
-     SIZE 3.29 BY .88.
-
-DEFINE IMAGE IMAGE-27
-     FILENAME "image\im-las":U
-     SIZE 3 BY .88.
-
-DEFINE IMAGE IMAGE-28
-     FILENAME "image\im-fir":U
-     SIZE 3.29 BY .88.
-
-DEFINE IMAGE IMAGE-29
-     FILENAME "image\im-las":U
-     SIZE 3 BY .88.
-
-DEFINE IMAGE IMAGE-3
-     FILENAME "image\im-fir":U
-     SIZE 3.29 BY .88.
-
-DEFINE IMAGE IMAGE-30
-     FILENAME "image\im-fir":U
-     SIZE 3.29 BY .88.
-
-DEFINE IMAGE IMAGE-31
-     FILENAME "image\im-las":U
-     SIZE 3 BY .88.
 
 DEFINE IMAGE IMAGE-32
      FILENAME "image\im-fir":U
@@ -196,73 +137,78 @@ DEFINE IMAGE IMAGE-33
      FILENAME "image\im-las":U
      SIZE 3 BY .88.
 
-DEFINE IMAGE IMAGE-4
+DEFINE IMAGE IMAGE-34
+     FILENAME "image\im-fir":U
+     SIZE 3.29 BY .88.
+
+DEFINE IMAGE IMAGE-35
      FILENAME "image\im-las":U
      SIZE 3 BY .88.
 
-DEFINE VARIABLE i-tip-natoper AS INTEGER INITIAL 1 
-     VIEW-AS RADIO-SET VERTICAL
-     RADIO-BUTTONS 
-          "Entrada", 1,
-"Sa¡da", 2,
-"Todas", 3
-     SIZE 10 BY 2.21.
+DEFINE IMAGE IMAGE-36
+     FILENAME "image\im-fir":U
+     SIZE 3.29 BY .88.
+
+DEFINE IMAGE IMAGE-37
+     FILENAME "image\im-las":U
+     SIZE 3 BY .88.
+
+DEFINE IMAGE IMAGE-38
+     FILENAME "image\im-fir":U
+     SIZE 3.29 BY .88.
+
+DEFINE IMAGE IMAGE-39
+     FILENAME "image\im-las":U
+     SIZE 3 BY .88.
 
 DEFINE RECTANGLE RECT-1
      EDGE-PIXELS 2 GRAPHIC-EDGE    
      SIZE 77.86 BY 1.38
      BGCOLOR 7 .
 
-DEFINE RECTANGLE RECT-14
-     EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 26.86 BY 3.
+DEFINE VARIABLE l-nota-sem-xml AS LOGICAL INITIAL yes 
+     LABEL "Lista Nota Sem XML" 
+     VIEW-AS TOGGLE-BOX
+     SIZE 23 BY .83 NO-UNDO.
 
 
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME F-Main
-     c-cod-estabel-ini AT ROW 1.79 COL 21 COLON-ALIGNED WIDGET-ID 72
-     c-cod-estabel-fim AT ROW 1.79 COL 46.57 COLON-ALIGNED NO-LABEL WIDGET-ID 70
-     c-serie-ini AT ROW 2.79 COL 21 COLON-ALIGNED WIDGET-ID 4
-     c-serie-fim AT ROW 2.79 COL 46.57 COLON-ALIGNED NO-LABEL WIDGET-ID 2
-     c-nr-doc-fis-ini AT ROW 3.79 COL 21 COLON-ALIGNED HELP
-          "N£mero do documento fiscal" WIDGET-ID 106
-     c-nr-doc-fis-fim AT ROW 3.79 COL 46.57 COLON-ALIGNED HELP
-          "N£mero do documento fiscal" NO-LABEL WIDGET-ID 104
-     i-cod-emitente-ini AT ROW 4.79 COL 21 COLON-ALIGNED WIDGET-ID 114
-     i-cod-emitente-fim AT ROW 4.79 COL 46.57 COLON-ALIGNED NO-LABEL WIDGET-ID 112
-     c-nat-operacao-ini AT ROW 5.79 COL 21 COLON-ALIGNED HELP
-          "Natureza de opera‡Æo" WIDGET-ID 122
-     c-nat-operacao-fim AT ROW 5.79 COL 46.57 COLON-ALIGNED HELP
-          "Natureza de opera‡Æo" NO-LABEL WIDGET-ID 120
-     d-dt-transacao-ini AT ROW 6.79 COL 21 COLON-ALIGNED HELP
+     c-cod-estabel AT ROW 1.5 COL 21 COLON-ALIGNED WIDGET-ID 72
+     d-dt-transacao-ini AT ROW 2.5 COL 21 COLON-ALIGNED HELP
           "Data da implanta‡Æo do docto fiscal" WIDGET-ID 130
-     d-dt-transacao-fim AT ROW 6.79 COL 46.57 COLON-ALIGNED HELP
+     d-dt-transacao-fim AT ROW 2.5 COL 46.57 COLON-ALIGNED HELP
           "Data da implanta‡Æo do docto fiscal" NO-LABEL WIDGET-ID 128
-     i-tip-natoper AT ROW 9.21 COL 25 HELP
-          "Tipo da natureza da opera‡Æo" NO-LABEL WIDGET-ID 138
-     bt-ok AT ROW 12.21 COL 3
-     bt-cancelar AT ROW 12.21 COL 14
-     bt-ajuda AT ROW 12.21 COL 69
-     c-texto-4 AT ROW 8.25 COL 22 COLON-ALIGNED NO-LABEL WIDGET-ID 136
-     RECT-1 AT ROW 12 COL 2
-     IMAGE-3 AT ROW 2.79 COL 40.72 WIDGET-ID 32
-     IMAGE-4 AT ROW 2.79 COL 44.72 WIDGET-ID 34
-     IMAGE-24 AT ROW 1.79 COL 40.72 WIDGET-ID 74
-     IMAGE-25 AT ROW 1.79 COL 44.72 WIDGET-ID 76
-     IMAGE-26 AT ROW 3.79 COL 40.72 WIDGET-ID 108
-     IMAGE-27 AT ROW 3.79 COL 44.72 WIDGET-ID 110
-     IMAGE-28 AT ROW 4.79 COL 40.72 WIDGET-ID 116
-     IMAGE-29 AT ROW 4.79 COL 44.72 WIDGET-ID 118
-     IMAGE-30 AT ROW 5.79 COL 40.72 WIDGET-ID 124
-     IMAGE-31 AT ROW 5.79 COL 44.72 WIDGET-ID 126
-     IMAGE-32 AT ROW 6.79 COL 40.72 WIDGET-ID 132
-     IMAGE-33 AT ROW 6.79 COL 44.72 WIDGET-ID 134
-     RECT-14 AT ROW 8.58 COL 23 WIDGET-ID 142
+     c-serie-ini AT ROW 3.5 COL 21 COLON-ALIGNED HELP
+          "S‚rie do documento fiscal" WIDGET-ID 136
+     c-serie-fim AT ROW 3.5 COL 46.72 COLON-ALIGNED HELP
+          "S‚rie do documento fiscal" NO-LABEL WIDGET-ID 138
+     c-nr-doc-fis-ini AT ROW 4.5 COL 21 COLON-ALIGNED HELP
+          "N£mero do documento fiscal" WIDGET-ID 144
+     c-nr-doc-fis-fim AT ROW 4.5 COL 46.72 COLON-ALIGNED HELP
+          "N£mero do documento fiscal" NO-LABEL WIDGET-ID 146
+     i-cod-emitente-ini AT ROW 5.5 COL 21 COLON-ALIGNED HELP
+          "C¢digo do emitente (cliente ou fornecedor)" WIDGET-ID 152
+     i-cod-emitente-fim AT ROW 5.5 COL 46.86 COLON-ALIGNED HELP
+          "C¢digo do emitente (cliente ou fornecedor)" NO-LABEL WIDGET-ID 154
+     l-nota-sem-xml AT ROW 6.88 COL 23.14 WIDGET-ID 160
+     bt-ok AT ROW 8.46 COL 3
+     bt-cancelar AT ROW 8.46 COL 14
+     bt-ajuda AT ROW 8.46 COL 69
+     RECT-1 AT ROW 8.25 COL 2
+     IMAGE-32 AT ROW 2.5 COL 40.72 WIDGET-ID 132
+     IMAGE-33 AT ROW 2.5 COL 44.72 WIDGET-ID 134
+     IMAGE-34 AT ROW 3.54 COL 40.72 WIDGET-ID 140
+     IMAGE-35 AT ROW 3.54 COL 44.72 WIDGET-ID 142
+     IMAGE-36 AT ROW 4.54 COL 40.72 WIDGET-ID 148
+     IMAGE-37 AT ROW 4.54 COL 44.72 WIDGET-ID 150
+     IMAGE-38 AT ROW 5.54 COL 40.72 WIDGET-ID 156
+     IMAGE-39 AT ROW 5.54 COL 44.72 WIDGET-ID 158
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1
-         SIZE 80 BY 14.42 WIDGET-ID 100.
+         SIZE 80 BY 12.75 WIDGET-ID 100.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -283,7 +229,7 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW w-window ASSIGN
          HIDDEN             = YES
          TITLE              = "<insert Custom SmartWindow title>"
-         HEIGHT             = 12.63
+         HEIGHT             = 9
          WIDTH              = 80
          MAX-HEIGHT         = 21.13
          MAX-WIDTH          = 114.29
@@ -321,8 +267,6 @@ ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
   VISIBLE,,RUN-PERSISTENT                                               */
 /* SETTINGS FOR FRAME F-Main
    FRAME-NAME                                                           */
-/* SETTINGS FOR FILL-IN c-texto-4 IN FRAME F-Main
-   NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(w-window)
 THEN w-window:HIDDEN = yes.
 
@@ -389,21 +333,30 @@ END.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-ok w-window
 ON CHOOSE OF bt-ok IN FRAME F-Main /* OK */
 DO:
+    FIND param-of NO-LOCK
+        WHERE param-of.cod-estabel = INPUT FRAME {&FRAME-NAME} c-cod-estabel NO-ERROR.
 
-    ASSIGN p-cod-estabel-ini   = INPUT FRAME {&FRAME-NAME} c-cod-estabel-ini         
-           p-cod-estabel-fim   = INPUT FRAME {&FRAME-NAME} c-cod-estabel-fim   
-           p-serie-ini         = INPUT FRAME {&FRAME-NAME} c-serie-ini         
-           p-serie-fim         = INPUT FRAME {&FRAME-NAME} c-serie-fim         
-           p-nr-doc-fis-ini    = INPUT FRAME {&FRAME-NAME} c-nr-doc-fis-ini    
-           p-nr-doc-fis-fim    = INPUT FRAME {&FRAME-NAME} c-nr-doc-fis-fim    
-           p-cod-emitente-ini  = INPUT FRAME {&FRAME-NAME} i-cod-emitente-ini 
-           p-cod-emitente-fim  = INPUT FRAME {&FRAME-NAME} i-cod-emitente-fim 
-           p-nat-operacao-ini  = INPUT FRAME {&FRAME-NAME} c-nat-operacao-ini 
-           p-nat-operacao-fim  = INPUT FRAME {&FRAME-NAME} c-nat-operacao-fim 
+    IF NOT AVAIL param-of THEN DO:
+
+        RUN utp/ut-msgs.p (INPUT "show":U, 
+                           INPUT 16084, 
+                           input "").
+
+        APPLY "entry":U TO c-cod-estabel IN FRAME f-main.        
+        RETURN NO-APPLY.
+    END.
+
+    ASSIGN p-cod-estabel       = INPUT FRAME {&FRAME-NAME} c-cod-estabel 
            p-dt-transacao-ini  = INPUT FRAME {&FRAME-NAME} d-dt-transacao-ini  
            p-dt-transacao-fim  = INPUT FRAME {&FRAME-NAME} d-dt-transacao-fim
-           p-tip-natoper       = INPUT FRAME {&FRAME-NAME} i-tip-natoper.
-           
+           p-serie-ini         = INPUT FRAME {&FRAME-NAME} c-serie-ini       
+           p-serie-fim         = INPUT FRAME {&FRAME-NAME} c-serie-fim       
+           p-nr-doc-fis-ini    = INPUT FRAME {&FRAME-NAME} c-nr-doc-fis-ini  
+           p-nr-doc-fis-fim    = INPUT FRAME {&FRAME-NAME} c-nr-doc-fis-fim  
+           p-cod-emitente-ini  = INPUT FRAME {&FRAME-NAME} i-cod-emitente-ini
+           p-cod-emitente-fim  = INPUT FRAME {&FRAME-NAME} i-cod-emitente-fim
+           p-nota-sem-xml      = INPUT FRAME {&FRAME-NAME} l-nota-sem-xml. 
+    
     APPLY "close":U TO THIS-PROCEDURE.
 
 END.
@@ -493,17 +446,15 @@ PROCEDURE enable_UI :
                These statements here are based on the "Other 
                Settings" section of the widget Property Sheets.
 ------------------------------------------------------------------------------*/
-  DISPLAY c-cod-estabel-ini c-cod-estabel-fim c-serie-ini c-serie-fim 
-          c-nr-doc-fis-ini c-nr-doc-fis-fim i-cod-emitente-ini 
-          i-cod-emitente-fim c-nat-operacao-ini c-nat-operacao-fim 
-          d-dt-transacao-ini d-dt-transacao-fim i-tip-natoper c-texto-4 
+  DISPLAY c-cod-estabel d-dt-transacao-ini d-dt-transacao-fim c-serie-ini 
+          c-serie-fim c-nr-doc-fis-ini c-nr-doc-fis-fim i-cod-emitente-ini 
+          i-cod-emitente-fim l-nota-sem-xml 
       WITH FRAME F-Main IN WINDOW w-window.
-  ENABLE RECT-1 IMAGE-3 IMAGE-4 IMAGE-24 IMAGE-25 IMAGE-26 IMAGE-27 IMAGE-28 
-         IMAGE-29 IMAGE-30 IMAGE-31 IMAGE-32 IMAGE-33 RECT-14 c-cod-estabel-ini 
-         c-cod-estabel-fim c-serie-ini c-serie-fim c-nr-doc-fis-ini 
-         c-nr-doc-fis-fim i-cod-emitente-ini i-cod-emitente-fim 
-         c-nat-operacao-ini c-nat-operacao-fim d-dt-transacao-ini 
-         d-dt-transacao-fim i-tip-natoper bt-ok bt-cancelar bt-ajuda 
+  ENABLE RECT-1 IMAGE-32 IMAGE-33 IMAGE-34 IMAGE-35 IMAGE-36 IMAGE-37 IMAGE-38 
+         IMAGE-39 c-cod-estabel d-dt-transacao-ini d-dt-transacao-fim 
+         c-serie-ini c-serie-fim c-nr-doc-fis-ini c-nr-doc-fis-fim 
+         i-cod-emitente-ini i-cod-emitente-fim l-nota-sem-xml bt-ok bt-cancelar 
+         bt-ajuda 
       WITH FRAME F-Main IN WINDOW w-window.
   {&OPEN-BROWSERS-IN-QUERY-F-Main}
   VIEW w-window.
@@ -558,24 +509,21 @@ PROCEDURE local-initialize :
   /* Code placed here will execute PRIOR to standard behavior. */
   {include/win-size.i}
   
-  {utp/ut9000.i "ESOF001A" "2.12.00.001"}
+  {utp/ut9000.i "ESOF003A" "2.12.00.001"}
 
   /* Dispatch standard ADM method.                             */
    RUN dispatch IN THIS-PROCEDURE ( INPUT 'initialize':U ) .
 
-   ASSIGN c-cod-estabel-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME}  = STRING(p-cod-estabel-ini)  
-          c-cod-estabel-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME}  = STRING(p-cod-estabel-fim)  
-          c-serie-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME}        = STRING(p-serie-ini)        
-          c-serie-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME}        = STRING(p-serie-fim)        
-          c-nr-doc-fis-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME}   = STRING(p-nr-doc-fis-ini)   
-          c-nr-doc-fis-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME}   = STRING(p-nr-doc-fis-fim)   
-          i-cod-emitente-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-cod-emitente-ini)
-          i-cod-emitente-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-cod-emitente-fim)
-          c-nat-operacao-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-nat-operacao-ini)
-          c-nat-operacao-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-nat-operacao-fim)
+   ASSIGN c-cod-estabel:SCREEN-VALUE IN FRAME {&FRAME-NAME}  = STRING(p-cod-estabel)
           d-dt-transacao-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-dt-transacao-ini) 
           d-dt-transacao-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-dt-transacao-fim)
-          i-tip-natoper:SCREEN-VALUE IN FRAME {&FRAME-NAME}      = STRING(p-tip-natoper). 
+          c-serie-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-serie-ini)
+          c-serie-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-serie-fim)
+          c-nr-doc-fis-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-nr-doc-fis-ini)
+          c-nr-doc-fis-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-nr-doc-fis-fim)
+          i-cod-emitente-ini:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-cod-emitente-ini)
+          i-cod-emitente-fim:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-cod-emitente-fim)
+          l-nota-sem-xml:SCREEN-VALUE IN FRAME {&FRAME-NAME} = STRING(p-nota-sem-xml). 
 
   /* Code placed here will execute AFTER standard behavior.    */
 

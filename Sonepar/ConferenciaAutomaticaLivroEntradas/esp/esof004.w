@@ -467,7 +467,10 @@ PROCEDURE adm-create-objects :
        RUN init-object IN THIS-PROCEDURE (
              INPUT  'esp/esof004-q01.w':U ,
              INPUT  FRAME f-cad:HANDLE ,
-             INPUT  '':U ,
+             INPUT  'ProgPesquisa = esp/esof004-z01.w,
+                     ProgVaPara = esp/esof004-g01.w,
+                     ProgIncMod = ,
+                     Implantar = no':U ,
              OUTPUT h_esof004-q01 ).
        RUN set-position IN h_esof004-q01 ( 1.33 , 65.86 ) NO-ERROR.
        /* Size in UIB:  ( 1.25 , 7.72 ) */

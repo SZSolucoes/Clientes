@@ -1,0 +1,46 @@
+ADD TABLE "esp-cfop-natur"
+  AREA "Schema Area"
+  LABEL "esp-cfop-nat"
+  DESCRIPTION "Relacionamento de CFOP , utilizada para validaá∆o de recebimento x arquivos fiscais entrada"
+  DUMP-NAME "esp-cfop-nat"
+
+ADD FIELD "cod-cfop" OF "esp-cfop-natur" AS character 
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "CFOP"
+  POSITION 2
+  MAX-WIDTH 20
+  COLUMN-LABEL "CFOP"
+  ORDER 10
+  MANDATORY
+
+ADD FIELD "cod-cfop-relac" OF "esp-cfop-natur" AS character 
+  DESCRIPTION "CFOP relacionada"
+  FORMAT "x(10)"
+  INITIAL ""
+  LABEL "CFOP Relac."
+  POSITION 3
+  MAX-WIDTH 20
+  COLUMN-LABEL "CFOP Relac."
+  ORDER 20
+
+ADD FIELD "descricao" OF "esp-cfop-natur" AS character 
+  FORMAT "x(60)"
+  INITIAL ""
+  LABEL "Descric∆o"
+  POSITION 4
+  MAX-WIDTH 120
+  ORDER 30
+
+ADD INDEX "ch-cfop-ralec" ON "esp-cfop-natur" 
+  AREA "Schema Area"
+  UNIQUE
+  PRIMARY
+  INDEX-FIELD "cod-cfop" ASCENDING 
+  INDEX-FIELD "cod-cfop-relac" ASCENDING 
+
+.
+PSC
+cpstream=ibm850
+.
+0000000953

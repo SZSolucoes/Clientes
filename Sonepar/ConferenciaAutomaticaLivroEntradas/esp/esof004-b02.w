@@ -31,6 +31,7 @@ CREATE WIDGET-POOL.
 /* Local Variable Definitions ---                                       */
 define var v-row as rowid no-undo.
 DEFINE VARIABLE c-denominacao AS CHARACTER   NO-UNDO.
+DEFINE BUFFER bf-cfop-natur FOR cfop-natur.
     
 /*:T Variaveis usadas internamente pelo estilo, favor nao elimina-las     */
 
@@ -75,7 +76,7 @@ DEFINE QUERY external_tables FOR cfop-natur.
 &Scoped-define KEY-PHRASE TRUE
 
 /* Definitions for BROWSE br-table                                      */
-&Scoped-define FIELDS-IN-QUERY-br-table esp-cfop-natur.cod-cfop-relac fn-denominacao () @ c-denominacao   
+&Scoped-define FIELDS-IN-QUERY-br-table esp-cfop-natur.cod-cfop-relac esp-cfop-natur.descricao   
 &Scoped-define ENABLED-FIELDS-IN-QUERY-br-table   
 &Scoped-define SELF-NAME br-table
 &Scoped-define QUERY-STRING-br-table FOR EACH esp-cfop-natur OF cfop-natur NO-LOCK     ~{&SORTBY-PHRASE}
@@ -171,7 +172,7 @@ DEFINE BROWSE br-table
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _DISPLAY-FIELDS br-table B-table-Win _FREEFORM
   QUERY br-table NO-LOCK DISPLAY
       esp-cfop-natur.cod-cfop-relac FORMAT "x(10)":U WIDTH 10
-      fn-denominacao () @ c-denominacao FORMAT "x(40)":U WIDTH 40 COLUMN-LABEL "Descri‡Æo"
+      esp-cfop-natur.descricao FORMAT "x(60)":U WIDTH 30
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
     WITH NO-ASSIGN SEPARATORS SIZE 37 BY 11.75.
@@ -440,13 +441,14 @@ PROCEDURE pi-add-browse :
   def input parameter rw-row-2 as rowid no-undo.
 
   find cfop-natur where rowid(cfop-natur) = rw-row-1 no-lock no-error.
-  find natur-oper where rowid(natur-oper) = rw-row-2 no-lock no-error.
+  find bf-cfop-natur where rowid(bf-cfop-natur) = rw-row-2 no-lock no-error.
   find esp-cfop-natur where esp-cfop-natur.cod-cfop = cfop-natur.cod-cfop and
-                            esp-cfop-natur.cod-cfop-relac = natur-oper.cod-cfop no-error.
+                            esp-cfop-natur.cod-cfop-relac = bf-cfop-natur.cod-cfop no-error.
   if  not avail esp-cfop-natur then do:  
       create esp-cfop-natur.
       assign esp-cfop-natur.cod-cfop       = cfop-natur.cod-cfop
-             esp-cfop-natur.cod-cfop-relac = natur-oper.cod-cfop.
+             esp-cfop-natur.cod-cfop-relac = bf-cfop-natur.cod-cfop
+             esp-cfop-natur.descricao      = bf-cfop-natur.des-cfop.
   end.
 
 END PROCEDURE.
@@ -533,11 +535,10 @@ FUNCTION fn-denominacao RETURNS CHARACTER
   ASSIGN c-denominacao = "".
 
   FIND cfop-natur NO-LOCK
-      WHERE cfop-natur.cod-cfop = esp-cfop-natur.cod-cfop NO-ERROR.
+      WHERE cfop-natur.cod-cfop = esp-cfop-natur.cod-cfop-relac NO-ERROR.
 
   IF AVAIL cfop-natur THEN
       ASSIGN c-denominacao = cfop-natur.des-cfop.
-
   
 
   RETURN c-denominacao.   /* Function return value. */

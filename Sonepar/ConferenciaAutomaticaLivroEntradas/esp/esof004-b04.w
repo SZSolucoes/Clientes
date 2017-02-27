@@ -1,4 +1,4 @@
-&ANALYZE-SUSPEND _VERSION-NUMBER UIB_v8r11 GUI ADM1
+&ANALYZE-SUSPEND _VERSION-NUMBER UIB_v8r12 GUI ADM1
 &ANALYZE-RESUME
 /* Connected Databases 
           mgdis            PROGRESS
@@ -24,11 +24,12 @@
 CREATE WIDGET-POOL.
 
 /* ***************************  Definitions  ************************** */
+&Scop adm-attribute-dlg support/browserd.w
 
 /* Parameters Definitions ---                                           */
 
 /* Local Variable Definitions ---                                       */
-DEFINE VARIABLE c-denominacao AS CHARACTER   NO-UNDO.
+define variable c-lista-valor as character init '':U no-undo.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -45,7 +46,7 @@ DEFINE VARIABLE c-denominacao AS CHARACTER   NO-UNDO.
 
 /* Name of designated FRAME-NAME and/or first browse and/or first query */
 &Scoped-define FRAME-NAME F-Main
-&Scoped-define BROWSE-NAME br_table
+&Scoped-define BROWSE-NAME br-table
 
 /* Internal Tables (found by Frame, Query & Browse Queries)             */
 &Scoped-define INTERNAL-TABLES cfop-natur
@@ -53,20 +54,28 @@ DEFINE VARIABLE c-denominacao AS CHARACTER   NO-UNDO.
 /* Define KEY-PHRASE in case it is used by any query. */
 &Scoped-define KEY-PHRASE TRUE
 
-/* Definitions for BROWSE br_table                                      */
-&Scoped-define FIELDS-IN-QUERY-br_table cfop-natur.cod-cfop cfop-natur.des-cfop   
-&Scoped-define ENABLED-FIELDS-IN-QUERY-br_table   
-&Scoped-define SELF-NAME br_table
-&Scoped-define QUERY-STRING-br_table FOR EACH cfop-natur WHERE ~{&KEY-PHRASE} NO-LOCK     ~{&SORTBY-PHRASE} INDEXED-REPOSITION
-&Scoped-define OPEN-QUERY-br_table OPEN QUERY {&SELF-NAME} FOR EACH cfop-natur WHERE ~{&KEY-PHRASE} NO-LOCK     ~{&SORTBY-PHRASE} INDEXED-REPOSITION.
-&Scoped-define TABLES-IN-QUERY-br_table cfop-natur
-&Scoped-define FIRST-TABLE-IN-QUERY-br_table cfop-natur
+/* Definitions for BROWSE br-table                                      */
+&Scoped-define FIELDS-IN-QUERY-br-table cfop-natur.des-cfop ~
+cfop-natur.cod-cfop 
+&Scoped-define ENABLED-FIELDS-IN-QUERY-br-table 
+&Scoped-define QUERY-STRING-br-table FOR EACH cfop-natur WHERE ~{&KEY-PHRASE} ~
+      AND cfop-natur.des-cfop >= c-inicial ~
+ AND cfop-natur.des-cfop <= c-final NO-LOCK ~
+    ~{&SORTBY-PHRASE}
+&Scoped-define OPEN-QUERY-br-table OPEN QUERY br-table FOR EACH cfop-natur WHERE ~{&KEY-PHRASE} ~
+      AND cfop-natur.des-cfop >= c-inicial ~
+ AND cfop-natur.des-cfop <= c-final NO-LOCK ~
+    ~{&SORTBY-PHRASE}.
+&Scoped-define TABLES-IN-QUERY-br-table cfop-natur
+&Scoped-define FIRST-TABLE-IN-QUERY-br-table cfop-natur
 
 
 /* Definitions for FRAME F-Main                                         */
 
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-OBJECTS br_table 
+&Scoped-Define ENABLED-OBJECTS bt-confirma c-inicial c-final IMAGE-1 ~
+IMAGE-2 br-table 
+&Scoped-Define DISPLAYED-OBJECTS c-inicial c-final 
 
 /* Custom List Definitions                                              */
 /* List-1,List-2,List-3,List-4,List-5,List-6                            */
@@ -82,7 +91,7 @@ DEFINE VARIABLE c-denominacao AS CHARACTER   NO-UNDO.
 &BROWSE-NAME
 </KEY-OBJECT>
 <FOREIGN-KEYS>
-cod-cfop||y|mgind.cfop-natur.cod-cfop
+des-cfop||y|mgdis.cfop-natur.des-cfop
 </FOREIGN-KEYS> 
 <EXECUTING-CODE>
 **************************
@@ -90,7 +99,7 @@ cod-cfop||y|mgind.cfop-natur.cod-cfop
 */
 RUN set-attribute-list (
     'Keys-Accepted = ,
-     Keys-Supplied = "cod-cfop"':U).
+     Keys-Supplied = "des-cfop"':U).
 
 /* Tell the ADM to use the OPEN-QUERY-CASES. */
 &Scoped-define OPEN-QUERY-CASES RUN dispatch ('open-query-cases':U).
@@ -115,6 +124,11 @@ RUN set-attribute-list (
 /************************
 </SORTBY-RUN-CODE>
 <FILTER-ATTRIBUTES>
+************************
+* Initialize Filter Attributes */
+RUN set-attribute-list IN THIS-PROCEDURE ('
+  Filter-Value=':U).
+/************************
 </FILTER-ATTRIBUTES> */   
 
 /* _UIB-CODE-BLOCK-END */
@@ -125,27 +139,54 @@ RUN set-attribute-list (
 
 
 /* Definitions of the field level widgets                               */
+DEFINE BUTTON bt-confirma 
+     IMAGE-UP FILE "image\im-sav":U
+     LABEL "Button 1" 
+     SIZE 5.14 BY 1.
+
+DEFINE VARIABLE c-final AS CHARACTER FORMAT "X(60)" INITIAL "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ" 
+     VIEW-AS FILL-IN 
+     SIZE 28 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-inicial AS CHARACTER FORMAT "X(60)" 
+     LABEL "Descri‡Æo" 
+     VIEW-AS FILL-IN 
+     SIZE 28 BY .88 NO-UNDO.
+
+DEFINE IMAGE IMAGE-1
+     FILENAME "image\ii-fir":U
+     SIZE 2.86 BY 1.
+
+DEFINE IMAGE IMAGE-2
+     FILENAME "image\ii-las":U
+     SIZE 2.86 BY 1.
+
 /* Query definitions                                                    */
 &ANALYZE-SUSPEND
-DEFINE QUERY br_table FOR 
+DEFINE QUERY br-table FOR 
       cfop-natur SCROLLING.
 &ANALYZE-RESUME
 
 /* Browse definitions                                                   */
-DEFINE BROWSE br_table
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _DISPLAY-FIELDS br_table B-table-Win _FREEFORM
-  QUERY br_table NO-LOCK DISPLAY
+DEFINE BROWSE br-table
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _DISPLAY-FIELDS br-table B-table-Win _STRUCTURED
+  QUERY br-table NO-LOCK DISPLAY
+      cfop-natur.des-cfop FORMAT "x(60)":U
       cfop-natur.cod-cfop FORMAT "x(10)":U
-      cfop-natur.des-cfop FORMAT "x(30)":U
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
-    WITH NO-ASSIGN SEPARATORS SIZE 37 BY 11.75.
+    WITH NO-ASSIGN SEPARATORS SIZE 80 BY 9.
 
 
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME F-Main
-     br_table AT ROW 1 COL 1
+     bt-confirma AT ROW 1 COL 76
+     c-inicial AT ROW 1.08 COL 1.43
+     c-final AT ROW 1.08 COL 44.43 COLON-ALIGNED NO-LABEL
+     br-table AT ROW 2.17 COL 1
+     IMAGE-1 AT ROW 1.08 COL 40.14
+     IMAGE-2 AT ROW 1.08 COL 43.29
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 1 ROW 1 SCROLLABLE 
@@ -178,8 +219,8 @@ END.
 &ANALYZE-SUSPEND _CREATE-WINDOW
 /* DESIGN Window definition (used by the UIB) 
   CREATE WINDOW B-table-Win ASSIGN
-         HEIGHT             = 11.92
-         WIDTH              = 37.
+         HEIGHT             = 10.17
+         WIDTH              = 80.14.
 /* END WINDOW DEFINITION */
                                                                         */
 &ANALYZE-RESUME
@@ -188,7 +229,7 @@ END.
 /* ************************* Included-Libraries *********************** */
 
 {src/adm/method/browser.i}
-{include/c-browse.i}
+{include/c-brwzoo.i}
 {utp/ut-glob.i}
 
 /* _UIB-CODE-BLOCK-END */
@@ -203,27 +244,30 @@ END.
 /* SETTINGS FOR WINDOW B-table-Win
   NOT-VISIBLE,,RUN-PERSISTENT                                           */
 /* SETTINGS FOR FRAME F-Main
-   NOT-VISIBLE FRAME-NAME Size-to-Fit                                   */
-/* BROWSE-TAB br_table 1 F-Main */
+   NOT-VISIBLE FRAME-NAME Size-to-Fit L-To-R                            */
+/* BROWSE-TAB br-table IMAGE-2 F-Main */
 ASSIGN 
        FRAME F-Main:SCROLLABLE       = FALSE
        FRAME F-Main:HIDDEN           = TRUE.
 
+/* SETTINGS FOR FILL-IN c-inicial IN FRAME F-Main
+   ALIGN-L                                                              */
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
 
 
 /* Setting information for Queries and Browse Widgets fields            */
 
-&ANALYZE-SUSPEND _QUERY-BLOCK BROWSE br_table
-/* Query rebuild information for BROWSE br_table
-     _START_FREEFORM
-OPEN QUERY {&SELF-NAME} FOR EACH cfop-natur WHERE ~{&KEY-PHRASE} NO-LOCK
-    ~{&SORTBY-PHRASE} INDEXED-REPOSITION.
-     _END_FREEFORM
-     _Options          = "NO-LOCK INDEXED-REPOSITION KEY-PHRASE SORTBY-PHRASE"
+&ANALYZE-SUSPEND _QUERY-BLOCK BROWSE br-table
+/* Query rebuild information for BROWSE br-table
+     _TblList          = "mgdis.cfop-natur"
+     _Options          = "NO-LOCK KEY-PHRASE SORTBY-PHRASE"
+     _Where[1]         = "mgdis.cfop-natur.des-cfop >= c-inicial
+ AND mgdis.cfop-natur.des-cfop <= c-final"
+     _FldNameList[1]   = mgdis.cfop-natur.des-cfop
+     _FldNameList[2]   = mgdis.cfop-natur.cod-cfop
      _Query            is NOT OPENED
-*/  /* BROWSE br_table */
+*/  /* BROWSE br-table */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _QUERY-BLOCK FRAME F-Main
@@ -239,31 +283,34 @@ OPEN QUERY {&SELF-NAME} FOR EACH cfop-natur WHERE ~{&KEY-PHRASE} NO-LOCK
 
 /* ************************  Control Triggers  ************************ */
 
-&Scoped-define BROWSE-NAME br_table
-&Scoped-define SELF-NAME br_table
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br_table B-table-Win
-ON MOUSE-SELECT-DBLCLICK OF br_table IN FRAME F-Main
+&Scoped-define BROWSE-NAME br-table
+&Scoped-define SELF-NAME br-table
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br-table B-table-Win
+ON MOUSE-SELECT-DBLCLICK OF br-table IN FRAME F-Main
 DO:
-  RUN NEW-STATE(INPUT 'incluir-browse':U).
+    RUN New-State('DblClick':U).
 END.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br_table B-table-Win
-ON ROW-ENTRY OF br_table IN FRAME F-Main
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br-table B-table-Win
+ON ROW-ENTRY OF br-table IN FRAME F-Main
 DO:
   /* This code displays initial values for newly added or copied rows. */
-  {src/adm/template/brsentry.i}  
+  {src/adm/template/brsentry.i}
+  
+  run new-state('New-Line|':U + string(rowid({&FIRST-TABLE-IN-QUERY-{&BROWSE-NAME}}))).
+  run seta-valor.
 END.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br_table B-table-Win
-ON ROW-LEAVE OF br_table IN FRAME F-Main
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br-table B-table-Win
+ON ROW-LEAVE OF br-table IN FRAME F-Main
 DO:
     /* Do not disable this code or no updates will take place except
      by pressing the Save button on an Update SmartPanel. */
@@ -274,13 +321,27 @@ END.
 &ANALYZE-RESUME
 
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br_table B-table-Win
-ON VALUE-CHANGED OF br_table IN FRAME F-Main
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL br-table B-table-Win
+ON VALUE-CHANGED OF br-table IN FRAME F-Main
 DO:
   /* This ADM trigger code must be preserved in order to notify other
      objects when the browser's current row changes. */
   {src/adm/template/brschnge.i}
+  run new-state('New-Line|':U + string(rowid({&FIRST-TABLE-IN-QUERY-{&BROWSE-NAME}}))).
+  run new-state('Value-Changed|':U + string(this-procedure)).
+END.
 
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&Scoped-define SELF-NAME bt-confirma
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL bt-confirma B-table-Win
+ON CHOOSE OF bt-confirma IN FRAME F-Main /* Button 1 */
+DO:
+  assign input frame {&frame-name} c-inicial c-final.
+  RUN dispatch IN THIS-PROCEDURE ('open-query':U).
+  apply 'value-changed':U to {&browse-name}.
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -311,6 +372,11 @@ PROCEDURE adm-open-query-cases :
                such as the 'Key-Name', or 'SortBy-Case'
   Parameters:  <none>
 ------------------------------------------------------------------------------*/
+  DEF VAR Filter-Value AS CHAR NO-UNDO.
+
+  /* Copy 'Filter-Attributes' into local variables. */
+  RUN get-attribute ('Filter-Value':U).
+  Filter-Value = RETURN-VALUE.
 
   /* No Foreign keys are accepted by this SmartObject. */
 
@@ -361,6 +427,26 @@ END PROCEDURE.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE local-view B-table-Win 
+PROCEDURE local-view :
+/*------------------------------------------------------------------------------
+  Purpose:     Override standard ADM method
+  Notes:       
+------------------------------------------------------------------------------*/
+
+  /* Code placed here will execute PRIOR to standard behavior. */
+
+  /* Dispatch standard ADM method.                             */
+  RUN dispatch IN THIS-PROCEDURE ( INPUT 'view':U ) .
+
+  /* Code placed here will execute AFTER standard behavior.    */
+  apply 'value-changed':U to {&browse-name} in frame {&frame-name}.
+
+END PROCEDURE.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE send-key B-table-Win  adm/support/_key-snd.p
 PROCEDURE send-key :
 /*------------------------------------------------------------------------------
@@ -373,7 +459,7 @@ PROCEDURE send-key :
   {src/adm/template/sndkytop.i}
 
   /* Return the key value associated with each key case.             */
-  {src/adm/template/sndkycas.i "cod-cfop" "cfop-natur" "cod-cfop"}
+  {src/adm/template/sndkycas.i "des-cfop" "cfop-natur" "des-cfop"}
 
   /* Close the CASE statement and end the procedure.                 */
   {src/adm/template/sndkyend.i}
@@ -420,8 +506,15 @@ PROCEDURE state-changed :
          or add new cases. */
       {src/adm/template/bstates.i}
   END CASE.
+  run pi-trata-state (p-issuer-hdl, p-state).
 END PROCEDURE.
 
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _XFTR "RetornaValorCampo" B-table-Win _INLINE
+/* Actions: ? ? ? ? support/brwrtval.p */
+/* Procedure desativada */
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
